@@ -1,11 +1,3 @@
 {
-  "mcpServers": {
-    "obsidian-vault": {
-      "command": "echo",
-      "args": ["待配置 Obsidian API"],
-      "env": {
-        "VAULT_PATH": "${CLAUDE_PLUGIN_ROOT}"
-      }
-    }
-  }
+  "mcpServers": {}
 }
