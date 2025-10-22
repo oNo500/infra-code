@@ -34,12 +34,12 @@ enterprise-plugin/
 ```
 
 ## plugins 规划
-个人有一个 obsidian 的知识库，所以需要围绕这个 obsidian 来构建一个 plugin
-比较擅长前端开发所以可以构建前端的 plugin，但是前端设计的技术栈太多了...暂且一个 fe 吧，主要是围绕 web 方向
-在研究 nodejs 后端开发也需要 一个 plugin
-正在进行全栈开发，也需要一个全栈的 plugin
-正在构建脚手架提升 DX的项目，需要一个 plugin 么？
-我还需要一个简单的通用的 plugin 以满足我日常的使用
+个人有一个 obsidian 的知识库，所以需要围绕这个 obsidian 来构建一个 plugin.  
+比较擅长前端开发所以可以构建前端的 plugin，但是前端设计的技术栈太多了...暂且一个 fe 吧，主要是围绕 web 方向.  
+在研究 nodejs 后端开发也需要 一个 plugin.  
+正在进行全栈开发，也需要一个全栈的 plugin.  
+正在构建脚手架提升 DX的项目，需要一个 plugin 么？    
+我还需要一个简单的通用的 plugin 以满足我日常的使用.  
 
 
 
