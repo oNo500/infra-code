@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "name": "basic",
+    "description": "基础 Claude Code 配置，适合大多数用户",
+    "scope": "user",
+    "version": "1.0.0",
+    "author": "Code Infra Team",
+    "tags": ["basic", "starter", "general"]
+  },
+  "config": {
+    "permissions": {
+      "allow": [
+        "**/*"
+      ],
+      "deny": [
+        "node_modules/**",
+        ".git/**",
+        "dist/**",
+        "build/**",
+        "*.log",
+        ".env*"
+      ]
+    },
+    "enabledTools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "Grep",
+      "Glob",
+      "Task",
+      "TodoWrite"
+    ],
+    "workingDirectory": "."
+  }
+}

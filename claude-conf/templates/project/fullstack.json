@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "name": "fullstack",
+    "description": "全栈项目配置，包含前端和后端开发工具",
+    "scope": "project",
+    "version": "1.0.0",
+    "author": "Code Infra Team",
+    "tags": ["fullstack", "web", "nodejs", "complete"]
+  },
+  "config": {
+    "permissions": {
+      "allow": [
+        "src/**",
+        "client/**",
+        "server/**",
+        "api/**",
+        "components/**",
+        "pages/**",
+        "public/**",
+        "test/**",
+        "*.config.js",
+        "*.config.ts",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "deny": [
+        "node_modules/**",
+        "dist/**",
+        "build/**",
+        ".next/**",
+        ".git/**",
+        "*.log"
+      ]
+    },
+    "enabledTools": [
+      "Read",
+      "Write",
+      "Edit",
+      "MultiEdit",
+      "Bash",
+      "Grep",
+      "Glob",
+      "Task",
+      "TodoWrite",
+      "WebFetch"
+    ],
+    "mcpServers": {
+      "serena": {
+        "command": "npx",
+        "args": ["-y", "@infrasoftbe/serena"],
+        "env": {
+          "SERENA_MODE": "interactive,editing"
+        }
+      },
+      "playwright": {
+        "command": "npx",
+        "args": ["-y", "@executeautomation/playwright-mcp-server"]
+      },
+      "magic": {
+        "command": "npx",
+        "args": ["-y", "@21st-dev/mcp-server-magic"]
+      }
+    },
+    "extraKnownMarketplaces": {
+      "fullstack": {
+        "source": "./plugins/fullstack"
+      }
+    },
+    "enabledPlugins": {
+      "fullstack@fullstack": true
+    }
+  }
+}

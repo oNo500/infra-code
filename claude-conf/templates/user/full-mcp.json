@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "name": "full-mcp",
+    "description": "完整 MCP 服务器配置，包含所有常用 MCP 服务",
+    "scope": "user",
+    "version": "1.0.0",
+    "author": "Code Infra Team",
+    "tags": ["mcp", "full-featured", "advanced"]
+  },
+  "config": {
+    "permissions": {
+      "allow": ["**/*"],
+      "deny": ["node_modules/**", ".git/**", "*.log", ".env*"]
+    },
+    "enabledTools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "Grep",
+      "Glob",
+      "Task",
+      "TodoWrite",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "mcpServers": {
+      "serena": {
+        "command": "npx",
+        "args": ["-y", "@infrasoftbe/serena"],
+        "env": {
+          "SERENA_MODE": "interactive,editing"
+        }
+      },
+      "sequential-thinking": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      },
+      "brave-search": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+        "env": {
+          "BRAVE_API_KEY": ""
+        }
+      },
+      "playwright": {
+        "command": "npx",
+        "args": ["-y", "@executeautomation/playwright-mcp-server"]
+      }
+    }
+  }
+}
