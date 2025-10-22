@@ -1,0 +1,24 @@
+{
+  "name": "code-infra",
+  "owner": {
+    "name": "xiu",
+    "email": "gaoxiu333@gmail.com"
+  },
+  "version": "0.0.0",
+  "strict": true,
+  "plugins": [
+    {
+      "name": "x",
+      "source": "./plugins/x",
+      "description": "一个简单的插件"
+    },
+    {
+      "name": "deployment-tools",
+      "source": {
+        "source": "github",
+        "repo": "company/deploy-plugin"
+      },
+      "description": "Deployment automation tools"
+    }
+  ]
+}
