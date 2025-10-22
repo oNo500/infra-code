@@ -10,15 +10,27 @@
     {
       "name": "x",
       "source": "./plugins/x",
-      "description": "一个简单的插件"
+      "description": "简短的便捷指令"
     },
     {
-      "name": "deployment-tools",
-      "source": {
-        "source": "github",
-        "repo": "company/deploy-plugin"
-      },
-      "description": "Deployment automation tools"
+      "name": "obsidian",
+      "source": "./plugins/obsidian",
+      "description": "Obsidian 知识库管理工具集，支持笔记创建、搜索、链接管理和知识组织"
+    },
+    {
+      "name": "web-dev",
+      "source": "./plugins/web-dev",
+      "description": "现代前端 Web 开发工具集，支持 React/Vue/Svelte 组件开发、页面构建、样式管理和性能优化"
+    },
+    {
+      "name": "nodejs",
+      "source": "./plugins/nodejs",
+      "description": "Node.js 后端开发工具集，支持 API 设计、数据模型、中间件和安全审计"
+    },
+    {
+      "name": "fullstack",
+      "source": "./plugins/fullstack",
+      "description": "全栈开发工具集，整合前后端开发流程，支持端到端应用构建、API 集成和统一部署"
     }
   ]
 }

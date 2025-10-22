@@ -1,0 +1,23 @@
+{
+  "filesystem": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "${PROJECT_ROOT}"
+    ],
+    "env": {
+      "ALLOW_WRITE": "true"
+    }
+  },
+  "docker": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-docker"
+    ],
+    "env": {
+      "DOCKER_HOST": "unix:///var/run/docker.sock"
+    }
+  }
+}

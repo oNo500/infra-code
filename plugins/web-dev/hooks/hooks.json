@@ -1,0 +1,46 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "description": "编辑组件后自动运行 Prettier 格式化",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx",
+            "args": ["prettier", "--write", "${MATCHED_FILE}"],
+            "condition": {
+              "filePattern": "*.{js,jsx,ts,tsx,vue,svelte}"
+            }
+          }
+        ]
+      },
+      {
+        "description": "组件文件更改后运行 ESLint",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx",
+            "args": ["eslint", "--fix", "${MATCHED_FILE}"],
+            "condition": {
+              "filePattern": "*.{js,jsx,ts,tsx}"
+            }
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "description": "构建前检查依赖完整性",
+        "matcher": "Bash.*(build|npm run build)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-deps.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

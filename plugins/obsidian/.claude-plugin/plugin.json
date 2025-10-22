@@ -1,0 +1,13 @@
+{
+  "name": "obsidian",
+  "version": "0.1.0",
+  "description": "Obsidian 知识库管理工具集，支持笔记创建、搜索、链接管理和知识组织",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  },
+  "permissions": {
+    "allow": ["Read", "Write", "Edit", "Bash"],
+    "ask": ["NetworkAccess"]
+  }
+}

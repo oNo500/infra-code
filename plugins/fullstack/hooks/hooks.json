@@ -1,0 +1,76 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "description": "部署前运行测试套件",
+        "matcher": "Bash.*(deploy|railway up|vercel.*--prod)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm",
+            "args": ["test"]
+          }
+        ]
+      },
+      {
+        "description": "Docker 构建前检查 Dockerfile",
+        "matcher": "Bash.*(docker build|docker-compose.*build)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-dockerfile.sh"
+          }
+        ]
+      },
+      {
+        "description": "数据库迁移前备份",
+        "matcher": "Bash.*(db:migrate|prisma migrate)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/backup-db.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "description": "API 变更后同步前端类型",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "skill",
+            "skill": "api-connector",
+            "condition": {
+              "filePattern": "**/api/**/*.{ts,js}"
+            }
+          }
+        ]
+      },
+      {
+        "description": "配置文件修改后格式化",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx",
+            "args": ["prettier", "--write", "${MATCHED_FILE}"],
+            "condition": {
+              "filePattern": "*.{json,yml,yaml}"
+            }
+          }
+        ]
+      },
+      {
+        "description": "部署成功后发送通知",
+        "matcher": "Bash.*(deploy|up).*success",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/notify-deploy.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

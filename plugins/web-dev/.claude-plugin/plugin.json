@@ -1,0 +1,13 @@
+{
+  "name": "web-dev",
+  "version": "0.1.0",
+  "description": "现代前端 Web 开发工具集，支持 React/Vue/Svelte 组件开发、页面构建、样式管理和性能优化",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  },
+  "permissions": {
+    "allow": ["Read", "Write", "Edit", "Bash"],
+    "ask": ["NetworkAccess"]
+  }
+}
