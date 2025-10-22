@@ -1,42 +1,11 @@
 {
   "hooks": {
-    "PostToolUse": [
+    "SessionStart": [
       {
-        "description": "在编辑或创建笔记后自动格式化 Markdown",
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "skill",
-            "skill": "markdown-formatter",
-            "condition": {
-              "filePattern": "*.md"
-            }
-          }
-        ]
-      },
-      {
-        "description": "在笔记修改后更新链接和时间戳",
-        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/scripts/update-metadata.js",
-              "${MATCHED_FILE}"
-            ]
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "description": "在执行 Git 操作前验证笔记完整性",
-        "matcher": "Bash.*git (commit|push)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-notes.sh"
+            "command": "echo '📚 Obsidian 知识库已就绪'"
           }
         ]
       }

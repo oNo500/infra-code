@@ -1,53 +1,12 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "description": "数据库操作前验证连接",
-        "matcher": "Bash.*(prisma|typeorm|sequelize)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-db.sh"
-          }
-        ]
-      },
-      {
-        "description": "API 部署前运行测试",
-        "matcher": "Bash.*(deploy|pm2 start)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npm",
-            "args": ["test"]
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "description": "API 文件修改后自动运行 ESLint",
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "npx",
-            "args": ["eslint", "--fix", "${MATCHED_FILE}"],
-            "condition": {
-              "filePattern": "*.{js,ts}"
-            }
-          }
-        ]
-      },
-      {
-        "description": "模型文件修改后更新 API 文档",
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/generate-docs.sh",
-            "condition": {
-              "filePattern": "**/models/*.{js,ts}"
-            }
+            "command": "echo '🔍 代码审查（待配置 ESLint）'"
           }
         ]
       }

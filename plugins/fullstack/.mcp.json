@@ -1,23 +1,11 @@
 {
-  "filesystem": {
-    "command": "npx",
-    "args": [
-      "-y",
-      "@modelcontextprotocol/server-filesystem",
-      "${PROJECT_ROOT}"
-    ],
-    "env": {
-      "ALLOW_WRITE": "true"
-    }
-  },
-  "docker": {
-    "command": "npx",
-    "args": [
-      "-y",
-      "@modelcontextprotocol/server-docker"
-    ],
-    "env": {
-      "DOCKER_HOST": "unix:///var/run/docker.sock"
+  "mcpServers": {
+    "deployment-tools": {
+      "command": "echo",
+      "args": ["待配置部署工具"],
+      "env": {
+        "PROJECT_ROOT": "${CLAUDE_PLUGIN_ROOT}"
+      }
     }
   }
 }

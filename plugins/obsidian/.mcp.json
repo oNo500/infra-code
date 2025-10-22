@@ -1,13 +1,11 @@
 {
-  "filesystem": {
-    "command": "npx",
-    "args": [
-      "-y",
-      "@modelcontextprotocol/server-filesystem",
-      "${OBSIDIAN_VAULT_PATH}"
-    ],
-    "env": {
-      "ALLOW_WRITE": "true"
+  "mcpServers": {
+    "obsidian-vault": {
+      "command": "echo",
+      "args": ["待配置 Obsidian API"],
+      "env": {
+        "VAULT_PATH": "${CLAUDE_PLUGIN_ROOT}"
+      }
     }
   }
 }

@@ -1,13 +1,9 @@
 {
   "name": "nodejs",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Node.js 后端开发工具集，支持 API 设计、数据模型、中间件和安全审计",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
-  },
-  "permissions": {
-    "allow": ["Read", "Write", "Edit", "Bash"],
-    "ask": ["NetworkAccess"]
+    "name": "xiu",
+    "email": "gaoxiu333@gmail.com"
   }
 }

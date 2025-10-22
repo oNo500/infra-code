@@ -1,0 +1,9 @@
+{
+  "name": "cli-dx",
+  "version": "1.0.0",
+  "description": "脚手架和开发体验工具集，支持项目初始化、模板管理、配置向导和项目升级",
+  "author": {
+    "name": "xiu",
+    "email": "gaoxiu333@gmail.com"
+  }
+}

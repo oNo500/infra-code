@@ -1,0 +1,9 @@
+{
+  "name": "common",
+  "description": "通用工具集，提供常用的便捷命令和个人定制功能",
+  "version": "0.0.4",
+  "author": {
+    "name": "xiu",
+    "email": "gaoxiu333@gmail.com"
+  }
+}
