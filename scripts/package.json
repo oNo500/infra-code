@@ -25,7 +25,7 @@
     "templates"
   ],
   "bin": {
-    "infra": "./dist/cli.js",
+    "infra-ai": "./dist/cli.js",
     "in": "./dist/cli.js"
   },
   "main": "./dist/index.js",
