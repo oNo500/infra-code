@@ -41,3 +41,8 @@ plugins | MCP
 setting 需要启用默认的插件和mcp
 预设 plugins 和 mcp 快速设置
 是否需要分场景进行 plugins和mcp的预设？
+
+
+## 添加 plugins
+1. settings 中添加预设的 插件市场
+extraKnownMarketplaces： https://docs.claude.com/en/docs/claude-code/plugin-marketplaces#configure-team-marketplaces

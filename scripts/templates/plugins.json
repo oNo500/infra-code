@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "name": "plugins",
+    "description": "插件市场配置 - 用于团队插件分发和管理",
+    "version": "1.0.0",
+    "author": "Code Infra Team",
+    "tags": ["plugins", "team", "marketplace"],
+    "supportedScopes": ["user", "project", "local"],
+    "claudeMd": "plugins.claude.md"
+  },
+  "config": {
+    "permissions": {
+      "allow": ["**/*"],
+      "deny": [
+        "node_modules/**",
+        ".git/**",
+        "dist/**",
+        "build/**",
+        ".next/**",
+        "*.log",
+        ".env*",
+        "**/.env*"
+      ]
+    },
+    "extraKnownMarketplaces": {
+      "code-infra": {
+        "source": "./plugins"
+      }
+    },
+    "enabledPlugins": {
+      "common@code-infra": true
+    },
+    "enableAllProjectMcpServers": true,
+    "enabledMcpjsonServers": [],
+    "disabledMcpjsonServers": []
+  }
+}
