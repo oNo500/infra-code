@@ -9,24 +9,11 @@
     "claudeMd": "plugins.claude.md"
   },
   "config": {
-    "permissions": {
-      "allow": ["**/*"],
-      "deny": [
-        "node_modules/**",
-        ".git/**",
-        "dist/**",
-        "build/**",
-        ".next/**",
-        "*.log",
-        ".env*",
-        "**/.env*"
-      ]
-    },
     "extraKnownMarketplaces": {
       "infra-code": {
         "source": {
-          "source": "git",
-          "url": "https://github.com/oNo500/infra-code.git"
+          "source": "directory",
+          "path": "/Users/bytedance/private/infra-code"
         }
       }
     },

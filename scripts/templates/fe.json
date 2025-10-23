@@ -8,17 +8,6 @@
     "claudeMd": "fe.claude.md"
   },
   "config": {
-    "permissions": {
-      "allow": ["**/*"],
-      "deny": [
-        "**/.env",
-        "**/.env.*",
-        "**/node_modules/**",
-        "**/.git/**",
-        "**/dist/**",
-        "**/build/**"
-      ]
-    },
     "enableAllProjectMcpServers": true,
     "enabledMcpjsonServers": [],
     "disabledMcpjsonServers": []

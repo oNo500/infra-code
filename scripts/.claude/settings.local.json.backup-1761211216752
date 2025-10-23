@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": ["**/*"],
+    "deny": [
+      "node_modules/**",
+      ".git/**",
+      "dist/**",
+      "build/**",
+      ".next/**",
+      "*.log",
+      ".env*",
+      "**/.env*"
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "infra-code": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/oNo500/infra-code.git"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "common@infra-code": true
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [],
+  "disabledMcpjsonServers": []
+}

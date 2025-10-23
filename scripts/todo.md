@@ -46,3 +46,6 @@ setting 需要启用默认的插件和mcp
 ## 添加 plugins
 1. settings 中添加预设的 插件市场
 extraKnownMarketplaces： https://docs.claude.com/en/docs/claude-code/plugin-marketplaces#configure-team-marketplaces
+
+
+alwaysThinkingEnabled 永远开启思考

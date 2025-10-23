@@ -10,19 +10,6 @@
     "claudeMd": "common.claude.md"
   },
   "config": {
-    "permissions": {
-      "allow": ["**/*"],
-      "deny": [
-        "node_modules/**",
-        ".git/**",
-        "dist/**",
-        "build/**",
-        ".next/**",
-        "*.log",
-        ".env*",
-        "**/.env*"
-      ]
-    },
     "extraKnownMarketplaces": {
       "code-infra": {
         "source": "./plugins"

@@ -10,10 +10,6 @@
     "claudeMd": "yolo.claude.md"
   },
   "config": {
-    "permissions": {
-      "allow": ["**/*"],
-      "deny": []
-    },
     "enableAllProjectMcpServers": true,
     "enabledMcpjsonServers": [],
     "disabledMcpjsonServers": []
