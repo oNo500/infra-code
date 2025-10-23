@@ -61,8 +61,5 @@
         "BROWSER_USE_HEADLESS": "true"
       }
     }
-  },
-  "preferences": {
-    "menuBarEnabled": false
   }
 }
