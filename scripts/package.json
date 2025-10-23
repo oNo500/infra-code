@@ -25,7 +25,8 @@
     "templates"
   ],
   "bin": {
-    "claude-conf": "./dist/cli.js"
+    "infra": "./dist/cli.js",
+    "in": "./dist/cli.js"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -46,7 +47,8 @@
     "cac": "^6.7.14",
     "deepmerge": "^4.3.1",
     "execa": "^9.5.2",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",

@@ -3,13 +3,14 @@
     "allow": [
       "Bash(pnpm install)",
       "mcp__plugin_common_context7__resolve-library-id",
-      "WebSearch"
+      "WebSearch",
+      "Read(//Users/bytedance/**)"
     ],
     "deny": [],
     "ask": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "paypal"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

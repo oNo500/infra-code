@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "**/*"
+    ],
+    "deny": [
+      "node_modules/**",
+      ".git/**",
+      "dist/**",
+      "build/**",
+      ".next/**",
+      "*.log",
+      ".env*",
+      "**/.env*"
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "code-infra": {
+      "source": "./plugins"
+    }
+  },
+  "enabledPlugins": {
+    "common@code-infra": true
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [],
+  "disabledMcpjsonServers": []
+}

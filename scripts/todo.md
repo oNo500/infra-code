@@ -30,3 +30,14 @@
 4. 项目初始化场景配置
 5. 检查清单。。。
 6. 使用终端配置验证是否配置成功
+
+---
+mcp和plugins 预设
+
+
+关系
+setting | claude.md | .claude.json?
+plugins | MCP
+setting 需要启用默认的插件和mcp
+预设 plugins 和 mcp 快速设置
+是否需要分场景进行 plugins和mcp的预设？

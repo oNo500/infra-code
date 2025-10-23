@@ -1,8 +1,28 @@
 {
   "mcpServers": {
-    "paypal": {
-      "type": "http",
-      "url": "https://mcp.paypal.com/mcp"
+    "serena": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@infrasoftbe/serena"
+      ],
+      "env": {
+        "SERENA_MODE": "interactive,editing"
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "firecrawl": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mendable/firecrawl-mcp"
+      ]
     }
   }
 }
