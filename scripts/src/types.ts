@@ -15,6 +15,7 @@ export interface TemplateMetadata {
   version?: string
   supportedScopes?: Scope[]
   mcpConfig?: string
+  claudeMd?: string
 }
 
 /** 模板定义 */

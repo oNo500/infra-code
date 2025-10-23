@@ -268,6 +268,35 @@ async function performInstall(
         spinner.stop('跳过 MCP 配置（无服务器）')
       }
     }
+
+    // 3. 安装 claude.md（如果有）
+    if (template.metadata.claudeMd) {
+      spinner.start('正在安装 Memory 配置...')
+
+      const claudeMdTemplatePath = join(paths.templates(), template.metadata.claudeMd)
+
+      if (await pathExists(claudeMdTemplatePath)) {
+        // 根据 scope 确定目标路径
+        let claudeMdPath: string
+        if (scope === 'user') {
+          claudeMdPath = join(paths.home(), '.claude', 'claude.md')
+        }
+        else {
+          // project 或 local scope
+          claudeMdPath = join(paths.cwd(), 'CLAUDE.md')
+        }
+
+        // 确保目录存在并复制文件
+        ensureDirSync(dirname(claudeMdPath))
+        await copy(claudeMdTemplatePath, claudeMdPath)
+
+        spinner.stop('Memory 配置安装成功！')
+        clack.log.success(`✓ Memory: ${claudeMdPath}`)
+      }
+      else {
+        spinner.stop('跳过 Memory 配置（模板文件不存在）')
+      }
+    }
   }
   catch (error) {
     spinner.stop('安装失败')

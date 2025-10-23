@@ -4,7 +4,8 @@
     "description": "基础配置 - 核心 MCP 服务器（搜索、思维、抓取）",
     "version": "1.0.0",
     "supportedScopes": ["user", "project", "local"],
-    "mcpConfig": "basic.mcp.json"
+    "mcpConfig": "basic.mcp.json",
+    "claudeMd": "basic.claude.md"
   },
   "config": {
     "permissions": {

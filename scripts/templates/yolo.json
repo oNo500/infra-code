@@ -6,7 +6,8 @@
     "author": "Code Infra Team",
     "tags": ["open", "development"],
     "supportedScopes": ["local"],
-    "mcpConfig": "yolo.mcp.json"
+    "mcpConfig": "yolo.mcp.json",
+    "claudeMd": "yolo.claude.md"
   },
   "config": {
     "permissions": {

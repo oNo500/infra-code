@@ -6,7 +6,8 @@
     "author": "Code Infra Team",
     "tags": ["recommended", "general"],
     "supportedScopes": ["user", "project", "local"],
-    "mcpConfig": "common.mcp.json"
+    "mcpConfig": "common.mcp.json",
+    "claudeMd": "common.claude.md"
   },
   "config": {
     "permissions": {
