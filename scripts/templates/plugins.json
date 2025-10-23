@@ -23,12 +23,13 @@
       ]
     },
     "extraKnownMarketplaces": {
-      "code-infra": {
-        "source": "./plugins"
+      "infra-code": {
+        "source": "git",
+        "url": "https://github.com/oNo500/infra-code.git"
       }
     },
     "enabledPlugins": {
-      "common@code-infra": true
+      "common@infra-code": true
     },
     "enableAllProjectMcpServers": true,
     "enabledMcpjsonServers": [],
