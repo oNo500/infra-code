@@ -24,8 +24,10 @@
     },
     "extraKnownMarketplaces": {
       "infra-code": {
-        "source": "git",
-        "url": "https://github.com/oNo500/infra-code.git"
+        "source": {
+          "source": "git",
+          "url": "https://github.com/oNo500/infra-code.git"
+        }
       }
     },
     "enabledPlugins": {
