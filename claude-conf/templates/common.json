@@ -29,6 +29,9 @@
     },
     "enabledPlugins": {
       "common@code-infra": true
-    }
+    },
+    "enableAllProjectMcpServers": true,
+    "enabledMcpjsonServers": [],
+    "disabledMcpjsonServers": []
   }
 }

@@ -12,6 +12,9 @@
     "permissions": {
       "allow": ["**/*"],
       "deny": []
-    }
+    },
+    "enableAllProjectMcpServers": true,
+    "enabledMcpjsonServers": [],
+    "disabledMcpjsonServers": []
   }
 }

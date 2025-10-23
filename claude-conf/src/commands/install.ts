@@ -282,12 +282,8 @@ async function installMcpConfig(scope: Scope, mcpTemplate: { mcpServers: Record<
   let mcpPath: string
 
   if (scope === 'project') {
-    // Project scope: 写入 .mcp.json 文件
-    const configPath = paths.config(scope)
-    const mcpFilePath = join(dirname(configPath), '.mcp.json')
-
-    // 确保目录存在
-    ensureDirSync(dirname(mcpFilePath))
+    // Project scope: 写入 .mcp.json 文件到项目根目录
+    const mcpFilePath = join(paths.cwd(), '.mcp.json')
 
     // 写入 MCP 配置
     await writeJSON(mcpFilePath, mcpTemplate, { spaces: 2 })
