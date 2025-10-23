@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import type { Scope, Template, TemplateMetadata } from '../types/index.js'
+import type { Scope, Template } from '../types/index.js'
 import { CliError } from '../types/index.js'
 import { getScopeTemplatesDir } from '../utils/path.js'
 import { fileExists, listFiles, readJsonFile } from '../utils/fs.js'

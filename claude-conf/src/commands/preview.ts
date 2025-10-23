@@ -1,6 +1,6 @@
 import * as clack from '@clack/prompts'
 import type { Scope, Template } from '../types/index.js'
-import { findTemplateByName, getTemplateConfigSummary, getTemplateInfo } from '../core/template.js'
+import { findTemplateByName, getTemplateConfigSummary } from '../core/template.js'
 import { formatConfigInfo } from '../core/config.js'
 
 /**

@@ -1,9 +1,8 @@
 import * as clack from '@clack/prompts'
-import type { MergeStrategy, Scope, Template, TemplateSource } from '../types/index.js'
+import type { MergeStrategy, Scope, Template } from '../types/index.js'
 import { CliError } from '../types/index.js'
 import {
   findTemplateByName,
-  formatTemplateList,
   getTemplateConfigSummary,
   getTemplateInfo,
   loadTemplatesByScope,
