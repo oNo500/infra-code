@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "name": "basic",
+    "description": "基础配置 - 核心 MCP 服务器（搜索、思维、抓取）",
+    "version": "1.0.0",
+    "supportedScopes": ["user", "project", "local"],
+    "mcpConfig": "basic.mcp.json"
+  },
+  "config": {
+    "permissions": {
+      "allow": ["**/*"],
+      "deny": [
+        "**/.env",
+        "**/.env.*",
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/dist/**",
+        "**/build/**"
+      ]
+    },
+    "enableAllProjectMcpServers": true,
+    "enabledMcpjsonServers": [],
+    "disabledMcpjsonServers": []
+  }
+}

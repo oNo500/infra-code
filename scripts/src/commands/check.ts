@@ -198,4 +198,8 @@ async function renderSystemInfo(): Promise<void> {
  */
 export async function check() {
   await renderSystemInfo()
+
+  // 直接调用安装命令
+  const { installCommand } = await import('./install.js')
+  await installCommand()
 }

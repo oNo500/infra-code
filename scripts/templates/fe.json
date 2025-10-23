@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "name": "fe",
+    "description": "前端开发配置 - 包含浏览器自动化和前端开发工具",
+    "version": "1.0.0",
+    "supportedScopes": ["user", "project", "local"],
+    "mcpConfig": "fe.mcp.json"
+  },
+  "config": {
+    "permissions": {
+      "allow": ["**/*"],
+      "deny": [
+        "**/.env",
+        "**/.env.*",
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/dist/**",
+        "**/build/**"
+      ]
+    },
+    "enableAllProjectMcpServers": true,
+    "enabledMcpjsonServers": [],
+    "disabledMcpjsonServers": []
+  }
+}

@@ -2,62 +2,41 @@
   "mcpServers": {
     "sequential-thinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "brave-search": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@brave/brave-search-mcp-server",
-        "--transport",
-        "stdio"
-      ],
+      "args": ["-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
       "env": {
         "BRAVE_API_KEY": "BSAkJSUIFg8aP7PW6Eit25qHymn8mmW"
       }
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
-      ]
+      "args": ["-y", "@upstash/context7-mcp@latest"]
     },
     "firecrawl-mcp": {
       "command": "npx",
-      "args": [
-        "-y",
-        "firecrawl-mcp"
-      ],
+      "args": ["-y", "firecrawl-mcp"],
       "env": {
         "FIRECRAWL_API_KEY": "fc-31789fc0dcf74604b6f27b6a1b8ee832"
       }
     },
     "playwright": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
+      "args": ["@playwright/mcp@latest"]
     },
     "magic": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "@21st-dev/magic"
-      ],
+      "args": ["@21st-dev/magic"],
       "env": {
         "TWENTYFIRST_API_KEY": "894f8affe842b5535846b25ab352cdd4835103e943eeba0494a24d3a48450c9f"
       }
     },
     "morphllm-fast-apply": {
       "command": "npx",
-      "args": [
-        "@morph-llm/morph-fast-apply",
-        "/home/"
-      ],
+      "args": ["@morph-llm/morph-fast-apply", "/home/"],
       "env": {
         "MORPH_API_KEY": "sk-Wy0Vc2zl7wA-I-Qad2wYimVNXnPZMTJsXbTA_HfySpl-4hyu",
         "ALL_TOOLS": "true"
