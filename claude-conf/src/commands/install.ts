@@ -1,169 +1,100 @@
 import * as clack from '@clack/prompts'
-import type { MergeStrategy, Scope, Template } from '../types/index.js'
-import { CliError } from '../types/index.js'
-import {
-  findTemplateByName,
-  getTemplateConfigSummary,
-  getTemplateInfo,
-  loadTemplatesByScope,
-} from '../core/template.js'
-import {
-  downloadGitTemplate,
-  downloadNpmTemplate,
-  isGitAvailable,
-  isNpmAvailable,
-  parseGitUrl,
-  validateGitUrl,
-  validateNpmPackageName,
-} from '../core/remote.js'
-import { formatConfigInfo, getConfigInfo, installConfig, previewConfigChanges } from '../core/config.js'
+import { dirname, join } from 'node:path'
+import { execa } from 'execa'
+import fs from 'fs-extra'
+import merge from 'deepmerge'
+import type { McpServerConfig, MergeStrategy, Scope, Template } from '../types.js'
+import { detect, getTemplateInfo, loadAllTemplates, loadMcpTemplate, paths } from '../utils.js'
+
+const { copy, ensureDirSync, pathExists, readJSON, writeJSON } = fs
+
+/**
+ * 安装选项接口
+ */
+interface InstallOptions {
+  scope?: string
+  strategy?: string
+}
 
 /**
  * 交互式安装模版
  */
-export async function installCommand(): Promise<void> {
-  clack.intro('📦 Claude Settings 模版安装器')
+export async function installCommand(templateName?: string, options?: InstallOptions): Promise<void> {
+  clack.intro('📦 Claude Settings 安装器')
 
   try {
-    // 1. 选择 scope
-    const scope = await selectScope()
-    if (clack.isCancel(scope)) {
-      clack.cancel('操作已取消')
-      process.exit(0)
-    }
-
-    // 2. 选择模版来源
-    const sourceType = await selectSourceType()
-    if (clack.isCancel(sourceType)) {
-      clack.cancel('操作已取消')
-      process.exit(0)
-    }
-
-    // 3. 获取模版
-    const template = await getTemplate(sourceType as string, scope as Scope)
+    // 1. 选择模板
+    const template = await selectTemplate(templateName)
     if (!template) {
       clack.outro('✗ 操作取消')
       process.exit(0)
     }
 
-    // 4. 预览模版
-    displayTemplateInfo(template)
+    // 2. 选择 Scope（智能推荐）
+    const scope = await selectScope(template, options?.scope)
+    if (clack.isCancel(scope)) {
+      clack.cancel('操作已取消')
+      process.exit(0)
+    }
 
-    // 5. 选择合并策略
-    const strategy = await selectMergeStrategy(scope as Scope)
+    // 3. 自动判断策略 + 显示预览
+    const strategy = await determineStrategy(scope as Scope, options?.strategy)
     if (clack.isCancel(strategy)) {
       clack.cancel('操作已取消')
       process.exit(0)
     }
 
-    // 6. 预览配置变更
-    await previewChanges(scope as Scope, template, strategy as MergeStrategy)
+    await showPreview(template, scope as Scope, strategy as MergeStrategy)
 
-    // 7. 确认安装
-    const confirm = await clack.confirm({
+    // 4. 确认并安装
+    const confirmed = await clack.confirm({
       message: '确认安装此配置？',
-      initialValue: false,
+      initialValue: true,
     })
 
-    if (clack.isCancel(confirm) || !confirm) {
+    if (clack.isCancel(confirmed) || !confirmed) {
       clack.cancel('安装已取消')
       process.exit(0)
     }
 
-    // 8. 执行安装
-    const spinner = clack.spinner()
-    spinner.start('正在安装配置...')
+    // 5. 执行安装
+    await performInstall(template, scope as Scope, strategy as MergeStrategy)
 
-    const result = await installConfig(
-      scope as Scope,
-      template.config,
-      strategy as MergeStrategy,
-      true, // 启用备份
-    )
-
-    spinner.stop('配置安装成功！')
-
-    // 显示结果
-    clack.log.success(`\n✓ 配置已安装到: ${result.configPath}`)
-
-    if (result.backupPath) {
-      clack.log.info(`📦 原配置已备份到: ${result.backupPath}`)
-    }
-
-    clack.outro('✓ 完成！')
+    clack.outro('✓ 安装成功!')
   }
   catch (error) {
     clack.log.error('安装失败')
-    if (error instanceof CliError) {
-      console.error(`错误: ${error.message}`)
-    }
-    else {
-      console.error(error)
-    }
+    console.error(error)
     process.exit(1)
   }
 }
 
 /**
- * 选择配置范围
+ * 选择模板
  */
-async function selectScope() {
-  return await clack.select({
-    message: '选择配置范围 (Scope)',
-    options: [
-      { value: 'user', label: 'User    (~/.claude/settings.json)', hint: '用户级全局配置' },
-      { value: 'project', label: 'Project ({cwd}/.claude/settings.json)', hint: '项目级配置' },
-      { value: 'local', label: 'Local   ({cwd}/.claude/settings.local.json)', hint: '本地配置（不提交）' },
-    ],
-  })
-}
-
-/**
- * 选择模版来源类型
- */
-async function selectSourceType() {
-  return await clack.select({
-    message: '选择模版来源',
-    options: [
-      { value: 'local', label: '本地模版库', hint: '使用预定义的模版' },
-      { value: 'git', label: '远程 Git 仓库', hint: '从 GitHub 等下载' },
-      { value: 'npm', label: 'NPM 包', hint: '从 NPM 安装模版包' },
-    ],
-  })
-}
-
-/**
- * 获取模版
- */
-async function getTemplate(
-  sourceType: string,
-  scope: Scope,
-): Promise<Template | null> {
-  switch (sourceType) {
-    case 'local':
-      return await selectLocalTemplate(scope)
-    case 'git':
-      return await downloadFromGit()
-    case 'npm':
-      return await downloadFromNpm()
-    default:
-      throw new CliError('未知的模版来源类型', 'UNKNOWN_SOURCE_TYPE')
-  }
-}
-
-/**
- * 从本地选择模版
- */
-async function selectLocalTemplate(scope: Scope): Promise<Template | null> {
-  const templates = await loadTemplatesByScope(scope)
+async function selectTemplate(templateName?: string): Promise<Template | null> {
+  const templates = await loadAllTemplates()
 
   if (templates.length === 0) {
-    clack.log.warn(`暂无 ${scope} scope 的本地模版`)
+    clack.log.warn('暂无可用模板')
     return null
   }
 
-  const templateName = await clack.select({
-    message: '选择模版',
+  // 如果指定了模板名称，直接查找
+  if (templateName) {
+    const template = templates.find(t => t.metadata.name === templateName)
+    if (!template) {
+      clack.log.error(`模板不存在: ${templateName}`)
+      clack.log.info('\n可用模板:')
+      templates.forEach(t => console.log(`  - ${t.metadata.name}: ${t.metadata.description}`))
+      return null
+    }
+    return template
+  }
+
+  // 交互式选择
+  const selectedName = await clack.select({
+    message: '选择模板',
     options: templates.map(t => ({
       value: t.metadata.name,
       label: t.metadata.name,
@@ -171,116 +102,71 @@ async function selectLocalTemplate(scope: Scope): Promise<Template | null> {
     })),
   })
 
-  if (clack.isCancel(templateName)) {
+  if (clack.isCancel(selectedName)) {
     return null
   }
 
-  return await findTemplateByName(templateName as string, scope)
+  return templates.find(t => t.metadata.name === selectedName) || null
 }
 
 /**
- * 从 Git 下载模版
+ * 选择 Scope（智能推荐）
  */
-async function downloadFromGit(): Promise<Template | null> {
-  // 检查 Git 是否可用
-  const gitAvailable = await isGitAvailable()
-  if (!gitAvailable) {
-    clack.log.error('Git 不可用，请先安装 Git')
-    return null
+async function selectScope(template: Template, cliScope?: string): Promise<Scope | symbol> {
+  // 如果命令行指定了 scope，验证后使用
+  if (cliScope) {
+    const validScopes: Scope[] = ['user', 'project', 'local']
+    if (!validScopes.includes(cliScope as Scope)) {
+      throw new Error(`无效的 scope: ${cliScope}`)
+    }
+
+    // 检查模板是否支持该 scope
+    const supported = template.metadata.supportedScopes || ['user', 'project', 'local']
+    if (!supported.includes(cliScope as Scope)) {
+      throw new Error(`模板 ${template.metadata.name} 不支持 ${cliScope} scope`)
+    }
+
+    return cliScope as Scope
   }
 
-  const url = await clack.text({
-    message: '输入 Git 仓库 URL',
-    placeholder: 'https://github.com/user/repo',
-    validate: (value) => {
-      if (!value) {
-        return '请输入 URL'
+  // 获取推荐的 scope
+  const recommended = detect.recommendScope()
+
+  // 获取模板支持的 scope 列表
+  const supported = template.metadata.supportedScopes || ['user', 'project', 'local']
+
+  return await clack.select({
+    message: '选择安装位置',
+    options: supported.map((s) => {
+      const isRecommended = s === recommended
+      return {
+        value: s,
+        label: s.charAt(0).toUpperCase() + s.slice(1),
+        hint: `${detect.getRecommendReason(s)}${isRecommended ? ' ⭐ 推荐' : ''}`,
       }
-      if (!validateGitUrl(value)) {
-        return 'URL 格式无效'
-      }
-    },
+    }),
+    initialValue: recommended,
   })
-
-  if (clack.isCancel(url)) {
-    return null
-  }
-
-  const spinner = clack.spinner()
-  spinner.start('正在从 Git 下载模版...')
-
-  try {
-    const parsed = parseGitUrl(url as string)
-    const template = await downloadGitTemplate({
-      type: 'git',
-      url: parsed.url,
-      ref: parsed.ref,
-      path: parsed.path,
-    })
-
-    spinner.stop('模版下载成功！')
-    return template
-  }
-  catch (error) {
-    spinner.stop('下载失败')
-    throw error
-  }
 }
 
 /**
- * 从 NPM 下载模版
+ * 判断合并策略
  */
-async function downloadFromNpm(): Promise<Template | null> {
-  // 检查 NPM 是否可用
-  const npmAvailable = await isNpmAvailable()
-  if (!npmAvailable) {
-    clack.log.error('NPM 不可用，请先安装 Node.js 和 NPM')
-    return null
+async function determineStrategy(scope: Scope, cliStrategy?: string): Promise<MergeStrategy | symbol> {
+  // 如果命令行指定了策略，验证后使用
+  if (cliStrategy) {
+    const validStrategies: MergeStrategy[] = ['merge', 'replace']
+    if (!validStrategies.includes(cliStrategy as MergeStrategy)) {
+      throw new Error(`无效的策略: ${cliStrategy}`)
+    }
+    return cliStrategy as MergeStrategy
   }
 
-  const packageName = await clack.text({
-    message: '输入 NPM 包名',
-    placeholder: '@scope/package-name 或 package-name',
-    validate: (value) => {
-      if (!value) {
-        return '请输入包名'
-      }
-      if (!validateNpmPackageName(value)) {
-        return '包名格式无效'
-      }
-    },
-  })
-
-  if (clack.isCancel(packageName)) {
-    return null
-  }
-
-  const spinner = clack.spinner()
-  spinner.start('正在从 NPM 下载模版...')
-
-  try {
-    const template = await downloadNpmTemplate({
-      type: 'npm',
-      packageName: packageName as string,
-    })
-
-    spinner.stop('模版下载成功！')
-    return template
-  }
-  catch (error) {
-    spinner.stop('下载失败')
-    throw error
-  }
-}
-
-/**
- * 选择合并策略
- */
-async function selectMergeStrategy(scope: Scope): Promise<MergeStrategy | symbol> {
   // 检查是否已存在配置
-  const configInfo = await getConfigInfo(scope)
+  const configPath = paths.config(scope)
+  const exists = await pathExists(configPath)
 
-  if (!configInfo.exists) {
+  if (!exists) {
     // 如果不存在配置，直接使用 replace 策略
     return 'replace'
   }
@@ -296,39 +182,231 @@ async function selectMergeStrategy(scope: Scope): Promise<MergeStrategy | symbol
 }
 
 /**
- * 预览配置变更
+ * 显示预览
  */
-async function previewChanges(
-  scope: Scope,
+async function showPreview(
   template: Template,
+  scope: Scope,
   strategy: MergeStrategy,
 ): Promise<void> {
-  const preview = await previewConfigChanges(scope, template.config, strategy)
+  clack.log.info('\n📦 模板信息:\n')
+  console.log(`  ${getTemplateInfo(template)}`)
+
+  // 预览配置变更
+  const configPath = paths.config(scope)
+  const exists = await pathExists(configPath)
+  const existing = exists ? await readJSON(configPath) : {}
+
+  const final = strategy === 'merge'
+    ? merge(existing, template.config)
+    : template.config
 
   clack.log.info('\n📋 配置预览:\n')
 
-  if (preview.isNew) {
+  if (!exists) {
     clack.log.success('这是一个新配置文件')
   }
   else {
     clack.log.warn('将更新现有配置文件')
   }
 
-  clack.log.info('\n最终配置将包含:\n')
-  const configInfo = formatConfigInfo(preview.final, 1)
-  configInfo.forEach(line => console.log(line))
+  clack.log.info(`\n配置路径: ${configPath}`)
+  clack.log.info(`策略: ${strategy === 'merge' ? '合并' : '替换'}`)
 }
 
 /**
- * 显示模版信息
+ * 执行安装
  */
-function displayTemplateInfo(template: Template): void {
-  clack.log.info('\n📦 模版信息:\n')
-  console.log(`  ${getTemplateInfo(template)}`)
+async function performInstall(
+  template: Template,
+  scope: Scope,
+  strategy: MergeStrategy,
+): Promise<void> {
+  const spinner = clack.spinner()
 
-  const summary = getTemplateConfigSummary(template)
-  if (summary.length > 0) {
-    console.log('\n  配置项:')
-    summary.forEach(item => console.log(`  ${item}`))
+  try {
+    spinner.start('正在安装 Settings 配置...')
+
+    // 1. 安装 Settings 配置
+    const configPath = paths.config(scope)
+    const exists = await pathExists(configPath)
+
+    // 备份现有配置
+    if (exists) {
+      const backupPath = `${configPath}.backup-${Date.now()}`
+      await copy(configPath, backupPath)
+      clack.log.info(`📦 原配置已备份: ${backupPath}`)
+    }
+
+    // 读取现有配置
+    const existing = exists ? await readJSON(configPath) : {}
+
+    // 合并或替换
+    const final = strategy === 'merge'
+      ? merge(existing, template.config)
+      : template.config
+
+    // 写入配置
+    ensureDirSync(dirname(configPath))
+    await writeJSON(configPath, final, { spaces: 2 })
+
+    spinner.stop('Settings 配置安装成功！')
+    clack.log.success(`✓ Settings: ${configPath}`)
+
+    // 2. 安装 MCP 配置（如果有）
+    if (template.metadata.mcpConfig) {
+      spinner.start('正在安装 MCP 配置...')
+
+      const mcpTemplate = await loadMcpTemplate(template.metadata.mcpConfig)
+
+      if (mcpTemplate && Object.keys(mcpTemplate.mcpServers).length > 0) {
+        const mcpPath = await installMcpConfig(scope, mcpTemplate)
+        spinner.stop('MCP 配置安装成功！')
+        clack.log.success(`✓ MCP: ${mcpPath}`)
+      }
+      else {
+        spinner.stop('跳过 MCP 配置（无服务器）')
+      }
+    }
+  }
+  catch (error) {
+    spinner.stop('安装失败')
+    throw error
+  }
+}
+
+/**
+ * 安装 MCP 配置
+ */
+async function installMcpConfig(scope: Scope, mcpTemplate: { mcpServers: Record<string, any> }): Promise<string> {
+  let mcpPath: string
+
+  if (scope === 'project') {
+    // Project scope: 写入 .mcp.json 文件
+    const configPath = paths.config(scope)
+    const mcpFilePath = join(dirname(configPath), '.mcp.json')
+
+    // 确保目录存在
+    ensureDirSync(dirname(mcpFilePath))
+
+    // 写入 MCP 配置
+    await writeJSON(mcpFilePath, mcpTemplate, { spaces: 2 })
+
+    mcpPath = mcpFilePath
+  }
+  else {
+    // User/Local scope: 询问是否自动安装
+    const scopeName = scope === 'user' ? 'User' : 'Local'
+
+    const autoInstall = await clack.confirm({
+      message: `是否自动安装 ${scopeName} scope 的 MCP 服务器？`,
+      initialValue: true,
+    })
+
+    if (!clack.isCancel(autoInstall) && autoInstall) {
+      // 自动安装
+      try {
+        await installMcpServersViaCli(scope, mcpTemplate.mcpServers)
+        mcpPath = '(已通过 CLI 安装)'
+      }
+      catch (error) {
+        clack.log.error('自动安装失败，请手动执行以下命令:')
+        displayMcpCommands(scope, mcpTemplate.mcpServers)
+        mcpPath = '(需手动添加)'
+      }
+    }
+    else {
+      // 显示手动命令
+      displayMcpCommands(scope, mcpTemplate.mcpServers)
+      mcpPath = '(需手动添加)'
+    }
+  }
+
+  return mcpPath
+}
+
+/**
+ * 通过 CLI 自动安装 MCP 服务器
+ */
+async function installMcpServersViaCli(
+  scope: Scope,
+  servers: Record<string, McpServerConfig>,
+): Promise<void> {
+  const spinner = clack.spinner()
+  spinner.start('正在安装 MCP 服务器...')
+
+  let successCount = 0
+  let failedServers: string[] = []
+
+  for (const [name, server] of Object.entries(servers)) {
+    try {
+      // 构造 JSON 配置
+      const config: any = {
+        type: 'stdio',
+        command: server.command,
+        args: server.args || [],
+      }
+
+      // 只有当 env 存在且不为空时才添加
+      if (server.env && Object.keys(server.env).length > 0) {
+        config.env = server.env
+      }
+
+      // 执行 claude mcp add-json 命令
+      await execa('claude', [
+        'mcp',
+        'add-json',
+        name,
+        JSON.stringify(config),
+        '--scope',
+        scope,
+      ])
+
+      successCount++
+    }
+    catch (error) {
+      failedServers.push(name)
+    }
+  }
+
+  spinner.stop()
+
+  if (failedServers.length === 0) {
+    clack.log.success(`成功安装 ${successCount} 个 MCP 服务器`)
+  }
+  else if (successCount > 0) {
+    clack.log.warn(`部分安装成功: ${successCount} 成功, ${failedServers.length} 失败`)
+    clack.log.info(`失败的服务器: ${failedServers.join(', ')}`)
+  }
+  else {
+    throw new Error('所有 MCP 服务器安装失败')
+  }
+}
+
+/**
+ * 显示 MCP 安装命令
+ */
+function displayMcpCommands(
+  scope: Scope,
+  servers: Record<string, McpServerConfig>,
+): void {
+  console.log('\n  使用以下命令添加 MCP 服务器:\n')
+
+  for (const [name, server] of Object.entries(servers)) {
+    // 构造 JSON 配置
+    const config: any = {
+      type: 'stdio',
+      command: server.command,
+      args: server.args || [],
+    }
+
+    // 只有当 env 存在且不为空时才添加
+    if (server.env && Object.keys(server.env).length > 0) {
+      config.env = server.env
+    }
+
+    // 转义双引号以便在 shell 中使用
+    const json = JSON.stringify(config).replace(/"/g, '\\"')
+    console.log(`  $ claude mcp add-json ${name} "${json}" --scope ${scope}`)
   }
 }

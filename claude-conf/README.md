@@ -4,13 +4,19 @@
 
 ## 简介
 
-`claude-conf` 是一个用于管理和安装 Claude Code 配置模版的命令行工具。通过交互式界面，你可以轻松地：
+`claude-conf` 是一个用于管理和安装 Claude Code 配置模版的命令行工具。通过简洁的交互式界面,你可以轻松地：
 
 - 📦 安装预定义的配置模版
 - 🔍 浏览可用模版列表
-- 👀 预览模版内容
-- 🎯 支持用户级、项目级和本地级配置
-- 🌐 从本地或远程（Git/NPM）加载模版
+- 🎯 智能推荐安装位置
+- 🚀 一键安装 Settings + MCP 配置
+
+## 特点
+
+✨ **极简主义** - 默认行为最智能，减少必填参数
+🤖 **智能推荐** - 自动检测环境并推荐合适的 scope
+⚡ **快速安装** - 3 步完成配置安装
+🔧 **灵活配置** - 支持 user/project/local 三种范围
 
 ## 安装
 
@@ -35,46 +41,36 @@ npm install -g @code-infra/claude-conf
 
 ## 使用方法
 
-### 交互式安装
+### 快速开始
 
-最简单的方式是运行交互式安装命令：
+最简单的方式：
 
 ```bash
-claude-conf install
+# 直接运行（等同于 claude-conf install）
+claude-conf
 ```
 
-这将启动一个交互式向导，引导你完成以下步骤：
+### 指定模板安装
 
-1. 选择配置范围（user/project/local）
-2. 选择模版来源（本地/Git/NPM）
-3. 选择具体模版
-4. 预览配置内容
-5. 选择合并策略
-6. 确认并安装
+```bash
+# 安装 common 模板
+claude-conf common
 
-### 列出可用模版
+# 安装 yolo 模板到 local scope
+claude-conf yolo --scope local
+```
 
-查看所有可用模版：
+### 列出可用模板
 
 ```bash
 claude-conf list
 ```
 
-只查看特定 scope 的模版：
+### 查看帮助
 
 ```bash
-claude-conf list --scope user
-claude-conf list --scope project
-claude-conf list --scope local
-```
-
-### 预览模版
-
-在安装前预览模版内容：
-
-```bash
-claude-conf preview basic --scope user
-claude-conf preview web-dev --scope project
+claude-conf --help
+claude-conf --version
 ```
 
 ## 配置范围说明
@@ -87,23 +83,27 @@ claude-conf preview web-dev --scope project
 
 **适用场景**:
 - 个人开发偏好设置
-- 全局 MCP 服务器配置
-- 通用工具启用设置
+- 全局插件市场配置
+- 跨项目通用设置
+
+**MCP 配置**: 需要手动使用 `claude mcp add --scope user` 命令添加
 
 ### Project Scope
 
 **路径**: `{项目根目录}/.claude/settings.json`
+**MCP 配置**: `{项目根目录}/.claude/.mcp.json`
 
 **用途**: 项目级配置，提交到版本控制，团队共享
 
 **适用场景**:
 - 项目特定的权限配置
-- 项目相关的 MCP 服务器
 - 团队共享的开发设置
+- 项目级 MCP 服务器
 
 ### Local Scope
 
 **路径**: `{项目根目录}/.claude/settings.local.json`
+**MCP 配置**: 通过 CLI 命令管理（不是文件）
 
 **用途**: 本地开发配置，不提交到版本控制
 
@@ -112,151 +112,79 @@ claude-conf preview web-dev --scope project
 - 临时测试配置
 - 包含敏感信息的配置
 
-## 内置模版
+## 内置模板
 
-### User Scope 模版
+### common (推荐)
 
-#### basic
-基础 Claude Code 配置，适合大多数用户
+**描述**: 常用开发配置，包含合理的权限设置和插件市场
 
-**包含**:
-- 基础权限配置
-- 常用工具启用
-- 标准文件排除规则
-
-#### full-mcp
-完整 MCP 服务器配置
+**支持 Scope**: user, project, local
 
 **包含**:
-- Serena (代码理解)
-- Sequential Thinking (深度推理)
-- Brave Search (网络搜索)
-- Playwright (浏览器自动化)
+- 合理的文件访问权限（排除 node_modules, .git 等）
+- Code Infra 插件市场配置
+- 常用 MCP 服务器：
+  - Serena（代码理解）
+  - Sequential Thinking（深度推理）
+  - Firecrawl（网页抓取）
 
-#### minimal
-最小化配置
+### yolo
 
-**包含**:
-- 仅基础工具
-- 最小权限配置
+**描述**: 完全开放权限，用于快速实验和开发
 
-### Project Scope 模版
-
-#### web-dev
-Web 开发项目配置
-
-**适用**: React, Vue, Angular 等前端项目
+**支持 Scope**: local（仅本地）
 
 **包含**:
-- 前端目录权限
-- Playwright (E2E 测试)
-- Magic (UI 组件生成)
-- Web Dev 插件市场
+- 完全开放的文件访问权限
+- 无任何限制
 
-#### nodejs
-Node.js 后端项目配置
+## 安装流程
 
-**适用**: Express, Koa, NestJS 等后端项目
+新的简化流程只需 3-4 步：
 
-**包含**:
-- 后端目录权限
-- Serena MCP 服务器
-- Node.js 插件市场
+```
+1. 选择模板（common / yolo）
+2. 选择 Scope（智能推荐 ⭐）
+3. 确认安装
+```
 
-#### fullstack
-全栈项目配置
+相比旧版本，移除了：
+- ❌ 选择来源（默认本地）
+- ❌ 单独的预览步骤（自动显示）
+- ❌ 手动选择策略（自动判断）
 
-**适用**: 前后端一体的全栈项目
+## 智能推荐
 
-**包含**:
-- 完整的前后端权限
-- Serena + Playwright + Magic
-- 全栈插件市场
+CLI 会根据当前环境自动推荐最合适的 scope：
 
-### Local Scope 模版
+- **不在项目中** → `user`
+- **在 Git 项目中** → `project` ⭐（团队共享）
+- **在项目中但无 Git** → `local`
 
-#### dev
-本地开发环境配置
+## MCP 配置
 
-**包含**:
-- 完全开放的权限
-- 所有开发工具
-- 调试用 MCP 服务器
-- Debug 模式启用
+MCP 服务器配置会根据 scope 自动处理：
 
-## 远程模版
+- **project scope**: 自动创建 `.mcp.json` 文件（提交到版本控制）
+- **user scope**: 提示使用 `claude mcp add --scope user` 命令手动添加
+- **local scope**: 提示使用 `claude mcp add --scope local` 命令手动添加
 
-### 从 Git 下载
+**说明**: 根据 Claude Code 官方文档，只有 project scope 的 MCP 配置通过 `.mcp.json` 文件管理，user 和 local scope 通过 CLI 命令管理。
+
+## CLI 选项
 
 ```bash
-claude-conf install
-# 选择 "远程 Git 仓库"
-# 输入: https://github.com/user/repo
-# 或: https://github.com/user/repo#branch
-# 或: https://github.com/user/repo#branch:path/to/template
+claude-conf [template] [options]
+
+参数:
+  [template]              模板名称（可选）
+
+选项:
+  --scope <scope>         指定 scope: user/project/local
+  --strategy <strategy>   指定合并策略: merge/replace
+  -h, --help             显示帮助信息
+  -v, --version          显示版本号
 ```
-
-Git 仓库应包含 `template.json` 文件。
-
-### 从 NPM 下载
-
-```bash
-claude-conf install
-# 选择 "NPM 包"
-# 输入: @scope/package-name 或 package-name
-```
-
-NPM 包应在根目录包含 `template.json` 文件。
-
-## 模版格式
-
-### 模版文件结构
-
-```json
-{
-  "metadata": {
-    "name": "template-name",
-    "description": "模版描述",
-    "scope": "user|project|local",
-    "version": "1.0.0",
-    "author": "作者名称",
-    "tags": ["tag1", "tag2"]
-  },
-  "config": {
-    "permissions": {
-      "allow": ["**/*"],
-      "deny": ["node_modules/**"]
-    },
-    "enabledTools": ["Read", "Write", "Edit"],
-    "mcpServers": {
-      "server-name": {
-        "command": "npx",
-        "args": ["-y", "package-name"],
-        "env": {}
-      }
-    }
-  }
-}
-```
-
-## 合并策略
-
-### Merge（合并）
-
-保留现有配置，将新配置项合并进去。对象会深度合并，数组会覆盖。
-
-**适用场景**:
-- 添加新的 MCP 服务器
-- 扩展权限配置
-- 增加工具启用
-
-### Replace（替换）
-
-完全替换现有配置。
-
-**适用场景**:
-- 重置配置到初始状态
-- 切换到完全不同的配置方案
 
 ## 开发
 
@@ -264,18 +192,22 @@ NPM 包应在根目录包含 `template.json` 文件。
 
 ```
 claude-conf/
+├── templates/              # 模板目录
+│   ├── common.json        # 常用配置
+│   ├── common.mcp.json    # 常用 MCP
+│   ├── yolo.json          # YOLO 配置
+│   └── yolo.mcp.json      # YOLO MCP
 ├── src/
-│   ├── types/           # TypeScript 类型定义
-│   ├── utils/           # 工具函数
-│   ├── core/            # 核心功能
-│   ├── commands/        # CLI 命令
-│   ├── cli.ts           # CLI 主程序
-│   └── index.ts         # 公共 API 入口
-├── templates/           # 本地模版库
-│   ├── user/           # 用户级模版
-│   ├── project/        # 项目级模版
-│   └── local/          # 本地级模版
-├── tests/              # 单元测试
+│   ├── commands/          # CLI 命令
+│   │   ├── install.ts     # 安装命令
+│   │   └── list.ts        # 列表命令
+│   ├── core/
+│   │   ├── template.ts    # 模板加载
+│   │   ├── config.ts      # 配置管理
+│   │   └── detector.ts    # 环境检测
+│   ├── utils/             # 工具函数
+│   ├── types/             # TypeScript 类型
+│   └── cli.ts             # CLI 入口
 └── package.json
 ```
 
@@ -297,45 +229,64 @@ pnpm typecheck
 pnpm build
 ```
 
-## API 使用
+## 模板格式
 
-除了 CLI 工具，你也可以将 `claude-conf` 作为库使用：
+### 模板文件结构
 
-```typescript
-import {
-  loadTemplatesByScope,
-  installConfig,
-  previewConfigChanges
-} from '@code-infra/claude-conf'
+```json
+{
+  "metadata": {
+    "name": "template-name",
+    "description": "模板描述",
+    "version": "2.0.0",
+    "author": "作者名称",
+    "tags": ["tag1", "tag2"],
+    "supportedScopes": ["user", "project", "local"],
+    "mcpConfig": "template-name.mcp.json"
+  },
+  "config": {
+    "permissions": {
+      "allow": ["**/*"],
+      "deny": ["node_modules/**"]
+    },
+    "extraKnownMarketplaces": {
+      "marketplace-name": {
+        "source": "./plugins"
+      }
+    },
+    "enabledPlugins": {
+      "plugin-name@marketplace-name": true
+    }
+  }
+}
+```
 
-// 加载模版
-const templates = await loadTemplatesByScope('user')
+### MCP 配置文件结构
 
-// 预览配置变更
-const preview = await previewConfigChanges(
-  'user',
-  template.config,
-  'merge'
-)
-
-// 安装配置
-const result = await installConfig(
-  'user',
-  template.config,
-  'merge',
-  true // 启用备份
-)
+```json
+{
+  "mcpServers": {
+    "server-name": {
+      "command": "npx",
+      "args": ["-y", "package-name"],
+      "env": {
+        "ENV_VAR": "value"
+      }
+    }
+  }
+}
 ```
 
 ## 贡献
 
 欢迎贡献！请查看 [贡献指南](../../CONTRIBUTING.md)。
 
-### 添加新模版
+### 添加新模板
 
-1. 在 `templates/{scope}/` 目录下创建 JSON 文件
-2. 遵循模版格式规范
-3. 提交 Pull Request
+1. 在 `templates/` 目录创建 JSON 文件
+2. 如有 MCP 配置，创建对应的 `.mcp.json` 文件
+3. 遵循模板格式规范
+4. 提交 Pull Request
 
 ## 许可证
 
@@ -344,5 +295,5 @@ MIT
 ## 相关链接
 
 - [Claude Code 文档](https://docs.claude.com/en/docs/claude-code)
+- [Claude Code Settings 文档](https://docs.claude.com/en/docs/claude-code/settings)
 - [MCP 服务器](https://github.com/modelcontextprotocol)
-- [Code Infra 项目](https://github.com/...)

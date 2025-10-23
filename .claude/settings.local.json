@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm install)"
+      "Bash(pnpm install)",
+      "mcp__plugin_common_context7__resolve-library-id",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
