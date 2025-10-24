@@ -9,7 +9,8 @@
       "Bash(for file in basic.json common.json fe.json full.json plugins.json yolo.json basic.mcp.json common.mcp.json fe.mcp.json full.mcp.json yolo.mcp.json)",
       "Bash(if jq . \"$file\")",
       "Bash(then echo \"✓\")",
-      "Bash(else echo \"✗\")"
+      "Bash(else echo \"✗\")",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,9 +1,0 @@
-{
-  "name": "web-dev",
-  "version": "1.0.0",
-  "description": "现代前端 Web 开发工具集，支持 React/Vue/Svelte 组件开发、页面构建、样式管理和性能优化",
-  "author": {
-    "name": "xiu",
-    "email": "gaoxiu333@gmail.com"
-  }
-}

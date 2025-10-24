@@ -1,9 +1,0 @@
-{
-  "name": "fullstack",
-  "version": "1.0.0",
-  "description": "全栈开发工具集，整合前后端开发流程，支持端到端应用构建、API 集成和统一部署",
-  "author": {
-    "name": "xiu",
-    "email": "gaoxiu333@gmail.com"
-  }
-}

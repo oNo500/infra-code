@@ -1,9 +1,0 @@
-{
-  "name": "nodejs",
-  "version": "1.0.0",
-  "description": "Node.js 后端开发工具集，支持 API 设计、数据模型、中间件和安全审计",
-  "author": {
-    "name": "xiu",
-    "email": "gaoxiu333@gmail.com"
-  }
-}
