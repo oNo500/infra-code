@@ -10,7 +10,8 @@
       "Bash(if jq . \"$file\")",
       "Bash(then echo \"✓\")",
       "Bash(else echo \"✗\")",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(pnpm dev)"
     ],
     "deny": [],
     "ask": []
