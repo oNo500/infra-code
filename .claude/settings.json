@@ -1,9 +1,5 @@
 {
- 
- 
-  "enabledPlugins": {
-    "common@code-infra": true
-  },
+  "enabledPlugins": {},
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [],
   "disabledMcpjsonServers": []

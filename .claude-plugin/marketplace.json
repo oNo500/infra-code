@@ -1,41 +1,16 @@
 {
   "name": "infra-code",
-  "owner": {
-    "name": "xiu",
-    "email": "gaoxiu333@gmail.com"
-  },
   "version": "0.0.0",
-  "strict": true,
   "plugins": [
     {
-      "name": "common",
-      "source": "./plugins/common",
-      "description": "通用工具集，提供常用的便捷命令和个人定制功能"
+      "name": "base",
+      "source": "./plugins/base",
+      "description": "基本的 Claude Code 插件使用"
     },
     {
       "name": "obsidian",
       "source": "./plugins/obsidian",
       "description": "Obsidian 知识库管理工具集，支持笔记创建、搜索、链接管理和知识组织"
-    },
-    {
-      "name": "web-dev",
-      "source": "./plugins/web-dev",
-      "description": "现代前端 Web 开发工具集，支持 React/Vue/Svelte 组件开发、页面构建、样式管理和性能优化"
-    },
-    {
-      "name": "nodejs",
-      "source": "./plugins/nodejs",
-      "description": "Node.js 后端开发工具集，支持 API 设计、数据模型、中间件和安全审计"
-    },
-    {
-      "name": "fullstack",
-      "source": "./plugins/fullstack",
-      "description": "全栈开发工具集，整合前后端开发流程，支持端到端应用构建、API 集成和统一部署"
-    },
-    {
-      "name": "cli-dx",
-      "source": "./plugins/cli-dx",
-      "description": "脚手架和开发体验工具集，支持项目初始化、模板管理、配置向导和项目升级"
     }
   ]
 }
