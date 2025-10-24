@@ -4,8 +4,16 @@
     "description": "插件市场配置 - 用于团队插件分发和管理",
     "version": "1.0.0",
     "author": "Code Infra Team",
-    "tags": ["plugins", "team", "marketplace"],
-    "supportedScopes": ["user", "project", "local"],
+    "tags": [
+      "plugins",
+      "team",
+      "marketplace"
+    ],
+    "supportedScopes": [
+      "user",
+      "project",
+      "local"
+    ],
     "claudeMd": "plugins.claude.md"
   },
   "config": {

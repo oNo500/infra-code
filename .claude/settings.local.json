@@ -4,7 +4,8 @@
       "Bash(pnpm install)",
       "mcp__plugin_common_context7__resolve-library-id",
       "WebSearch",
-      "Read(//Users/bytedance/**)"
+      "Read(//Users/bytedance/**)",
+      "Bash(pnpm generate:templates:*)"
     ],
     "deny": [],
     "ask": []

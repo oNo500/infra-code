@@ -2,18 +2,27 @@
   "mcpServers": {
     "serena": {
       "command": "npx",
-      "args": ["-y", "@infrasoftbe/serena"],
+      "args": [
+        "-y",
+        "@infrasoftbe/serena"
+      ],
       "env": {
         "SERENA_MODE": "interactive,editing"
       }
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "firecrawl": {
       "command": "npx",
-      "args": ["-y", "@mendable/firecrawl-mcp"]
+      "args": [
+        "-y",
+        "@mendable/firecrawl-mcp"
+      ]
     }
   }
 }

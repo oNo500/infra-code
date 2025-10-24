@@ -36,7 +36,10 @@
     "./package.json": "./package.json"
   },
   "scripts": {
+    "generate:templates": "tsx scripts/generate-templates.ts",
+    "prebuild": "pnpm run generate:templates",
     "build": "tsdown",
+    "predev": "pnpm run generate:templates",
     "dev": "tsdown --watch",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
@@ -55,6 +58,7 @@
     "@types/node": "^24.7.2",
     "bumpp": "^10.3.1",
     "tsdown": "^0.15.6",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   }

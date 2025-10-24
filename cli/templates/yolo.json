@@ -4,8 +4,13 @@
     "description": "完全开放权限，用于快速实验和开发",
     "version": "2.0.0",
     "author": "Code Infra Team",
-    "tags": ["open", "development"],
-    "supportedScopes": ["local"],
+    "tags": [
+      "open",
+      "development"
+    ],
+    "supportedScopes": [
+      "local"
+    ],
     "mcpConfig": "yolo.mcp.json",
     "claudeMd": "yolo.claude.md"
   },
