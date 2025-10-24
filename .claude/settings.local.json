@@ -1,11 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm install)",
-      "mcp__plugin_common_context7__resolve-library-id",
-      "WebSearch",
-      "Read(//Users/bytedance/**)",
-      "Bash(pnpm generate:templates:*)"
+      "Bash(/dev/null)",
+      "Bash(then echo \"✓ 有效\")",
+      "Bash(else echo \"✗ 无效\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(for file in basic.json common.json fe.json full.json plugins.json yolo.json basic.mcp.json common.mcp.json fe.mcp.json full.mcp.json yolo.mcp.json)",
+      "Bash(if jq . \"$file\")",
+      "Bash(then echo \"✓\")",
+      "Bash(else echo \"✗\")"
     ],
     "deny": [],
     "ask": []

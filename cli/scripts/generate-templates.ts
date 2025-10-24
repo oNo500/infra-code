@@ -16,6 +16,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const TEMPLATES_DIR = join(__dirname, '../templates')
 
 /**
+ * MCP 服务器名称映射
+ * 将配置中的内部名称映射到输出文件中的名称
+ */
+const MCP_SERVER_NAME_MAPPING: Record<string, string> = {
+  'serena-uvx': 'serena',  // full 模板中的 serena-uvx 输出为 serena
+}
+
+/**
  * 生成模板定义文件 (.json)
  */
 function generateTemplateJson(name: string, definition: any): void {
@@ -55,7 +63,9 @@ function generateMcpJson(name: string, definition: any): void {
         )
         continue
       }
-      mcpConfig[serverName] = serverConfig
+      // 使用映射后的名称（如果存在）
+      const outputName = MCP_SERVER_NAME_MAPPING[serverName] || serverName
+      mcpConfig[outputName] = serverConfig
     }
   }
 
