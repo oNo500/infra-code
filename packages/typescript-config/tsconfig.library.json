@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Library",
+
+  // ============================================================
+  // TypeScript 库配置 (Library Configuration)
+  // ============================================================
+  // 适用场景:
+  //   - npm 包开发
+  //   - 工具库开发
+  //   - 组件库开发
+  //   - 使用 bundler 的项目 (tsdown/Vite/esbuild)
+  //
+  // 核心特性:
+  //   - 生成类型声明文件 (.d.ts)
+  //   - bundler 模式 (module: Preserve)
+  //   - 提供完整的 TypeScript 支持
+  // ============================================================
+
+  "extends": "./tsconfig.base.json",
+
+  "compilerOptions": {
+
+    // ==========================================================
+    // 模块系统 (Module System)
+    // ==========================================================
+
+    "module": "Preserve",
+    // 保留原始模块语法，由 bundler 处理
+
+    "moduleResolution": "bundler",
+    // bundler 模式：适配 Vite/tsdown/esbuild 等打包工具
+
+    // ==========================================================
+    // 输出配置 (Output)
+    // ==========================================================
+
+    "declaration": true,
+    // 生成 .d.ts 类型声明文件
+    // 库发布必备，为使用者提供完整的类型支持
+
+    "sourceMap": true,
+    // 生成 .js.map 调试映射文件
+    // 允许在调试时显示 TypeScript 源码
+
+    // ==========================================================
+    // Bundler 模式配置 (Bundler Mode)
+    // ==========================================================
+
+    "noEmit": true,
+    // 仅类型检查，不输出文件（由 bundler 处理）
+
+    "allowJs": false,
+    // 禁用 JS 文件（库应为纯 TS，且与 isolatedDeclarations 冲突）
+
+    "isolatedDeclarations": true,
+    // 独立声明生成，配合 bundler 生成 .d.ts
+
+    "noPropertyAccessFromIndexSignature": true
+    // 强制使用方括号访问索引签名属性
+
+    // 注意: outDir/rootDir 由各项目的 bundler 配置决定
+  }
+}

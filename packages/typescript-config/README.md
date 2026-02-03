@@ -1,0 +1,38 @@
+# @workspace/typescript-config
+
+共享 TypeScript 配置文件集合。
+
+## 配置文件
+
+```
+packages/typescript-config/
+├── tsconfig.base.json          # 基础（严格模式 + 质量检查）
+├── tsconfig.library.json       # Node.js 库（NodeNext + declaration）
+├── tsconfig.react-library.json # React 组件库（preserve + jsx + declaration）
+├── tsconfig.vite.json          # Vite + React（preserve + jsx + noEmit）
+├── tsconfig.next.json          # Next.js（preserve + jsx + noEmit + next 插件）
+├── tsconfig.nest.json          # NestJS（NodeNext + 装饰器）
+└── tsconfig.vitest.json        # 测试（宽松检查 + vitest globals）
+```
+
+## 使用方式
+
+在项目的 `tsconfig.json` 中继承：
+
+```json
+{
+  "extends": "@workspace/typescript-config/tsconfig.vite.json"
+}
+```
+
+## 配置说明
+
+| 配置 | 适用场景 | 关键特性 |
+|-----|---------|---------|
+| `base` | 所有项目的基础 | strict, noUncheckedIndexedAccess, 质量检查 |
+| `library` | Node.js 工具库/npm 包 | NodeNext, declaration |
+| `react-library` | React 组件库 | preserve, jsx, declaration, DOM |
+| `vite` | Vite + React 应用 | preserve, jsx, noEmit, DOM |
+| `next` | Next.js 应用 | preserve, jsx, noEmit, next 插件 |
+| `nest` | NestJS 后端服务 | NodeNext, 装饰器支持 |
+| `vitest` | Vitest 测试文件 | 宽松检查, vitest/globals |

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Base",
+
+  // ============================================================
+  // TypeScript 基础配置 (Base Configuration)
+  // ============================================================
+  // 通用基础配置，供其他 tsconfig 继承使用
+  // 不包含场景特定配置（module、noEmit、declaration 等）
+  // ============================================================
+
+  "compilerOptions": {
+
+    // ==========================================================
+    // 编译目标 (Target)
+    // ==========================================================
+
+    "target": "esnext",
+    // 编译目标版本，使用最新 ES 特性
+
+    "lib": ["ESNext"],
+    // 标准库（不含 DOM，由继承配置根据需要添加）
+
+    // ==========================================================
+    // 模块与互操作性 (Module & Interop)
+    // ==========================================================
+
+    "esModuleInterop": true,
+    // 启用 ES 模块互操作性
+    // 允许: import fs from 'fs' (而不是 import * as fs)
+
+    "skipLibCheck": true,
+    // 跳过 .d.ts 类型检查，大幅提升编译速度
+
+    "allowJs": true,
+    // 允许编译 JavaScript 文件
+
+    "resolveJsonModule": true,
+    // 允许导入 JSON 文件
+
+    "moduleDetection": "force",
+    // 强制所有文件作为模块，避免全局污染
+
+    "isolatedModules": true,
+    // 确保每个文件可单独转译（esbuild/swc 兼容）
+
+    "verbatimModuleSyntax": true,
+    // 严格区分类型导入和值导入
+    // import type { Type } vs import { Value }
+
+    // ==========================================================
+    // 严格模式 (Strictness)
+    // ==========================================================
+
+    "strict": true,
+    // 启用所有严格类型检查选项
+
+    "noUncheckedIndexedAccess": true,
+    // 索引访问返回 T | undefined，防止越界
+
+    "noImplicitOverride": true,
+    // 重写父类方法必须使用 override 关键字
+
+    "exactOptionalPropertyTypes": false,
+    // 可选属性精确类型检查 经过实践，除了依赖很少的库/工具开发，依赖第三方包的情况下需要更多的断言和展开，增加代码复杂度，所以默认关闭
+    // { foo?: string } 的 foo 不能显式设为 undefined
+
+    // ==========================================================
+    // 代码质量检查 (Code Quality)
+    // ==========================================================
+
+    "noUnusedLocals": true,
+    // 检测未使用的局部变量
+
+    "noUnusedParameters": true,
+    // 检测未使用的函数参数（用 _ 前缀忽略）
+
+    "noFallthroughCasesInSwitch": true,
+    // 防止 switch case 穿透
+
+    "noImplicitReturns": true,
+    // 函数所有分支必须显式返回
+
+    // ==========================================================
+    // 跨平台兼容性 (Cross-platform)
+    // ==========================================================
+
+    "forceConsistentCasingInFileNames": true,
+    // 强制文件名大小写一致
+
+    // ==========================================================
+    // 性能优化 (Performance)
+    // ==========================================================
+
+    "incremental": true,
+    // 启用增量编译，加速后续类型检查
+
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo"
+    // 增量编译信息存放位置
+  }
+}
