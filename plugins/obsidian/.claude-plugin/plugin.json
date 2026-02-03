@@ -1,9 +1,0 @@
-{
-  "name": "obsidian",
-  "version": "1.0.0",
-  "description": "Obsidian 知识库管理工具集，支持笔记创建、搜索、链接管理和知识组织",
-  "author": {
-    "name": "xiu",
-    "email": "gaoxiu333@gmail.com"
-  }
-}
