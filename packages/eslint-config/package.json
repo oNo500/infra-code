@@ -1,17 +1,12 @@
 {
-  "name": "@workspace/eslint-config",
+  "name": "@infra-x/eslint-config",
   "type": "module",
-  "version": "0.0.0",
-  "description": "A starter for creating a TypeScript package.",
-  "author": "Author Name <author.name@mail.com>",
+  "version": "0.1.0",
+  "description": "A shared ESLint config for infra-x projects.",
+  "author": "infra-x",
   "license": "MIT",
-  "homepage": "https://github.com/author/library#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/author/library.git"
-  },
-  "bugs": {
-    "url": "https://github.com/author/library/issues"
+  "publishConfig": {
+    "access": "public"
   },
   "exports": {
     ".": "./dist/index.mjs",
