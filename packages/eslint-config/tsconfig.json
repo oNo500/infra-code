@@ -1,4 +1,7 @@
 {
   "extends": "@workspace/typescript-config/tsconfig.library.json",
+  "compilerOptions": {
+    "isolatedDeclarations": false
+  },
   "include": ["src", "*.config.ts", "eslint.config.mts"]
 }
