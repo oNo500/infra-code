@@ -1,3 +1,6 @@
+/**
+ * JavaScript ESLint 基础配置,提供推荐规则和 ES2021+ 全局变量支持
+ */
 import js from '@eslint/js'
 import { defineConfig } from 'eslint/config'
 import globals from 'globals'
@@ -9,14 +12,6 @@ import type { Linter } from 'eslint'
 
 export type JavaScriptOptions = OptionsFiles & OptionsOverrides
 
-/**
- * JavaScript 基础配置
- *
- * @param options - 配置选项
- * @param options.files - 文件匹配模式
- * @param options.overrides - 规则覆盖
- * @returns ESLint 配置数组
- */
 export function javascript(options: JavaScriptOptions = {}): Linter.Config[] {
   const { files = [GLOB_SRC], overrides = {} } = options
 

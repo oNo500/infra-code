@@ -10,6 +10,7 @@
  * export default composeConfig({
  *   typescript: { tsconfigRootDir: import.meta.dirname },
  *   react: true,
+ *   tailwind: true,
  *   imports: { typescript: true },
  *   prettier: true,
  * })
@@ -29,6 +30,7 @@ import { prettier } from './configs/prettier'
 import { react } from './configs/react'
 import { storybook } from './configs/storybook'
 import { stylistic } from './configs/stylistic'
+import { tailwind } from './configs/tailwind'
 import { typescript } from './configs/typescript'
 import { unicorn } from './configs/unicorn'
 import { vitest } from './configs/vitest'
@@ -46,6 +48,7 @@ import type { PrettierOptions } from './configs/prettier'
 import type { ReactOptions } from './configs/react'
 import type { StorybookOptions } from './configs/storybook'
 import type { StylisticOptions } from './configs/stylistic'
+import type { TailwindOptions } from './configs/tailwind'
 import type { TypeScriptOptions } from './configs/typescript'
 import type { UnicornOptions } from './configs/unicorn'
 import type { VitestOptions } from './configs/vitest'
@@ -84,6 +87,8 @@ export interface ComposeConfigOptions {
   react?: boolean | ReactOptions
   /** Next.js 配置 */
   nextjs?: boolean | NextjsOptions
+  /** Tailwind CSS 配置 */
+  tailwind?: boolean | TailwindOptions
 
   // 工具配置
   /** Import 排序和规则 */
@@ -164,6 +169,10 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
     configs.push(...nextjs(getOpts(options.nextjs)))
   }
 
+  if (options.tailwind) {
+    configs.push(...tailwind(getOpts(options.tailwind)))
+  }
+
   if (options.a11y) {
     configs.push(...a11y(getOpts(options.a11y)))
   }
@@ -195,6 +204,28 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
 
   return configs
 }
+
+// ============================================================================
+// 类型导出
+// ============================================================================
+
+export type { A11yOptions } from './configs/a11y'
+export type { BoundariesOptions } from './configs/boundaries'
+export type { DependOptions } from './configs/depend'
+export type { IgnoresOptions } from './configs/ignores'
+export type { ImportsOptions } from './configs/imports'
+export type { JavaScriptOptions } from './configs/javascript'
+export type { JsdocOptions } from './configs/jsdoc'
+export type { NextjsOptions } from './configs/nextjs'
+export type { PackageJsonOptions } from './configs/package-json'
+export type { PrettierOptions } from './configs/prettier'
+export type { ReactOptions } from './configs/react'
+export type { StorybookOptions } from './configs/storybook'
+export type { StylisticOptions } from './configs/stylistic'
+export type { TailwindOptions } from './configs/tailwind'
+export type { TypeScriptOptions } from './configs/typescript'
+export type { UnicornOptions } from './configs/unicorn'
+export type { VitestOptions } from './configs/vitest'
 
 // ============================================================================
 // 常量导出

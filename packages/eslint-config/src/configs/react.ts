@@ -1,3 +1,6 @@
+/**
+ * React ESLint 配置,集成 @eslint-react、react-hooks 和 react-refresh 插件
+ */
 import reactPlugin from '@eslint-react/eslint-plugin'
 import { defineConfig } from 'eslint/config'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
@@ -10,6 +13,9 @@ import type { Linter } from 'eslint'
 
 export type ReactOptions = OptionsFiles & OptionsOverrides & OptionsReact
 
+/**
+ * React 规则配置
+ */
 export function react(options: ReactOptions = {}): Linter.Config[] {
   const { files = [GLOB_JSX], version = 'detect', overrides = {} } = options
 

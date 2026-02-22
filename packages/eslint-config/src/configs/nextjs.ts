@@ -1,3 +1,6 @@
+/**
+ * Next.js ESLint 配置,使用官方插件检测 Next.js 最佳实践和 Core Web Vitals 性能优化
+ */
 import nextjsPlugin from '@next/eslint-plugin-next'
 import { defineConfig } from 'eslint/config'
 
@@ -6,6 +9,9 @@ import type { Linter } from 'eslint'
 
 export type NextjsOptions = OptionsOverrides
 
+/**
+ * Next.js 规则配置
+ */
 export function nextjs(options: NextjsOptions = {}): Linter.Config[] {
   const { overrides = {} } = options
 
