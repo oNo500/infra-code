@@ -18,26 +18,15 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-      - name: Upgrade npm for OIDC support
-        run: |
-          npm install -g npm@latest
-          echo "npm version: $(npm --version)"
+      - run: npm i -g npm@latest
+      - run: node -v && npm -v
       - run: pnpm install --frozen-lockfile
-      - name: Verify OIDC availability
-        run: |
-          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL}" ] && [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" ]; then
-            echo "OIDC token available"
-          else
-            echo "OIDC token NOT available - check id-token: write permission"
-            exit 1
-          fi
       - name: Check and publish
         working-directory: packages/typescript-config
         run: |
           PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
-            echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
             npm publish --access public
           else
             echo "Already published $LOCAL, skipping."
@@ -52,19 +41,9 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-      - name: Upgrade npm for OIDC support
-        run: |
-          npm install -g npm@latest
-          echo "npm version: $(npm --version)"
+      - run: npm i -g npm@latest
+      - run: node -v && npm -v
       - run: pnpm install --frozen-lockfile
-      - name: Verify OIDC availability
-        run: |
-          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL}" ] && [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" ]; then
-            echo "OIDC token available"
-          else
-            echo "OIDC token NOT available - check id-token: write permission"
-            exit 1
-          fi
       - name: Check and publish
         working-directory: packages/eslint-config
         run: |
@@ -72,7 +51,6 @@ jobs:
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
             pnpm run build
-            echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
             npm publish --access public
           else
             echo "Already published $LOCAL, skipping."
@@ -87,19 +65,9 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-      - name: Upgrade npm for OIDC support
-        run: |
-          npm install -g npm@latest
-          echo "npm version: $(npm --version)"
+      - run: npm i -g npm@latest
+      - run: node -v && npm -v
       - run: pnpm install --frozen-lockfile
-      - name: Verify OIDC availability
-        run: |
-          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL}" ] && [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" ]; then
-            echo "OIDC token available"
-          else
-            echo "OIDC token NOT available - check id-token: write permission"
-            exit 1
-          fi
       - name: Check and publish
         working-directory: packages/create-eslint-config
         run: |
@@ -107,7 +75,6 @@ jobs:
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
             pnpm run build
-            echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
             npm publish --access public
           else
             echo "Already published $LOCAL, skipping."
