@@ -12,7 +12,7 @@
   // 核心特性:
   //   - noEmit: true - 不生成文件，SWC 负责编译
   //   - 支持装饰器和元数据反射
-  //   - node16 模块解析模式
+  //   - bundler 模块解析模式
   // ============================================================
 
   "extends": "./tsconfig.base.json",
@@ -26,8 +26,8 @@
     "module": "esnext",
     // ES 模块语法，由 SWC 转换
 
-    "moduleResolution": "node16",
-    // node16 模式，适配 Node.js 运行时
+    "moduleResolution": "bundler",
+    // bundler 模式，适配 SWC 编译场景
 
     // ==========================================================
     // 输出配置 (Output) - TSC 仅类型检查

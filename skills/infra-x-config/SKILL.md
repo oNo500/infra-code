@@ -164,7 +164,7 @@ Install: `pnpm add -D @infra-x/typescript-config`
 | `tsconfig.react-library.json` | React component libraries (jsx, declaration) |
 | `tsconfig.vite.json` | Vite + React apps (jsx, noEmit) |
 | `tsconfig.nextjs.json` | Next.js apps (esnext, bundler, Next.js plugin) |
-| `tsconfig.nestjs.json` | NestJS backends (node16, decorators) |
+| `tsconfig.nestjs.json` | NestJS backends (bundler, decorators) |
 | `tsconfig.vitest.json` | Vitest test files (relaxed checks, vitest globals) |
 
 All configs extend `tsconfig.base.json` which enables strict mode + `noUncheckedIndexedAccess`.

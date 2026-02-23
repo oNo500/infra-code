@@ -11,7 +11,7 @@ packages/typescript-config/
 ├── tsconfig.react-library.json # React 组件库（preserve + jsx + declaration）
 ├── tsconfig.vite.json          # Vite + React（preserve + jsx + noEmit）
 ├── tsconfig.nextjs.json        # Next.js（esnext + bundler + jsx + noEmit + next 插件）
-├── tsconfig.nestjs.json        # NestJS（node16 + 装饰器）
+├── tsconfig.nestjs.json        # NestJS（bundler + 装饰器）
 └── tsconfig.vitest.json        # 测试（宽松检查 + vitest globals）
 ```
 
@@ -34,5 +34,5 @@ packages/typescript-config/
 | `react-library` | React 组件库 | preserve, bundler, jsx, declaration, isolatedDeclarations, DOM |
 | `vite` | Vite + React 应用 | preserve, bundler, jsx, noEmit, DOM |
 | `nextjs` | Next.js 应用 | esnext, bundler, jsx, noEmit, next 插件 |
-| `nestjs` | NestJS 后端服务 | node16, 装饰器支持 |
+| `nestjs` | NestJS 后端服务 | bundler, 装饰器支持 |
 | `vitest` | Vitest 测试文件 | 宽松检查, vitest/globals |
