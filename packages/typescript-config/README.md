@@ -1,4 +1,4 @@
-# @workspace/typescript-config
+# @infra-x/typescript-config
 
 共享 TypeScript 配置文件集合。
 
@@ -21,7 +21,7 @@ packages/typescript-config/
 
 ```json
 {
-  "extends": "@workspace/typescript-config/tsconfig.vite.json"
+  "extends": "@infra-x/typescript-config/tsconfig.vite.json"
 }
 ```
 

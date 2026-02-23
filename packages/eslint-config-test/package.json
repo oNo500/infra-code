@@ -9,6 +9,7 @@
     "@infra-x/eslint-config": "workspace:*"
   },
   "devDependencies": {
+    "@infra-x/typescript-config": "workspace:*",
     "eslint": "^9.39.2",
     "globals": "16.5.0",
     "jiti": "2.6.1",

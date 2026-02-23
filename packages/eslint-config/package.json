@@ -62,7 +62,7 @@
   "devDependencies": {
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/node": "^25.0.3",
-    "@workspace/typescript-config": "workspace:*",
+    "@infra-x/typescript-config": "workspace:*",
     "bumpp": "^10.3.2",
     "eslint": "^9.39.2",
     "globals": "16.5.0",

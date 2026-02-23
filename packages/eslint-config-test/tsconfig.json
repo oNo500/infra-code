@@ -1,5 +1,5 @@
 {
-  "extends": "@workspace/typescript-config/tsconfig.base.json",
+  "extends": "@infra-x/typescript-config/tsconfig.base.json",
   "compilerOptions": {
     "module": "Preserve",
     "moduleResolution": "bundler",

@@ -1,5 +1,5 @@
 {
-  "extends": "@workspace/typescript-config/tsconfig.library.json",
+  "extends": "@infra-x/typescript-config/tsconfig.library.json",
   "compilerOptions": {
     "isolatedDeclarations": false
   },
