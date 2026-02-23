@@ -21,6 +21,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/typescript-config
+        env:
+          NODE_AUTH_TOKEN: ''
         run: |
           PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
@@ -42,6 +44,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/eslint-config
+        env:
+          NODE_AUTH_TOKEN: ''
         run: |
           PUBLISHED=$(npm view @infra-x/eslint-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
@@ -64,6 +68,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/create-eslint-config
+        env:
+          NODE_AUTH_TOKEN: ''
         run: |
           PUBLISHED=$(npm view @infra-x/create-eslint-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
