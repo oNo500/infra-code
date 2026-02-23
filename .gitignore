@@ -84,3 +84,8 @@ playwright/.cache/
 storybook-static
 
 .obsidian
+
+
+# ai
+.agents
+.claude
