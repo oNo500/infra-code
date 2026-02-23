@@ -21,6 +21,14 @@ jobs:
       - run: npm i -g npm@latest
       - run: node -v && npm -v
       - run: pnpm install --frozen-lockfile
+      - name: Decode OIDC token claims
+        run: |
+          AUDIENCE="npm:registry.npmjs.org"
+          URL="${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}"
+          TOKEN=$(curl -sS -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${URL}" | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).value")
+          PAYLOAD=$(echo $TOKEN | cut -d. -f2 | base64 -d 2>/dev/null || echo $TOKEN | cut -d. -f2 | base64 --decode --ignore-garbage)
+          echo "OIDC token claims:"
+          echo $PAYLOAD | node -p "JSON.stringify(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')), null, 2)" 2>/dev/null || echo $PAYLOAD
       - name: Check and publish
         working-directory: packages/typescript-config
         run: |
