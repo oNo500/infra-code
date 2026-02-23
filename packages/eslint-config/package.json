@@ -5,6 +5,11 @@
   "description": "A shared ESLint config for infra-x projects.",
   "author": "infra-x",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oNo500/infra-code.git",
+    "directory": "packages/eslint-config"
+  },
   "publishConfig": {
     "access": "public"
   },

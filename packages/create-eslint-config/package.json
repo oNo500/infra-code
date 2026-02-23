@@ -5,6 +5,11 @@
   "description": "CLI to copy ESLint config source into a monorepo.",
   "author": "infra-x",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oNo500/infra-code.git",
+    "directory": "packages/create-eslint-config"
+  },
   "publishConfig": {
     "access": "public"
   },
