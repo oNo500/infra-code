@@ -37,6 +37,9 @@
     "noEmit": true,
     // 仅类型检查，不输出文件（编译和 dts 由 bundler 处理）
 
+    "declaration": true,
+    // 满足 isolatedDeclarations 的前置条件（noEmit 优先，tsc 实际不输出 .d.ts）
+
     "allowJs": false,
     // 库应为纯 TS
 
