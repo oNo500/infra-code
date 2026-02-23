@@ -9,9 +9,12 @@ export default defineConfig({
   dts: false,
   hooks: {
     'build:done': async () => {
-      const src = join(import.meta.dirname, '../eslint-config-source/src')
+      const src = join(import.meta.dirname, '../eslint-config-source')
       const dest = join(import.meta.dirname, 'dist/template')
-      await cp(src, dest, { recursive: true })
+      await cp(src, dest, {
+        recursive: true,
+        filter: (src) => !src.includes('node_modules'),
+      })
     },
   },
 })

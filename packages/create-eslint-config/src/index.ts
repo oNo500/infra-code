@@ -28,7 +28,7 @@ async function main() {
   intro('@infra-x/create-eslint-config')
 
   const templateDir = join(fileURLToPath(new URL('.', import.meta.url)), 'template')
-  const destDir = process.cwd()
+  const destDir = join(process.cwd(), 'eslint-config')
 
   const conflicts = await getConflicts(templateDir, destDir)
 
