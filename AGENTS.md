@@ -9,3 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 理解
 如果我是用通俗的口头描述一件事情，你应该纠正或者建议为更专业的术语或者工作流中，以帮助我理解和快速找到方案。
+
+## 开发阶段
+
+当前项目目前在开发阶段，说是始终不需要考虑兼容性问题，避免处理兼容性问题产生冗余代码，可以随时通过完全重构来达到最优方案
