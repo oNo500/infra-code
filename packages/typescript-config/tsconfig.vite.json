@@ -27,7 +27,9 @@
 
     "module": "preserve",
     // 保留原始模块语法，完全交给 Vite 处理
-    // moduleResolution 默认为 Bundler
+
+    "moduleResolution": "bundler",
+    // bundler 模式：适配 Vite 打包工具
 
     // ==========================================================
     // 输出配置 (Output)
@@ -50,7 +52,7 @@
     // 运行环境 (Environment)
     // ==========================================================
 
-    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+    "lib": ["esnext", "DOM", "DOM.Iterable"]
     // 包含浏览器 DOM API 类型
   }
 }

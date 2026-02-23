@@ -24,10 +24,10 @@
     // 模块系统 (Module System)
     // ==========================================================
 
-    "module": "ESNext",
+    "module": "esnext",
     // 保留 ES 模块语法，交给 Next.js 处理
 
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     // 打包工具模式，支持 package.json exports
 
     // ==========================================================
@@ -52,7 +52,7 @@
     // 运行环境 (Environment)
     // ==========================================================
 
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
     // 包含浏览器 DOM API 类型
 
     // ==========================================================

@@ -24,7 +24,7 @@
     // 模块系统 (Module System)
     // ==========================================================
 
-    "module": "Preserve",
+    "module": "preserve",
     // 保留原始模块语法，由 bundler 处理
 
     "moduleResolution": "bundler",

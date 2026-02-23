@@ -26,10 +26,10 @@
     // 模块系统 (Module System)
     // ==========================================================
 
-    "module": "ESNext",
+    "module": "esnext",
     // ES 模块语法
 
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     // 打包工具模式
 
     // ==========================================================
@@ -47,7 +47,7 @@
     "types": ["vitest/globals", "node"],
     // 包含 Vitest 全局 API 和 Node.js 类型
 
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
     // 同时支持 DOM 和 ES 环境
     // 组件测试需要 DOM 类型
 
