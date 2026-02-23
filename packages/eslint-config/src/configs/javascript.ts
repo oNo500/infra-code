@@ -1,5 +1,5 @@
 /**
- * JavaScript ESLint 基础配置,提供推荐规则和 ES2021+ 全局变量支持
+ * JavaScript ESLint 基础配置,提供推荐规则和 ES2026+ 全局变量支持
  */
 import js from '@eslint/js'
 import { defineConfig } from 'eslint/config'

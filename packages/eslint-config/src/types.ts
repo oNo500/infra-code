@@ -105,7 +105,8 @@ export interface IgnoresOptions {
 export interface ImportsOptions extends OptionsOverrides, OptionsStylistic {
   /**
    * 是否启用 TypeScript 支持
-   * @default false
+   * 当全局 typescript 开启时，由 composeConfig 自动注入为 true
+   * @default false（独立调用时）/ 跟随全局 typescript 选项（通过 composeConfig）
    */
   typescript?: boolean
   /**

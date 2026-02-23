@@ -7,16 +7,16 @@ import storybookPlugin from 'eslint-plugin-storybook'
 import type { StorybookOptions } from '../types'
 import type { Linter } from 'eslint'
 
+const flatRecommended = storybookPlugin.configs['flat/recommended'] as unknown as Linter.Config
+
 export function storybook(options: StorybookOptions = {}): Linter.Config[] {
   const { overrides = {} } = options
 
-  return defineConfig([
-    {
-      name: 'storybook/recommended',
-      extends: [storybookPlugin.configs['flat/recommended'] as unknown as Linter.Config],
-      rules: {
-        ...overrides,
-      },
+  return defineConfig({
+    name: 'storybook/recommended',
+    extends: [flatRecommended],
+    rules: {
+      ...overrides,
     },
-  ])
+  })
 }

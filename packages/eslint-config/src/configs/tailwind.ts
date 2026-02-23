@@ -13,21 +13,20 @@ import type { Linter } from 'eslint'
 export function tailwind(options: TailwindOptions = {}): Linter.Config[] {
   const { files, overrides = {}, entryPoint = 'src/global.css' } = options
 
-  return defineConfig([
-    {
-      extends: [
-        eslintPluginBetterTailwindcss.configs.recommended,
-      ],
-      ...(files ? { files } : {}),
-      rules: {
-        'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
-        ...overrides,
-      },
-      settings: {
-        'better-tailwindcss': {
-          entryPoint,
-        },
+  return defineConfig({
+    name: 'tailwind/rules',
+    files: files ?? undefined,
+    extends: [
+      eslintPluginBetterTailwindcss.configs.recommended,
+    ],
+    rules: {
+      'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
+      ...overrides,
+    },
+    settings: {
+      'better-tailwindcss': {
+        entryPoint,
       },
     },
-  ])
+  })
 }
