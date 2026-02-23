@@ -17,11 +17,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.14.0'
-          registry-url: 'https://registry.npmjs.org'
       - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/typescript-config
+        env:
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org
         run: |
           PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
@@ -39,11 +40,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.14.0'
-          registry-url: 'https://registry.npmjs.org'
       - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/eslint-config
+        env:
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org
         run: |
           PUBLISHED=$(npm view @infra-x/eslint-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
@@ -62,11 +64,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.14.0'
-          registry-url: 'https://registry.npmjs.org'
       - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/create-eslint-config
+        env:
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org
         run: |
           PUBLISHED=$(npm view @infra-x/create-eslint-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
