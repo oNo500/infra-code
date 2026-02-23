@@ -1,7 +1,6 @@
 /**
  * Unicorn ESLint 配置,提供 100+ 强大规则改进代码质量和一致性
  */
-import defu from 'defu'
 import { defineConfig } from 'eslint/config'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 
@@ -17,9 +16,10 @@ export function unicorn(options: UnicornOptions = {}): Linter.Config[] {
     name: 'unicorn/rules',
     files,
     extends: [eslintPluginUnicorn.configs.recommended],
-    rules: defu(overrides, {
+    rules: {
       'unicorn/no-null': 'off',
       'unicorn/prevent-abbreviations': 'off',
-    }),
+      ...overrides,
+    },
   })
 }

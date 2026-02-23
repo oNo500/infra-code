@@ -20,7 +20,7 @@ export function javascript(options: JavaScriptOptions = {}): Linter.Config[] {
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
-        ...globals.es2021,
+        ...globals.es2026,
       },
       parserOptions: {
         ecmaFeatures: {

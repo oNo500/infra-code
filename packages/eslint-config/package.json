@@ -33,7 +33,6 @@
     "@next/eslint-plugin-next": "^16.1.6",
     "@stylistic/eslint-plugin": "^5.7.1",
     "@vitest/eslint-plugin": "^1.6.6",
-    "defu": "^6.1.4",
     "eslint-config-next": "16.0.10",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",

@@ -9,8 +9,10 @@ import { GLOB_SRC } from '../utils'
 import type { DependOptions } from '../types'
 import type { ESLint, Linter } from 'eslint'
 
+const DEFAULT_PRESETS: DependOptions['presets'] = ['native', 'microutilities', 'preferred']
+
 export function depend(options: DependOptions = {}): Linter.Config[] {
-  const { presets = [], modules = [], allowed = [], overrides = {} } = options
+  const { presets = DEFAULT_PRESETS, modules = [], allowed = [], overrides = {} } = options
 
   return [
     {
@@ -23,15 +25,11 @@ export function depend(options: DependOptions = {}): Linter.Config[] {
         'depend/ban-dependencies': [
           'error',
           {
-            presets: ['native', 'microutilities', 'preferred', ...presets],
+            presets,
             modules,
-            allowed: [
-              'dotenv', // drizzle.config.ts 和工具脚本需要
-              ...allowed,
-            ],
+            allowed,
           },
         ],
-        // 用户自定义覆盖
         ...overrides,
       },
     },
