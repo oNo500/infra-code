@@ -60,11 +60,16 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/node": "^25.0.3",
-    "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "bumpp": "^10.3.2",
+    "eslint": "^9.39.2",
+    "globals": "16.5.0",
+    "jiti": "2.6.1",
+    "prettier": "^3.7.4",
     "tsdown": "^0.18.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }

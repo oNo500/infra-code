@@ -5,5 +5,4 @@ export default defineConfig({
   format: ['esm'],
   exports: true,
   dts: { eager: true },
-  noExternal: ['@workspace/eslint-config'],
 })
