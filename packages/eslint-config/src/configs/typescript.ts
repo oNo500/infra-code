@@ -23,7 +23,7 @@ export function typescript(options: TypeScriptOptions = {}): Linter.Config[] {
     },
     extends: [configs.recommendedTypeChecked, configs.stylisticTypeChecked],
     languageOptions: {
-      parser: parser,
+      parser,
       parserOptions: {
         projectService: true,
         tsconfigRootDir: tsconfigRootDir ?? process.cwd(),

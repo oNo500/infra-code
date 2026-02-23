@@ -10,11 +10,11 @@
  * 检测是否在 Git Hooks 或 lint-staged 中运行
  */
 function isInGitHooksOrLintStaged(): boolean {
-  return !!(
-    process.env['GIT_PARAMS']
-    ?? process.env['VSCODE_GIT_COMMAND']
-    ?? process.env['npm_lifecycle_script']?.startsWith('lint-staged')
-  )
+  const envVars = [
+    process.env['GIT_PARAMS'],
+    process.env['VSCODE_GIT_COMMAND'],
+  ]
+  return envVars.some(Boolean) || process.env['npm_lifecycle_script']?.startsWith('lint-staged') === true
 }
 
 /**
@@ -35,13 +35,14 @@ export function isInEditorEnv(): boolean {
     return false
   if (isInGitHooksOrLintStaged())
     return false
-  return !!(
-    process.env['VSCODE_PID']
-    ?? process.env['VSCODE_CWD']
-    ?? process.env['JETBRAINS_IDE']
-    ?? process.env['VIM']
-    ?? process.env['NVIM']
-  )
+  const envVars = [
+    process.env['VSCODE_PID'],
+    process.env['VSCODE_CWD'],
+    process.env['JETBRAINS_IDE'],
+    process.env['VIM'],
+    process.env['NVIM'],
+  ]
+  return envVars.some(Boolean)
 }
 
 // ============================================================================
