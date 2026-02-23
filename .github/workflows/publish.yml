@@ -16,7 +16,9 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22.14.0'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/typescript-config
@@ -24,8 +26,7 @@ jobs:
           PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
-            npm config set registry https://registry.npmjs.org
-            npm publish --provenance --access public
+            npm publish --access public
           else
             echo "Already published $LOCAL, skipping."
           fi
@@ -37,7 +38,9 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22.14.0'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/eslint-config
@@ -46,8 +49,7 @@ jobs:
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
             pnpm run build
-            npm config set registry https://registry.npmjs.org
-            npm publish --provenance --access public
+            npm publish --access public
           else
             echo "Already published $LOCAL, skipping."
           fi
@@ -59,7 +61,9 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22.14.0'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/create-eslint-config
@@ -68,8 +72,7 @@ jobs:
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
             pnpm run build
-            npm config set registry https://registry.npmjs.org
-            npm publish --provenance --access public
+            npm publish --access public
           else
             echo "Already published $LOCAL, skipping."
           fi
