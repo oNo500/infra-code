@@ -27,7 +27,7 @@ jobs:
           PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
-            npm publish --access public
+            npm publish --access public --loglevel verbose
           else
             echo "Already published $LOCAL, skipping."
           fi
