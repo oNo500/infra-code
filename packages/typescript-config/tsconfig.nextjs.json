@@ -59,12 +59,6 @@
     // Next.js 特定配置 (Next.js Specific)
     // ==========================================================
 
-    "allowSyntheticDefaultImports": true,
-    // 允许从没有默认导出的模块中默认导入
-
-    "incremental": true,
-    // 启用增量编译，加速后续编译
-
     "plugins": [{ "name": "next" }]
     // Next.js 编译器插件
   }
