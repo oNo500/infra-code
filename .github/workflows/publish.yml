@@ -6,6 +6,7 @@ on:
 
 permissions:
   id-token: write
+  contents: read
 
 jobs:
   publish-typescript-config:
@@ -16,7 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/typescript-config
@@ -24,6 +24,7 @@ jobs:
           PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
+            npm config set registry https://registry.npmjs.org
             npm publish --provenance --access public
           else
             echo "Already published $LOCAL, skipping."
@@ -37,7 +38,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/eslint-config
@@ -46,6 +46,7 @@ jobs:
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
             pnpm run build
+            npm config set registry https://registry.npmjs.org
             npm publish --provenance --access public
           else
             echo "Already published $LOCAL, skipping."
@@ -59,7 +60,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
       - run: pnpm install --frozen-lockfile
       - name: Check and publish
         working-directory: packages/create-eslint-config
@@ -68,6 +68,7 @@ jobs:
           LOCAL=$(node -p "require('./package.json').version")
           if [ "$PUBLISHED" != "$LOCAL" ]; then
             pnpm run build
+            npm config set registry https://registry.npmjs.org
             npm publish --provenance --access public
           else
             echo "Already published $LOCAL, skipping."
