@@ -13,20 +13,24 @@ export default defineConfig({
       const dest = join(import.meta.dirname, 'dist/template')
       await cp(src, dest, {
         recursive: true,
-        filter: (source) => !source.includes('node_modules') && !source.includes('/dist'),
+        filter: (source) =>
+          !source.includes('node_modules') &&
+          !source.includes('/dist') &&
+          !source.endsWith('tsdown.config.ts'),
       })
 
-      const pkgPath = join(dest, 'package.json')
-      const pkg = JSON.parse(await readFile(pkgPath, 'utf-8'))
+      const [templatePkg, eslintConfigPkg] = await Promise.all([
+        readFile(join(import.meta.dirname, 'template.package.json'), 'utf-8').then(JSON.parse),
+        readFile(join(import.meta.dirname, '../eslint-config/package.json'), 'utf-8').then(JSON.parse),
+      ])
 
-      pkg.name = '@workspace/eslint-config'
-
-      const devDepsToRemove = ['@workspace/typescript-config', 'bumpp', 'tsdown']
-      for (const dep of devDepsToRemove) {
-        delete pkg.devDependencies?.[dep]
+      const pkg = {
+        ...templatePkg,
+        dependencies: eslintConfigPkg.dependencies,
+        peerDependencies: eslintConfigPkg.peerDependencies,
       }
 
-      await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+      await writeFile(join(dest, 'package.json'), JSON.stringify(pkg, null, 2) + '\n')
     },
   },
 })

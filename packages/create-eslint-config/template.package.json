@@ -1,0 +1,29 @@
+{
+  "name": "@workspace/eslint-config",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "A shared ESLint config for infra-x projects.",
+  "author": "infra-x",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": ["src"],
+  "scripts": {
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
+    "@types/node": "^25.0.3",
+    "eslint": "^9.39.2",
+    "globals": "16.5.0",
+    "jiti": "2.6.1",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
