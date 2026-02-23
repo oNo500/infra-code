@@ -39,17 +39,6 @@ export interface OptionsTypeScript {
 }
 
 /**
- * React 配置选项
- */
-export interface OptionsReact {
-  /**
-   * React 版本
-   * @default 'detect'
-   */
-  version?: string
-}
-
-/**
  * Tailwind CSS 配置选项
  */
 export interface OptionsTailwind {
@@ -145,7 +134,7 @@ export interface PackageJsonOptions extends OptionsOverrides {
 
 export type PrettierOptions = OptionsOverrides
 
-export type ReactOptions = OptionsFiles & OptionsOverrides & OptionsReact
+export type ReactOptions = OptionsFiles & OptionsOverrides
 
 export type StorybookOptions = OptionsOverrides
 

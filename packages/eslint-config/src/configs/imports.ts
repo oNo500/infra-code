@@ -87,7 +87,6 @@ export function imports(options: ImportsOptions = {}): Linter.Config[] {
         'import-x/no-extraneous-dependencies': 'error',
 
         'import-x/no-relative-parent-imports': noRelativeParentImports ? 'error' : 'off',
-        'import-x/no-internal-modules': 'off',
 
         ...overrides,
       },

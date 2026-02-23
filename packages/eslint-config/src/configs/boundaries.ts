@@ -31,9 +31,7 @@ export function boundaries(options: BoundariesOptions = {}): Linter.Config[] {
             default: 'disallow',
             rules: rules.map((rule) => ({
               from: Array.isArray(rule.from) ? rule.from : [rule.from],
-              allow: rule.allow
-                ? (Array.isArray(rule.allow) ? rule.allow : [rule.allow])
-                : undefined,
+              allow: rule.allow,
               message: rule.message,
             })),
           },

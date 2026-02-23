@@ -15,7 +15,7 @@ import type { Linter } from 'eslint'
  * React 规则配置
  */
 export function react(options: ReactOptions = {}): Linter.Config[] {
-  const { files = [GLOB_JSX], version = 'detect', overrides = {} } = options
+  const { files = [GLOB_JSX], overrides = {} } = options
 
   return defineConfig({
     name: 'react/rules',
@@ -25,11 +25,6 @@ export function react(options: ReactOptions = {}): Linter.Config[] {
       reactHooksPlugin.configs.flat['recommended-latest'],
       reactRefresh.configs.recommended,
     ],
-    settings: {
-      react: {
-        version,
-      },
-    },
     rules: {
       ...overrides,
     },
