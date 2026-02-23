@@ -1,0 +1,19 @@
+{
+  "name": "@infra-x/eslint-config-test",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@infra-x/eslint-config": "workspace:*"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "globals": "16.5.0",
+    "jiti": "2.6.1",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
