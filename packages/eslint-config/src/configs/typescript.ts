@@ -6,10 +6,8 @@ import { configs, parser, plugin } from 'typescript-eslint'
 
 import { GLOB_TS } from '../utils'
 
-import type { OptionsFiles, OptionsOverrides, OptionsTypeScript } from '../types'
+import type { TypeScriptOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type TypeScriptOptions = OptionsFiles & OptionsOverrides & OptionsTypeScript
 
 /**
  * TypeScript 规则配置

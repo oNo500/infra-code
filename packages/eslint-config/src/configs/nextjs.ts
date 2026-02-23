@@ -4,10 +4,8 @@
 import nextjsPlugin from '@next/eslint-plugin-next'
 import { defineConfig } from 'eslint/config'
 
-import type { OptionsOverrides } from '../types'
+import type { NextjsOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type NextjsOptions = OptionsOverrides
 
 /**
  * Next.js 规则配置

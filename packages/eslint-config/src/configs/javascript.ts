@@ -7,10 +7,8 @@ import globals from 'globals'
 
 import { GLOB_SRC } from '../utils'
 
-import type { OptionsFiles, OptionsOverrides } from '../types'
+import type { JavaScriptOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type JavaScriptOptions = OptionsFiles & OptionsOverrides
 
 export function javascript(options: JavaScriptOptions = {}): Linter.Config[] {
   const { files = [GLOB_SRC], overrides = {} } = options

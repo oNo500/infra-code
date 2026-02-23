@@ -5,19 +5,11 @@ import { importX } from 'eslint-plugin-import-x'
 
 import { GLOB_SRC } from '../utils'
 
-import type { OptionsOverrides, OptionsStylistic } from '../types'
+import type { ImportsOptions } from '../types'
 import type { Linter } from 'eslint'
 
-export interface ImportsOptions extends OptionsOverrides, OptionsStylistic {
-  /**
-   * 是否启用 TypeScript 支持
-   * @default false
-   */
-  typescript?: boolean
-}
-
 export function imports(options: ImportsOptions = {}): Linter.Config[] {
-  const { overrides = {}, stylistic = true, typescript = false } = options
+  const { overrides = {}, stylistic = true, typescript = false, noRelativeParentImports = false } = options
 
   const files = [GLOB_SRC]
 
@@ -94,20 +86,8 @@ export function imports(options: ImportsOptions = {}): Linter.Config[] {
         'import-x/no-deprecated': 'warn',
         'import-x/no-extraneous-dependencies': 'error',
 
-        'import-x/no-relative-parent-imports': 'off',
+        'import-x/no-relative-parent-imports': noRelativeParentImports ? 'error' : 'off',
         'import-x/no-internal-modules': 'off',
-
-        'no-restricted-imports': [
-          'error',
-          {
-            patterns: [
-              {
-                group: ['../*', '../**'],
-                message: '禁止使用 ../ 父级相对导入，必须使用路径别名 @/ 代替',
-              },
-            ],
-          },
-        ],
 
         ...overrides,
       },

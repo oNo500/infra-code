@@ -6,23 +6,8 @@ import boundariesPlugin from 'eslint-plugin-boundaries'
 
 import { GLOB_SRC } from '../utils'
 
-import type { OptionsFiles, OptionsOverrides } from '../types'
+import type { BoundariesOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export interface BoundariesOptions extends OptionsFiles, OptionsOverrides {
-  elements?: {
-    type: string
-    pattern: string | string[]
-    capture?: string[]
-    mode?: 'file' | 'folder' | 'full'
-  }[]
-  rules?: {
-    from: string | string[]
-    allow?: (string | [string, Record<string, string>])[]
-    disallow?: string[]
-    message?: string
-  }[]
-}
 
 export function boundaries(options: BoundariesOptions = {}): Linter.Config[] {
   const { elements, rules, files = [GLOB_SRC], overrides = {} } = options

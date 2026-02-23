@@ -7,12 +7,8 @@ import { defineConfig } from 'eslint/config'
 
 import { GLOB_TESTS, isInEditorEnv } from '../utils'
 
-import type { OptionsFiles, OptionsOverrides } from '../types'
+import type { VitestOptions } from '../types'
 import type { ESLint, Linter } from 'eslint'
-
-export type VitestOptions = OptionsFiles & OptionsOverrides & {
-  isInEditor?: boolean
-}
 
 export function vitest(options: VitestOptions = {}): Linter.Config[] {
   const {

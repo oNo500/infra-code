@@ -4,10 +4,8 @@
 import { defineConfig } from 'eslint/config'
 import storybookPlugin from 'eslint-plugin-storybook'
 
-import type { OptionsOverrides } from '../types'
+import type { StorybookOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type StorybookOptions = OptionsOverrides
 
 export function storybook(options: StorybookOptions = {}): Linter.Config[] {
   const { overrides = {} } = options

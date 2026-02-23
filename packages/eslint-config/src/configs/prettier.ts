@@ -6,10 +6,8 @@ import prettierConfig from 'eslint-plugin-prettier/recommended'
 
 import { GLOB_SRC } from '../utils'
 
-import type { OptionsOverrides } from '../types'
+import type { PrettierOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type PrettierOptions = OptionsOverrides
 
 export function prettier(options: PrettierOptions = {}): Linter.Config[] {
   const { overrides = {} } = options

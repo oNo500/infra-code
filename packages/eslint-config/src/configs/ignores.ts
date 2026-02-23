@@ -6,6 +6,7 @@ import path from 'node:path'
 
 import { includeIgnoreFile } from '@eslint/compat'
 
+import type { IgnoresOptions } from '../types'
 import type { Linter } from 'eslint'
 
 /**
@@ -37,10 +38,8 @@ export const DEFAULT_IGNORES: string[] = [
   '**/*.d.ts',
 ]
 
-export function ignores(
-  userIgnores?: string[] | false,
-  gitignorePath?: string | boolean,
-): Linter.Config[] {
+export function ignores(options: IgnoresOptions = {}): Linter.Config[] {
+  const { ignores: userIgnores, gitignore: gitignorePath } = options
   const configs: Linter.Config[] = []
 
   if (gitignorePath !== false) {
@@ -76,14 +75,4 @@ export function ignores(
     ...config,
     name: `ignores/globals/${config.name}`,
   }))
-}
-
-/**
- * ignores 配置选项
- */
-export interface IgnoresOptions {
-  /** 用户自定义忽略规则，传入 false 禁用默认规则 */
-  ignores?: string[] | false
-  /** gitignore 文件路径或启用标志 */
-  gitignore?: string | boolean
 }

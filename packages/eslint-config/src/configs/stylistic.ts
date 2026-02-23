@@ -6,10 +6,8 @@ import { defineConfig } from 'eslint/config'
 
 import { GLOB_SRC } from '../utils'
 
-import type { OptionsOverrides } from '../types'
+import type { StylisticOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type StylisticOptions = OptionsOverrides
 
 export function stylistic(options: StylisticOptions = {}): Linter.Config[] {
   const { overrides = {} } = options

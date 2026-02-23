@@ -35,23 +35,25 @@ import { typescript } from './configs/typescript'
 import { unicorn } from './configs/unicorn'
 import { vitest } from './configs/vitest'
 
-import type { A11yOptions } from './configs/a11y'
-import type { BoundariesOptions } from './configs/boundaries'
-import type { DependOptions } from './configs/depend'
-import type { IgnoresOptions } from './configs/ignores'
-import type { ImportsOptions } from './configs/imports'
-import type { JavaScriptOptions } from './configs/javascript'
-import type { JsdocOptions } from './configs/jsdoc'
-import type { NextjsOptions } from './configs/nextjs'
-import type { PackageJsonOptions } from './configs/package-json'
-import type { PrettierOptions } from './configs/prettier'
-import type { ReactOptions } from './configs/react'
-import type { StorybookOptions } from './configs/storybook'
-import type { StylisticOptions } from './configs/stylistic'
-import type { TailwindOptions } from './configs/tailwind'
-import type { TypeScriptOptions } from './configs/typescript'
-import type { UnicornOptions } from './configs/unicorn'
-import type { VitestOptions } from './configs/vitest'
+import type {
+  A11yOptions,
+  BoundariesOptions,
+  DependOptions,
+  IgnoresOptions,
+  ImportsOptions,
+  JavaScriptOptions,
+  JsdocOptions,
+  NextjsOptions,
+  PackageJsonOptions,
+  PrettierOptions,
+  ReactOptions,
+  StorybookOptions,
+  StylisticOptions,
+  TailwindOptions,
+  TypeScriptOptions,
+  UnicornOptions,
+  VitestOptions,
+} from './types'
 import type { Linter } from 'eslint'
 
 // ============================================================================
@@ -117,89 +119,53 @@ export interface ComposeConfigOptions {
 // 主函数
 // ============================================================================
 
-const getOpts = <T>(opt: boolean | T | undefined): T => (typeof opt === 'object' ? opt : {}) as T
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ConfigFn = (opts: any) => Linter.Config[]
+
+type ConfigEntry = {
+  key: keyof ComposeConfigOptions
+  fn: ConfigFn
+  defaultOn?: boolean
+}
+
+const CONFIG_REGISTRY: ConfigEntry[] = [
+  // 默认开启
+  { key: 'ignores', fn: ignores, defaultOn: true },
+  { key: 'javascript', fn: javascript, defaultOn: true },
+  { key: 'typescript', fn: typescript, defaultOn: true },
+  { key: 'stylistic', fn: stylistic, defaultOn: true },
+  { key: 'unicorn', fn: unicorn, defaultOn: true },
+  { key: 'depend', fn: depend, defaultOn: true },
+  // 按需开启（顺序固定，prettier 最后）
+  { key: 'imports', fn: imports },
+  { key: 'react', fn: react },
+  { key: 'nextjs', fn: nextjs },
+  { key: 'tailwind', fn: tailwind },
+  { key: 'a11y', fn: a11y },
+  { key: 'jsdoc', fn: jsdoc },
+  { key: 'boundaries', fn: boundaries },
+  { key: 'packageJson', fn: packageJson },
+  { key: 'vitest', fn: vitest },
+  { key: 'storybook', fn: storybook },
+  { key: 'prettier', fn: prettier },
+]
 
 /** 组合 ESLint 配置，内部按正确顺序组合 */
 export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config[] {
   const configs: Linter.Config[] = []
 
-  // 默认开启
-  if (options.ignores !== false) {
-    const opts = getOpts(options.ignores)
-    configs.push(...ignores(opts.ignores, opts.gitignore))
-  }
+  for (const { key, fn, defaultOn } of CONFIG_REGISTRY) {
+    const opt = options[key]
+    const enabled = defaultOn ? opt !== false : !!opt
+    if (!enabled) continue
 
-  if (options.javascript !== false) {
-    configs.push(...javascript(getOpts(options.javascript)))
-  }
-
-  if (options.typescript !== false) {
-    configs.push(...typescript(getOpts(options.typescript)))
-  }
-
-  if (options.stylistic !== false) {
-    configs.push(...stylistic(getOpts(options.stylistic)))
-  }
-
-  if (options.unicorn !== false) {
-    configs.push(...unicorn(getOpts(options.unicorn)))
-  }
-
-  if (options.depend !== false) {
-    configs.push(...depend(getOpts(options.depend)))
-  }
-
-  // 需显式开启
-  if (options.imports) {
-    const enableTypeScript = options.typescript !== false
-    configs.push(
-      ...imports(
-        typeof options.imports === 'object'
-          ? { typescript: enableTypeScript, ...options.imports }
-          : { typescript: enableTypeScript },
-      ),
-    )
-  }
-
-  if (options.react) {
-    configs.push(...react(getOpts(options.react)))
-  }
-
-  if (options.nextjs) {
-    configs.push(...nextjs(getOpts(options.nextjs)))
-  }
-
-  if (options.tailwind) {
-    configs.push(...tailwind(getOpts(options.tailwind)))
-  }
-
-  if (options.a11y) {
-    configs.push(...a11y(getOpts(options.a11y)))
-  }
-
-  if (options.jsdoc) {
-    configs.push(...jsdoc(getOpts(options.jsdoc)))
-  }
-
-  if (options.boundaries) {
-    configs.push(...boundaries(getOpts(options.boundaries)))
-  }
-
-  if (options.packageJson) {
-    configs.push(...packageJson(getOpts(options.packageJson)))
-  }
-
-  if (options.vitest) {
-    configs.push(...vitest(getOpts(options.vitest)))
-  }
-
-  if (options.storybook) {
-    configs.push(...storybook(getOpts(options.storybook)))
-  }
-
-  // prettier 必须在最后
-  if (options.prettier) {
-    configs.push(...prettier(getOpts(options.prettier)))
+    if (key === 'imports') {
+      const tsEnabled = options.typescript !== false
+      const opts = typeof opt === 'object' ? { typescript: tsEnabled, ...opt } : { typescript: tsEnabled }
+      configs.push(...fn(opts))
+    } else {
+      configs.push(...fn(typeof opt === 'object' ? opt : {}))
+    }
   }
 
   return configs
@@ -209,23 +175,25 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
 // 类型导出
 // ============================================================================
 
-export type { A11yOptions } from './configs/a11y'
-export type { BoundariesOptions } from './configs/boundaries'
-export type { DependOptions } from './configs/depend'
-export type { IgnoresOptions } from './configs/ignores'
-export type { ImportsOptions } from './configs/imports'
-export type { JavaScriptOptions } from './configs/javascript'
-export type { JsdocOptions } from './configs/jsdoc'
-export type { NextjsOptions } from './configs/nextjs'
-export type { PackageJsonOptions } from './configs/package-json'
-export type { PrettierOptions } from './configs/prettier'
-export type { ReactOptions } from './configs/react'
-export type { StorybookOptions } from './configs/storybook'
-export type { StylisticOptions } from './configs/stylistic'
-export type { TailwindOptions } from './configs/tailwind'
-export type { TypeScriptOptions } from './configs/typescript'
-export type { UnicornOptions } from './configs/unicorn'
-export type { VitestOptions } from './configs/vitest'
+export type {
+  A11yOptions,
+  BoundariesOptions,
+  DependOptions,
+  IgnoresOptions,
+  ImportsOptions,
+  JavaScriptOptions,
+  JsdocOptions,
+  NextjsOptions,
+  PackageJsonOptions,
+  PrettierOptions,
+  ReactOptions,
+  StorybookOptions,
+  StylisticOptions,
+  TailwindOptions,
+  TypeScriptOptions,
+  UnicornOptions,
+  VitestOptions,
+} from './types'
 
 // ============================================================================
 // 常量导出

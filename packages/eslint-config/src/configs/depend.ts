@@ -6,36 +6,8 @@ import dependPlugin from 'eslint-plugin-depend'
 
 import { GLOB_SRC } from '../utils'
 
-import type { OptionsOverrides } from '../types'
+import type { DependOptions } from '../types'
 import type { ESLint, Linter } from 'eslint'
-
-/**
- * Depend 配置选项
- */
-export interface DependOptions extends OptionsOverrides {
-  /**
-   * 预设列表
-   *
-   * - `native`: 检测可用原生 JavaScript API 替代的包(如 `is-nan` → `Number.isNaN()`)
-   * - `microutilities`: 检测微型工具库(一行代码可实现的包)
-   * - `preferred`: 推荐更轻量、维护更好的替代方案
-   *
-   * @default ['native', 'microutilities', 'preferred']
-   */
-  presets?: ('native' | 'microutilities' | 'preferred')[]
-
-  /**
-   * 自定义禁用的模块列表
-   * @default []
-   */
-  modules?: string[]
-
-  /**
-   * 允许使用的模块列表(即使在 presets 中)
-   * @default []
-   */
-  allowed?: string[]
-}
 
 export function depend(options: DependOptions = {}): Linter.Config[] {
   const { presets = [], modules = [], allowed = [], overrides = {} } = options

@@ -4,10 +4,8 @@
 import { defineConfig } from 'eslint/config'
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 
-import type { OptionsFiles, OptionsOverrides, OptionsTailwind } from '../types'
+import type { TailwindOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type TailwindOptions = OptionsFiles & OptionsOverrides & OptionsTailwind
 
 /**
  * Tailwind CSS 规则配置

@@ -4,10 +4,8 @@
 import { defineConfig } from 'eslint/config'
 import jsdocPlugin from 'eslint-plugin-jsdoc'
 
-import type { OptionsOverrides } from '../types'
+import type { JsdocOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type JsdocOptions = OptionsOverrides
 
 export function jsdoc(options: JsdocOptions = {}): Linter.Config[] {
   const { overrides = {} } = options

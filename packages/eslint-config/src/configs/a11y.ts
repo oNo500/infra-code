@@ -6,10 +6,8 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 import { GLOB_JSX } from '../utils'
 
-import type { OptionsFiles, OptionsOverrides } from '../types'
+import type { A11yOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type A11yOptions = OptionsFiles & OptionsOverrides
 
 /**
  * 可访问性规则配置

@@ -8,10 +8,8 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 
 import { GLOB_JSX } from '../utils'
 
-import type { OptionsFiles, OptionsOverrides, OptionsReact } from '../types'
+import type { ReactOptions } from '../types'
 import type { Linter } from 'eslint'
-
-export type ReactOptions = OptionsFiles & OptionsOverrides & OptionsReact
 
 /**
  * React 规则配置

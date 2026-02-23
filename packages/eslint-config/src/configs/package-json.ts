@@ -4,25 +4,8 @@
 import { defineConfig } from 'eslint/config'
 import plugin from 'eslint-plugin-package-json'
 
-import type { OptionsOverrides } from '../types'
+import type { PackageJsonOptions } from '../types'
 import type { Linter } from 'eslint'
-
-/**
- * Package.json 配置选项
- */
-export interface PackageJsonOptions extends OptionsOverrides {
-  /**
-   * 是否启用风格化规则
-   * @default true
-   */
-  stylistic?: boolean
-
-  /**
-   * 是否对私有包强制执行规则
-   * @default false - name 和 version 不强制,其他字段强制
-   */
-  enforceForPrivate?: boolean
-}
 
 export function packageJson(options: PackageJsonOptions = {}): Linter.Config[] {
   const { stylistic = true, enforceForPrivate, overrides = {} } = options
