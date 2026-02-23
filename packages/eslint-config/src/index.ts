@@ -126,6 +126,8 @@ type ConfigEntry = {
   key: keyof ComposeConfigOptions
   fn: ConfigFn
   defaultOn?: boolean
+  /** 根据全局 options 派生注入值，优先级低于用户配置 */
+  inject?: (options: ComposeConfigOptions) => Record<string, unknown>
 }
 
 const CONFIG_REGISTRY: ConfigEntry[] = [
@@ -137,7 +139,11 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
   { key: 'unicorn', fn: unicorn, defaultOn: true },
   { key: 'depend', fn: depend, defaultOn: true },
   // 按需开启（顺序固定，prettier 最后）
-  { key: 'imports', fn: imports },
+  {
+    key: 'imports',
+    fn: imports,
+    inject: (options) => ({ typescript: options.typescript !== false }),
+  },
   { key: 'react', fn: react },
   { key: 'nextjs', fn: nextjs },
   { key: 'tailwind', fn: tailwind },
@@ -154,18 +160,14 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
 export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config[] {
   const configs: Linter.Config[] = []
 
-  for (const { key, fn, defaultOn } of CONFIG_REGISTRY) {
+  for (const { key, fn, defaultOn, inject } of CONFIG_REGISTRY) {
     const opt = options[key]
     const enabled = defaultOn ? opt !== false : !!opt
     if (!enabled) continue
 
-    if (key === 'imports') {
-      const tsEnabled = options.typescript !== false
-      const opts = typeof opt === 'object' ? { typescript: tsEnabled, ...opt } : { typescript: tsEnabled }
-      configs.push(...fn(opts))
-    } else {
-      configs.push(...fn(typeof opt === 'object' ? opt : {}))
-    }
+    const base = typeof opt === 'object' ? opt : {}
+    const injected = inject ? inject(options) : {}
+    configs.push(...fn({ ...injected, ...base }))
   }
 
   return configs
