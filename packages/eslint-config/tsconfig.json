@@ -1,4 +1,4 @@
 {
   "extends": "@infra-x/typescript-config/tsconfig.library.json",
-  "include": ["src", "eslint.config.mts"]
+  "include": ["src"]
 }

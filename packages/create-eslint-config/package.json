@@ -14,7 +14,8 @@
     "access": "public"
   },
   "bin": {
-    "create-eslint-config": "./dist/index.mjs"
+    "create-eslint-config": "./dist/index.mjs",
+    "cec": "./dist/index.mjs"
   },
   "files": [
     "dist"
@@ -22,7 +23,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.node.json --noEmit",
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {

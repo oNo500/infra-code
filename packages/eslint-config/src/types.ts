@@ -36,6 +36,8 @@ export interface OptionsFiles {
  */
 export interface OptionsTypeScript {
   tsconfigRootDir?: string
+  allowDefaultProject?: string[]
+  defaultProject?: string
 }
 
 /**

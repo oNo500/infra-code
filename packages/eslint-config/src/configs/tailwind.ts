@@ -4,6 +4,8 @@
 import { defineConfig } from 'eslint/config'
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 
+import { GLOB_JSX } from '../utils'
+
 import type { TailwindOptions } from '../types'
 import type { Linter } from 'eslint'
 
@@ -11,11 +13,11 @@ import type { Linter } from 'eslint'
  * Tailwind CSS 规则配置
  */
 export function tailwind(options: TailwindOptions = {}): Linter.Config[] {
-  const { files, overrides = {}, entryPoint = 'src/global.css' } = options
+  const { files = [GLOB_JSX], overrides = {}, entryPoint = 'src/global.css' } = options
 
   return defineConfig({
     name: 'tailwind/rules',
-    files: files ?? undefined,
+    files,
     extends: [
       eslintPluginBetterTailwindcss.configs.recommended,
     ],

@@ -170,6 +170,23 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
     configs.push(...fn({ ...injected, ...base }))
   }
 
+  // 为 allowDefaultProject 文件附加宽松规则覆盖
+  const tsOpts = typeof options.typescript === 'object' ? options.typescript : {}
+  if (tsOpts.allowDefaultProject) {
+    configs.push({
+      name: 'typescript/config-files-relaxed',
+      files: tsOpts.allowDefaultProject,
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        'unicorn/import-style': 'off',
+      },
+    })
+  }
+
   return configs
 }
 
