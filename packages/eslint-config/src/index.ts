@@ -134,7 +134,15 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
   // 默认开启
   { key: 'ignores', fn: ignores, defaultOn: true },
   { key: 'javascript', fn: javascript, defaultOn: true },
-  { key: 'typescript', fn: typescript, defaultOn: true },
+  {
+    key: 'typescript',
+    fn: typescript,
+    defaultOn: true,
+    inject: () => ({
+      allowDefaultProject: ['*.config.ts', '*.config.mts'],
+      defaultProject: 'tsconfig.node.json',
+    }),
+  },
   { key: 'stylistic', fn: stylistic, defaultOn: true },
   { key: 'unicorn', fn: unicorn, defaultOn: true },
   { key: 'depend', fn: depend, defaultOn: true },
@@ -170,9 +178,12 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
     configs.push(...fn({ ...injected, ...base }))
   }
 
-  // 为 allowDefaultProject 文件附加宽松规则覆盖
-  const tsOpts = typeof options.typescript === 'object' ? options.typescript : {}
-  if (tsOpts.allowDefaultProject) {
+  // 为 allowDefaultProject 文件附加宽松规则覆盖（内置默认值 + 用户覆盖）
+  const tsEntry = CONFIG_REGISTRY.find((e) => e.key === 'typescript')
+  const tsInjected = tsEntry?.inject ? tsEntry.inject(options) : {}
+  const tsBase = typeof options.typescript === 'object' ? options.typescript : {}
+  const tsOpts = { ...tsInjected, ...tsBase } as TypeScriptOptions
+  if (options.typescript !== false && tsOpts.allowDefaultProject) {
     configs.push({
       name: 'typescript/config-files-relaxed',
       files: tsOpts.allowDefaultProject,
