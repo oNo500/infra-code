@@ -1,7 +1,7 @@
 {
   "name": "@infra-x/create-eslint-config",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI to copy ESLint config source into a monorepo.",
   "author": "infra-x",
   "license": "MIT",
