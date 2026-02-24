@@ -15,7 +15,7 @@
     "tsconfig.library.json",
     "tsconfig.nestjs.json",
     "tsconfig.nextjs.json",
-    "tsconfig.node.json",
+    "tsconfig.config.json",
     "tsconfig.react-library.json",
     "tsconfig.vite.json",
     "tsconfig.vitest.json"
@@ -25,7 +25,7 @@
     "./tsconfig.library.json": "./tsconfig.library.json",
     "./tsconfig.nestjs.json": "./tsconfig.nestjs.json",
     "./tsconfig.nextjs.json": "./tsconfig.nextjs.json",
-    "./tsconfig.node.json": "./tsconfig.node.json",
+    "./tsconfig.config.json": "./tsconfig.config.json",
     "./tsconfig.react-library.json": "./tsconfig.react-library.json",
     "./tsconfig.vite.json": "./tsconfig.vite.json",
     "./tsconfig.vitest.json": "./tsconfig.vitest.json",

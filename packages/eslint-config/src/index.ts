@@ -140,7 +140,7 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
     defaultOn: true,
     inject: () => ({
       allowDefaultProject: ['*.config.ts', '*.config.mts'],
-      defaultProject: 'tsconfig.node.json',
+      defaultProject: 'tsconfig.config.json',
     }),
   },
   { key: 'stylistic', fn: stylistic, defaultOn: true },
