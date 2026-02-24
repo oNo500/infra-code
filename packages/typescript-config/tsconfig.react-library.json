@@ -39,6 +39,12 @@
     // 生成 .d.ts 类型声明文件
     // 组件库必备，为使用者提供类型支持
 
+    "allowJs": false,
+    // 覆盖 base 的 allowJs: true，与 isolatedDeclarations 不兼容
+
+    "noEmit": true,
+    // 让 bundler 处理编译，TypeScript 只做类型检查
+
     "isolatedDeclarations": true,
     // 每个文件的导出类型必须可推断，配合 bundler 并行生成 dts
 
