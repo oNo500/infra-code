@@ -5,7 +5,7 @@ import type { Linter } from 'eslint'
 const config: Linter.Config[] = [
   { ignores: ['fixtures/**'] },
   ...composeConfig({
-    typescript: { tsconfigRootDir: import.meta.dirname },
+    typescript: { tsconfigRootDir: import.meta.dirname, allowDefaultProject: [] },
     imports: { typescript: true },
     vitest: true,
   }),
