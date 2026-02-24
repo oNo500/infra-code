@@ -36,3 +36,4 @@ packages/typescript-config/
 | `nextjs` | Next.js 应用 | esnext, bundler, jsx, noEmit, next 插件 |
 | `nestjs` | NestJS 后端服务 | bundler, 装饰器支持 |
 | `vitest` | Vitest 测试文件 | 宽松检查, vitest/globals |
+| `config` | 工具配置文件（*.config.ts）| esnext, bundler, noEmit |

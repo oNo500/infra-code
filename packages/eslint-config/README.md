@@ -51,6 +51,29 @@ export default composeConfig({
 - `{ ...options }` - 自定义配置
 - `false` - 禁用（仅限默认开启的配置）
 
+## 工具配置的类型检查
+
+`eslint.config.mts`、`prettier.config.ts` 等工具配置文件不属于项目源码，
+不应纳入 `tsconfig.json` 的 `include` 范围。需要在根目录单独创建
+`tsconfig.config.json` 对它们进行类型检查：
+
+```json
+{
+  "extends": "@infra-x/typescript-config/tsconfig.config.json",
+  "include": ["*.config.ts", "*.config.mts"]
+}
+```
+
+在 `package.json` 中同时运行两次类型检查：
+
+```json
+{
+  "scripts": {
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.config.json --noEmit"
+  }
+}
+```
+
 ## License
 
 PROPRIETARY
