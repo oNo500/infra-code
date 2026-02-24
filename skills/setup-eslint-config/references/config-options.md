@@ -11,7 +11,7 @@ All options accept `true` (use defaults), `false` (disable), or an options objec
 ```typescript
 interface IgnoresOptions {
   ignores?: string[] | false  // false disables default ignores
-  gitignore?: string | boolean
+  gitignore?: string | boolean  // false disables gitignore reading; string = custom path
 }
 ```
 
@@ -19,8 +19,11 @@ interface IgnoresOptions {
 // Append custom ignore paths
 ignores: { ignores: ['generated/**', 'dist/**'] }
 
-// Disable default rules entirely
+// Disable default ignores (keep gitignore reading)
 ignores: { ignores: false }
+
+// Disable gitignore reading
+ignores: { gitignore: false }
 ```
 
 ### `javascript`
@@ -36,13 +39,15 @@ type JavaScriptOptions = {
 
 ```typescript
 type TypeScriptOptions = {
-  tsconfigRootDir?: string  // required for type-aware rules
+  tsconfigRootDir?: string     // required for type-aware rules
+  allowDefaultProject?: string[] // auto-injected: ['*.config.ts', '*.config.mts']
+  defaultProject?: string        // auto-injected: 'tsconfig.config.json'
   files?: string[]
   overrides?: Record<string, unknown>
 }
 ```
 
-Always set `tsconfigRootDir: import.meta.dirname`. Config files matching `allowDefaultProject` (`*.config.ts`, `*.config.mts`) are auto-injected and get relaxed unsafe rules.
+Always set `tsconfigRootDir: import.meta.dirname`. `allowDefaultProject` and `defaultProject` are auto-injected by `composeConfig()` — files matching `allowDefaultProject` get relaxed unsafe rules automatically.
 
 ### `stylistic`
 
@@ -100,7 +105,7 @@ type NextjsOptions = { overrides?: Record<string, unknown> }
 ```typescript
 type TailwindOptions = {
   entryPoint?: string  // default: 'src/global.css'
-  files?: string[]
+  files?: string[]     // default: GLOB_JSX ('**/*.{jsx,tsx}')
   overrides?: Record<string, unknown>
 }
 ```
