@@ -192,7 +192,10 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
           extends: [tsConfigs.recommended],
           languageOptions: {
             parser: tsParser,
-            parserOptions: { project: false },
+            parserOptions: {
+              project: false,
+              tsconfigRootDir: options?.typescript?.tsconfigRootDir ?? process.cwd(),
+            },
           },
         },
       ])
