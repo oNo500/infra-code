@@ -149,6 +149,9 @@ importers:
       '@infra-x/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@types/node':
+        specifier: ^25.3.1
+        version: 25.3.1
       eslint:
         specifier: ^9.39.3
         version: 9.39.3(jiti@2.6.1)

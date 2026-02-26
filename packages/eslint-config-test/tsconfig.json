@@ -1,4 +1,4 @@
 {
   "extends": "@infra-x/typescript-config/tsconfig.config.json",
-  "include": ["**/*.ts", "**/*.mts"]
+  "include": ["**/*.ts", "**/*.mts"],
 }
