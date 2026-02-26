@@ -17,6 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@infra-x/typescript-config":"0.1.6",
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/node": "^25.0.3",
     "eslint": "^9.39.2",

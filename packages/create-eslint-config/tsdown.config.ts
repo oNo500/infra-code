@@ -29,6 +29,7 @@ export default defineConfig({
         ...templatePkg,
         dependencies: eslintConfigPkg.dependencies,
         peerDependencies: eslintConfigPkg.peerDependencies,
+        peerDependenciesMeta: eslintConfigPkg.peerDependenciesMeta,
       }
 
       await writeFile(join(dest, 'package.json'), JSON.stringify(pkg, null, 2) + '\n')
