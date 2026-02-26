@@ -194,7 +194,7 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
             parser: tsParser,
             parserOptions: {
               project: false,
-              tsconfigRootDir: options?.typescript?.tsconfigRootDir ?? process.cwd(),
+              tsconfigRootDir: (typeof options.typescript === 'object' ? options.typescript.tsconfigRootDir : undefined) ?? process.cwd(),
             },
           },
         },
