@@ -12,9 +12,6 @@
     "@infra-x/typescript-config": "workspace:*",
     "@types/node": "^25.3.1",
     "eslint": "^9.39.3",
-    "globals": "16.5.0",
-    "jiti": "2.6.1",
-    "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   },
