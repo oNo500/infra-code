@@ -13,7 +13,7 @@ import type { Linter } from 'eslint'
  * TypeScript 规则配置
  */
 export function typescript(options: TypeScriptOptions = {}): Linter.Config[] {
-  const { files = [GLOB_TS], tsconfigRootDir, allowDefaultProject, defaultProject, overrides = {} } = options
+  const { files = [GLOB_TS], tsconfigRootDir, overrides = {} } = options
 
   return defineConfig({
     name: 'typescript/rules',
@@ -25,9 +25,7 @@ export function typescript(options: TypeScriptOptions = {}): Linter.Config[] {
     languageOptions: {
       parser,
       parserOptions: {
-        projectService: allowDefaultProject
-          ? { allowDefaultProject, defaultProject }
-          : true,
+        projectService: true,
         tsconfigRootDir: tsconfigRootDir ?? process.cwd(),
       },
     },

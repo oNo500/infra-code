@@ -17,6 +17,9 @@
  * ```
  */
 
+import { defineConfig } from 'eslint/config'
+import { configs as tsConfigs, parser as tsParser } from 'typescript-eslint'
+
 import { a11y } from './configs/a11y'
 import { boundaries } from './configs/boundaries'
 import { depend } from './configs/depend'
@@ -83,6 +86,8 @@ export interface ComposeConfigOptions {
   unicorn?: boolean | UnicornOptions
   /** 依赖优化建议 @default true */
   depend?: boolean | DependOptions
+  /** config 文件（*.config.ts）专属规则（不启用类型检查）@default true */
+  configFiles?: boolean
 
   // 框架配置
   /** React 配置 */
@@ -138,10 +143,6 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
     key: 'typescript',
     fn: typescript,
     defaultOn: true,
-    inject: () => ({
-      allowDefaultProject: ['*.config.ts', '*.config.mts'],
-      defaultProject: 'tsconfig.config.json',
-    }),
   },
   { key: 'stylistic', fn: stylistic, defaultOn: true },
   { key: 'unicorn', fn: unicorn, defaultOn: true },
@@ -178,27 +179,23 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
     configs.push(...fn({ ...injected, ...base }))
   }
 
-  // 为 allowDefaultProject 文件附加宽松规则覆盖（内置默认值 + 用户覆盖）
-  const tsEntry = CONFIG_REGISTRY.find((e) => e.key === 'typescript')
-  const tsInjected = tsEntry?.inject ? tsEntry.inject(options) : {}
-  const tsBase = typeof options.typescript === 'object' ? options.typescript : {}
-  const tsOpts = { ...tsInjected, ...tsBase } as TypeScriptOptions
-  if (options.typescript !== false && tsOpts.allowDefaultProject) {
-    configs.push({
-      name: 'typescript/config-files-relaxed',
-      files: tsOpts.allowDefaultProject,
-      rules: {
-        '@typescript-eslint/no-unsafe-assignment': 'off',
-        '@typescript-eslint/no-unsafe-member-access': 'off',
-        '@typescript-eslint/no-unsafe-call': 'off',
-        '@typescript-eslint/no-unsafe-return': 'off',
-        '@typescript-eslint/no-unsafe-argument': 'off',
-        'unicorn/import-style': 'off',
-      },
-    })
-  }
-
-  return configs
+  return options.configFiles === false
+    ? configs
+    : defineConfig([
+        {
+          ignores: ['*.config.ts', '*.config.mts'],
+          extends: [configs],
+        },
+        {
+          name: 'typescript/config-files',
+          files: ['*.config.ts', '*.config.mts'],
+          extends: [tsConfigs.recommended],
+          languageOptions: {
+            parser: tsParser,
+            parserOptions: { project: false },
+          },
+        },
+      ])
 }
 
 // ============================================================================
