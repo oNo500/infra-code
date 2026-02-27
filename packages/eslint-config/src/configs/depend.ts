@@ -1,5 +1,5 @@
 /**
- * 依赖优化规则配置,检测可用原生 API 替代的包和微型工具库
+ * Dependency optimization rule configuration for detecting packages replaceable with native APIs or micro-utilities
  */
 import { fixupPluginRules } from '@eslint/compat'
 import dependPlugin from 'eslint-plugin-depend'

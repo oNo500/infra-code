@@ -1,5 +1,5 @@
 /**
- * Import 模块导入规则配置,提供导入排序、循环依赖检测和 TypeScript 支持
+ * Import rule configuration providing import ordering, circular dependency detection, and TypeScript support
  */
 import { defineConfig } from 'eslint/config'
 import { importX } from 'eslint-plugin-import-x'

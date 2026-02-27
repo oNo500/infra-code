@@ -1,5 +1,5 @@
 /**
- * Unicorn ESLint 配置,提供 100+ 强大规则改进代码质量和一致性
+ * Unicorn ESLint configuration providing 100+ powerful rules to improve code quality and consistency
  */
 import { defineConfig } from 'eslint/config'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'

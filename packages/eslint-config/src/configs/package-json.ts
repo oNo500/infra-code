@@ -1,5 +1,5 @@
 /**
- * Package.json 文件规则配置,检查文件一致性、字段验证和依赖管理
+ * package.json rule configuration for file consistency checks, field validation, and dependency management
  */
 import { defineConfig } from 'eslint/config'
 import plugin from 'eslint-plugin-package-json'

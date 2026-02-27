@@ -1,5 +1,5 @@
 /**
- * eslint-plugin-boundaries 配置，用于强制执行架构边界规则
+ * eslint-plugin-boundaries configuration for enforcing architectural boundary rules
  */
 import { defineConfig } from 'eslint/config'
 import boundariesPlugin from 'eslint-plugin-boundaries'

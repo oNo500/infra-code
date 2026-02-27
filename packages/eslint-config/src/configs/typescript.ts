@@ -1,5 +1,5 @@
 /**
- * TypeScript ESLint 配置,提供类型感知的代码检查(推荐规则 + 风格规则)
+ * TypeScript ESLint configuration with type-aware linting (recommended rules + stylistic rules)
  */
 import { defineConfig } from 'eslint/config'
 import { configs, parser, plugin } from 'typescript-eslint'
@@ -10,7 +10,7 @@ import type { TypeScriptOptions } from '../types'
 import type { Linter } from 'eslint'
 
 /**
- * TypeScript 规则配置
+ * TypeScript rule configuration
  */
 export function typescript(options: TypeScriptOptions = {}): Linter.Config[] {
   const { files = [GLOB_TS], tsconfigRootDir, overrides = {} } = options

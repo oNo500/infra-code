@@ -1,5 +1,5 @@
 /**
- * Stylistic 代码风格配置,提供缩进、引号、逗号等格式化规则
+ * Stylistic code style configuration providing formatting rules for indentation, quotes, commas, and more
  */
 import stylisticPlugin from '@stylistic/eslint-plugin'
 import { defineConfig } from 'eslint/config'

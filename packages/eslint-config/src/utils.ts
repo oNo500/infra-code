@@ -1,13 +1,13 @@
 /**
- * 工具函数和常量
+ * Utility functions and constants
  */
 
 // ============================================================================
-// 环境检测
+// Environment detection
 // ============================================================================
 
 /**
- * 检测是否在 Git Hooks 或 lint-staged 中运行
+ * Detects whether running inside Git Hooks or lint-staged
  */
 function isInGitHooksOrLintStaged(): boolean {
   const envVars = [
@@ -18,14 +18,14 @@ function isInGitHooksOrLintStaged(): boolean {
 }
 
 /**
- * 检测是否在编辑器环境中运行
+ * Detects whether running in an editor environment
  *
- * 在以下情况返回 false：
- * - CI 环境
+ * Returns false when:
+ * - CI environment
  * - Git Hooks
  * - lint-staged
  *
- * 在以下情况返回 true：
+ * Returns true when:
  * - VSCode
  * - JetBrains IDE
  * - Vim / Neovim
@@ -46,35 +46,35 @@ export function isInEditorEnv(): boolean {
 }
 
 // ============================================================================
-// 文件匹配模式 (Globs)
+// File matching patterns (Globs)
 // ============================================================================
 
 /**
- * ESLint 文件匹配模式常量
+ * ESLint file glob pattern constants
  *
- * 统一的 glob 模式，确保所有配置使用一致的文件匹配规则
+ * Unified glob patterns to ensure consistent file matching across all configurations
  */
 
-/** 所有 JS/TS 源文件（完整覆盖 ESM/CJS） */
+/** All JS/TS source files (full ESM/CJS coverage) */
 export const GLOB_SRC = '**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}'
 
-/** 仅 JavaScript 文件 */
+/** JavaScript files only */
 export const GLOB_JS = '**/*.{js,mjs,cjs,jsx}'
 
-/** 仅 TypeScript 文件 */
+/** TypeScript files only */
 export const GLOB_TS = '**/*.{ts,mts,cts,tsx}'
 
-/** JSX/TSX 文件（React 相关） */
+/** JSX/TSX files (React-related) */
 export const GLOB_JSX = '**/*.{jsx,tsx}'
 
-/** 测试文件 */
+/** Test files */
 export const GLOB_TESTS: string[] = [
   '**/*.{test,spec}.{js,mjs,cjs,jsx,ts,mts,cts,tsx}',
   '**/__tests__/**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}',
 ]
 
-/** JSON 文件 */
+/** JSON files */
 export const GLOB_JSON = '**/*.json'
 
-/** Markdown 文件 */
+/** Markdown files */
 export const GLOB_MARKDOWN = '**/*.md'

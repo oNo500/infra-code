@@ -1,5 +1,5 @@
 /**
- * Next.js ESLint 配置,使用官方插件检测 Next.js 最佳实践和 Core Web Vitals 性能优化
+ * Next.js ESLint configuration using the official plugin for best practices and Core Web Vitals enforcement
  */
 import nextjsPlugin from '@next/eslint-plugin-next'
 import { defineConfig } from 'eslint/config'
@@ -11,7 +11,7 @@ const recommended = nextjsPlugin.configs.recommended as unknown as Linter.Config
 const coreWebVitals = nextjsPlugin.configs['core-web-vitals'] as unknown as Linter.Config
 
 /**
- * Next.js 规则配置
+ * Next.js rule configuration
  */
 export function nextjs(options: NextjsOptions = {}): Linter.Config[] {
   const { overrides = {} } = options

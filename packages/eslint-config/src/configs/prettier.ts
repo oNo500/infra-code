@@ -1,5 +1,5 @@
 /**
- * Prettier 代码格式化配置,使用官方推荐规则集
+ * Prettier code formatting configuration using the official recommended ruleset
  */
 import { defineConfig } from 'eslint/config'
 import prettierConfig from 'eslint-plugin-prettier/recommended'

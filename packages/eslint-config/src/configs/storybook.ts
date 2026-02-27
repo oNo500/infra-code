@@ -1,5 +1,5 @@
 /**
- * Storybook ESLint 配置,使用官方插件检测 Storybook 最佳实践
+ * Storybook ESLint configuration using the official plugin for best practices enforcement
  */
 import { defineConfig } from 'eslint/config'
 import storybookPlugin from 'eslint-plugin-storybook'

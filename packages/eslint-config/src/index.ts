@@ -1,7 +1,7 @@
 /**
  * @workspace/eslint-config
  *
- * 统一 ESLint 配置工具
+ * Composable ESLint configuration factory
  *
  * @example
  * ```typescript
@@ -60,68 +60,68 @@ import type {
 import type { Linter } from 'eslint'
 
 // ============================================================================
-// 类型定义
+// Type definitions
 // ============================================================================
 
 /**
- * composeConfig 配置选项
+ * Options for composeConfig
  *
- * 每个配置项支持：
- * - `true` - 使用默认选项
- * - `对象` - 传入自定义选项
- * - `false` - 关闭（默认开启的配置需要显式关闭）
- * - 不写 - 不启用（非默认开启的配置）
+ * Each config entry accepts:
+ * - `true` - enable with default options
+ * - `object` - enable with custom options
+ * - `false` - explicitly disable (required for configs that are on by default)
+ * - omitted - leave disabled (for configs that are off by default)
  */
 export interface ComposeConfigOptions {
-  // 基础配置（默认开启）
-  /** 忽略文件配置 @default true */
+  // Base configuration (enabled by default)
+  /** Ignore patterns configuration @default true */
   ignores?: boolean | IgnoresOptions
-  /** JavaScript 基础配置 @default true */
+  /** JavaScript base configuration @default true */
   javascript?: boolean | JavaScriptOptions
-  /** TypeScript 配置 @default true */
+  /** TypeScript configuration @default true */
   typescript?: boolean | TypeScriptOptions
-  /** 代码风格规则 @default true */
+  /** Code style rules @default true */
   stylistic?: boolean | StylisticOptions
-  /** Unicorn 最佳实践 @default true */
+  /** Unicorn best practices @default true */
   unicorn?: boolean | UnicornOptions
-  /** 依赖优化建议 @default true */
+  /** Dependency optimization suggestions @default true */
   depend?: boolean | DependOptions
-  /** config 文件（*.config.ts）专属规则（不启用类型检查）@default true */
+  /** Rules for config files (*.config.ts) without type-checking @default true */
   configFiles?: boolean
 
-  // 框架配置
-  /** React 配置 */
+  // Framework configuration
+  /** React configuration */
   react?: boolean | ReactOptions
-  /** Next.js 配置 */
+  /** Next.js configuration */
   nextjs?: boolean | NextjsOptions
-  /** Tailwind CSS 配置 */
+  /** Tailwind CSS configuration */
   tailwind?: boolean | TailwindOptions
 
-  // 工具配置
-  /** Import 排序和规则 */
+  // Tooling configuration
+  /** Import ordering and rules */
   imports?: boolean | ImportsOptions
-  /** Prettier 格式化 */
+  /** Prettier formatting */
   prettier?: boolean | PrettierOptions
 
-  // 质量配置
-  /** 无障碍访问规则 */
+  // Quality configuration
+  /** Accessibility rules */
   a11y?: boolean | A11yOptions
-  /** JSDoc 文档规则 */
+  /** JSDoc documentation rules */
   jsdoc?: boolean | JsdocOptions
-  /** 模块边界规则 */
+  /** Module boundary rules */
   boundaries?: boolean | BoundariesOptions
-  /** package.json 规则 */
+  /** package.json rules */
   packageJson?: boolean | PackageJsonOptions
 
-  // 测试配置
-  /** Vitest 测试规则 */
+  // Testing configuration
+  /** Vitest testing rules */
   vitest?: boolean | VitestOptions
-  /** Storybook 规则 */
+  /** Storybook rules */
   storybook?: boolean | StorybookOptions
 }
 
 // ============================================================================
-// 主函数
+// Core function
 // ============================================================================
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,12 +131,12 @@ type ConfigEntry = {
   key: keyof ComposeConfigOptions
   fn: ConfigFn
   defaultOn?: boolean
-  /** 根据全局 options 派生注入值，优先级低于用户配置 */
+  /** Values derived from global options to inject; overridden by explicit user config */
   inject?: (options: ComposeConfigOptions) => Record<string, unknown>
 }
 
 const CONFIG_REGISTRY: ConfigEntry[] = [
-  // 默认开启
+  // Enabled by default
   { key: 'ignores', fn: ignores, defaultOn: true },
   { key: 'javascript', fn: javascript, defaultOn: true },
   {
@@ -147,7 +147,7 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
   { key: 'stylistic', fn: stylistic, defaultOn: true },
   { key: 'unicorn', fn: unicorn, defaultOn: true },
   { key: 'depend', fn: depend, defaultOn: true },
-  // 按需开启（顺序固定，prettier 最后）
+  // Opt-in (order is fixed; prettier must come last)
   {
     key: 'imports',
     fn: imports,
@@ -165,7 +165,7 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
   { key: 'prettier', fn: prettier },
 ]
 
-/** 组合 ESLint 配置，内部按正确顺序组合 */
+/** Composes ESLint configs in the correct internal order */
 export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config[] {
   const configs: Linter.Config[] = []
 
@@ -202,7 +202,7 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
 }
 
 // ============================================================================
-// 类型导出
+// Type exports
 // ============================================================================
 
 export type {
@@ -226,7 +226,7 @@ export type {
 } from './types'
 
 // ============================================================================
-// 常量导出
+// Constant exports
 // ============================================================================
 
 export { GLOB_SRC, GLOB_JS, GLOB_TS, GLOB_JSX, GLOB_TESTS, GLOB_JSON, GLOB_MARKDOWN } from './utils'

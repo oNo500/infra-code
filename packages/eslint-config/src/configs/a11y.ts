@@ -1,5 +1,5 @@
 /**
- * eslint-plugin-jsx-a11y 配置,用于检测 JSX 中的无障碍问题(WCAG 标准)
+ * eslint-plugin-jsx-a11y configuration for detecting accessibility issues in JSX (WCAG standard)
  */
 import { defineConfig } from 'eslint/config'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
@@ -10,7 +10,7 @@ import type { A11yOptions } from '../types'
 import type { Linter } from 'eslint'
 
 /**
- * 可访问性规则配置
+ * Accessibility rule configuration
  */
 export function a11y(options: A11yOptions = {}): Linter.Config[] {
   const { files = [GLOB_JSX], overrides = {} } = options

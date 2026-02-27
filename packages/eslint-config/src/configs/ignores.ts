@@ -1,5 +1,5 @@
 /**
- * ESLint 忽略文件配置,支持默认忽略规则和 .gitignore 导入
+ * ESLint ignore configuration with built-in default ignore patterns and .gitignore integration
  */
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -10,31 +10,31 @@ import type { IgnoresOptions } from '../types'
 import type { Linter } from 'eslint'
 
 /**
- * 默认忽略的文件和目录
+ * Default ignored files and directories
  */
 export const DEFAULT_IGNORES: string[] = [
-  // 依赖目录
+  // Dependency directories
   '**/node_modules/**',
   '**/.pnp.*',
 
-  // 构建产物
+  // Build artifacts
   '**/dist/**',
   '**/build/**',
   '**/out/**',
   '**/.next/**',
 
-  // 缓存目录
+  // Cache directories
   '**/.cache/**',
   '**/.turbo/**',
   '**/.eslintcache',
 
-  // 版本控制
+  // Version control
   '**/.git/**',
   '**/.svn/**',
   '**/.hg/**',
   '**/public/**',
 
-  // 类型文件
+  // Type declaration files
   '**/*.d.ts',
 ]
 

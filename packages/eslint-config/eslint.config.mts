@@ -7,7 +7,7 @@ const config: Linter.Config[] = composeConfig({
   imports: {
     typescript: true,
     overrides: {
-      // 本包内部使用相对导入，因为没有配置路径别名
+      // This package uses relative imports internally since no path aliases are configured
       'no-restricted-imports': 'off',
     },
   },

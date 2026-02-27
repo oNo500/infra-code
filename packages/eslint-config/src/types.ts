@@ -1,38 +1,38 @@
 import type { RulesConfig } from '@eslint/core'
 
 /**
- * 规则覆盖选项
+ * Rule override options
  */
 export interface OptionsOverrides {
   /**
-   * 自定义规则覆盖
+   * Custom rule overrides
    */
   overrides?: Partial<RulesConfig>
 }
 
 /**
- * 风格化选项
+ * Stylistic options
  */
 export interface OptionsStylistic {
   /**
-   * 是否启用风格化规则
+   * Whether to enable stylistic rules
    * @default true
    */
   stylistic?: boolean
 }
 
 /**
- * 文件匹配选项
+ * File matching options
  */
 export interface OptionsFiles {
   /**
-   * 自定义文件匹配模式
+   * Custom file glob patterns
    */
   files?: string[]
 }
 
 /**
- * TypeScript 配置选项
+ * TypeScript configuration options
  */
 export interface OptionsTypeScript {
   tsconfigRootDir?: string
@@ -41,18 +41,18 @@ export interface OptionsTypeScript {
 }
 
 /**
- * Tailwind CSS 配置选项
+ * Tailwind CSS configuration options
  */
 export interface OptionsTailwind {
   /**
-   * Tailwind CSS 入口文件路径
+   * Path to the Tailwind CSS entry file
    * @default 'src/global.css'
    */
   entryPoint?: string
 }
 
 // ============================================================================
-// Config Options 类型
+// Config option types
 // ============================================================================
 
 export type A11yOptions = OptionsFiles & OptionsOverrides
@@ -74,45 +74,45 @@ export interface BoundariesOptions extends OptionsFiles, OptionsOverrides {
 
 export interface DependOptions extends OptionsOverrides {
   /**
-   * 预设列表
+   * Preset list
    *
-   * - `native`: 检测可用原生 JavaScript API 替代的包(如 `is-nan` → `Number.isNaN()`)
-   * - `microutilities`: 检测微型工具库(一行代码可实现的包)
-   * - `preferred`: 推荐更轻量、维护更好的替代方案
+   * - `native`: Flags packages replaceable with native JavaScript APIs (e.g. `is-nan` → `Number.isNaN()`)
+   * - `microutilities`: Flags micro-utility packages implementable in a single line
+   * - `preferred`: Recommends lighter-weight, better-maintained alternatives
    *
    * @default ['native', 'microutilities', 'preferred']
    */
   presets?: ('native' | 'microutilities' | 'preferred')[]
 
   /**
-   * 自定义禁用的模块列表
+   * Additional modules to ban
    * @default []
    */
   modules?: string[]
 
   /**
-   * 允许使用的模块列表(即使在 presets 中)
+   * Modules to allow even if matched by a preset
    * @default []
    */
   allowed?: string[]
 }
 
 export interface IgnoresOptions {
-  /** 用户自定义忽略规则，传入 false 禁用默认规则 */
+  /** Custom ignore patterns; pass false to disable the built-in defaults */
   ignores?: string[] | false
-  /** gitignore 文件路径或启用标志 */
+  /** Path to .gitignore file, or a boolean to enable/disable auto-detection */
   gitignore?: string | boolean
 }
 
 export interface ImportsOptions extends OptionsOverrides, OptionsStylistic {
   /**
-   * 是否启用 TypeScript 支持
-   * 当全局 typescript 开启时，由 composeConfig 自动注入为 true
-   * @default false（独立调用时）/ 跟随全局 typescript 选项（通过 composeConfig）
+   * Whether to enable TypeScript support
+   * Automatically injected as true by composeConfig when the global typescript option is enabled
+   * @default false (standalone) / follows global typescript option (via composeConfig)
    */
   typescript?: boolean
   /**
-   * 禁止使用 ../ 父级相对导入
+   * Disallow parent-relative imports (paths starting with ../)
    * @default false
    */
   noRelativeParentImports?: boolean

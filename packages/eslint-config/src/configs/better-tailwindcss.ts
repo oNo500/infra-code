@@ -1,5 +1,5 @@
 /**
- * Tailwind CSS ESLint 配置，使用官方推荐规则集
+ * Tailwind CSS ESLint configuration using the official recommended ruleset
  */
 import { defineConfig } from 'eslint/config'
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
@@ -10,7 +10,7 @@ import type { TailwindOptions } from '../types'
 import type { Linter } from 'eslint'
 
 /**
- * Tailwind CSS 规则配置
+ * Tailwind CSS rule configuration
  */
 export function tailwind(options: TailwindOptions = {}): Linter.Config[] {
   const { files = [GLOB_JSX], overrides = {}, entryPoint = 'src/global.css' } = options

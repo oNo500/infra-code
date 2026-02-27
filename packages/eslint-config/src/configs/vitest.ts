@@ -1,5 +1,5 @@
 /**
- * Vitest 测试规则配置,包含测试最佳实践和质量保证规则
+ * Vitest test rule configuration with testing best practices and quality assurance rules
  */
 import { fixupPluginRules } from '@eslint/compat'
 import vitestPlugin from '@vitest/eslint-plugin'

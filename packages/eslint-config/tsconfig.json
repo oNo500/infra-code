@@ -3,6 +3,6 @@
   "include": ["src", "*.config.ts", "*.config.mts"],
   "compilerOptions": {
     "types": ["node"],
-    "isolatedDeclarations": false // 减少维护，在那时关闭吧，不然 config 需要繁琐的配置
+    "isolatedDeclarations": false // Disabled to reduce maintenance overhead; enabling it would require verbose type annotations across configs
   }
 }

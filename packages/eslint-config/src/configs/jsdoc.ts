@@ -1,5 +1,5 @@
 /**
- * JSDoc 注释规范配置,使用 TypeScript 优化的推荐规则验证注释正确性
+ * JSDoc comment validation configuration using TypeScript-optimized recommended rules
  */
 import { defineConfig } from 'eslint/config'
 import jsdocPlugin from 'eslint-plugin-jsdoc'
