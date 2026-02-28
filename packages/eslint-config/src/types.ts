@@ -137,7 +137,13 @@ export interface PackageJsonOptions extends OptionsOverrides {
 
 export type PrettierOptions = OptionsOverrides
 
-export type ReactOptions = OptionsFiles & OptionsOverrides
+export interface ReactOptions extends OptionsFiles, OptionsOverrides {
+  /**
+   * Whether to enable react-refresh plugin (for Vite projects).
+   * @default false
+   */
+  vite?: boolean
+}
 
 export type StorybookOptions = OptionsOverrides
 
