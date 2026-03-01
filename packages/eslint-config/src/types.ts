@@ -116,6 +116,11 @@ export interface ImportsOptions extends OptionsOverrides, OptionsStylistic {
    * @default false
    */
   noRelativeParentImports?: boolean
+  /**
+   * Root directory for tsconfig.json lookup; restricts resolver scope in monorepo to avoid cross-app漫游
+   * Automatically injected by composeConfig from the global typescript.tsconfigRootDir option
+   */
+  tsconfigRootDir?: string
 }
 
 export type JavaScriptOptions = OptionsFiles & OptionsOverrides
