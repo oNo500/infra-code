@@ -27,14 +27,14 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@clack/prompts": "^0.11.0"
+    "@clack/prompts": "^1.0.1"
   },
   "devDependencies": {
     "@infra-x/eslint-config": "workspace:*",
     "@infra-x/typescript-config": "workspace:*",
-    "@types/node": "^25.3.1",
-    "eslint": "^9.39.3",
-    "tsdown": "^0.18.4",
+    "@types/node": "^25.3.3",
+    "eslint": "^10.0.2",
+    "tsdown": "^0.20.3",
     "typescript": "^5.9.3"
   },
   "main": "./dist/index.mjs",
