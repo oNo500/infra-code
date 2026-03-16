@@ -25,6 +25,8 @@ export default composeConfig({
 
 For multiple config segments (e.g. separate test rules):
 
+> 注意：在多`tsconfig`配置时，`tsc -b`，需要添加 `-b`参数。
+
 ```typescript
 // eslint.config.mts
 import { GLOB_TESTS, composeConfig } from '@infra-x/eslint-config'
