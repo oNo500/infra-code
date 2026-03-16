@@ -37,3 +37,14 @@ After merging to `master`:
 1. Changesets action automatically opens a **"Version Packages"** PR
 2. Review the version bumps and changelog
 3. Merge the PR → packages are published to npm and git tags are created
+
+### Manual release
+
+If you need to release immediately without waiting for the PR flow:
+
+```bash
+git checkout master && git pull
+pnpm changeset version   # updates package.json versions and generates CHANGELOG
+git add . && git commit -m "chore: version packages"
+git push                 # triggers publish workflow → publishes to npm and creates git tags
+```
