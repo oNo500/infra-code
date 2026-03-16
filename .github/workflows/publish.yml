@@ -6,10 +6,11 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
-  publish-typescript-config:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,56 +19,12 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - name: Check and publish
-        working-directory: packages/typescript-config
-        run: |
-          PUBLISHED=$(npm view @infra-x/typescript-config version 2>/dev/null || echo "none")
-          LOCAL=$(node -p "require('./package.json').version")
-          if [ "$PUBLISHED" != "$LOCAL" ]; then
-            npm publish --access public
-          else
-            echo "Already published $LOCAL, skipping."
-          fi
-
-  publish-eslint-config:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - run: pnpm build
+      - uses: changesets/action@v1
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-      - run: pnpm install --frozen-lockfile
-      - name: Check and publish
-        working-directory: packages/eslint-config
-        run: |
-          PUBLISHED=$(npm view @infra-x/eslint-config version 2>/dev/null || echo "none")
-          LOCAL=$(node -p "require('./package.json').version")
-          if [ "$PUBLISHED" != "$LOCAL" ]; then
-            npm publish --access public
-          else
-            echo "Already published $LOCAL, skipping."
-          fi
-
-  publish-create-eslint-config:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-      - run: pnpm install --frozen-lockfile
-      - name: Check and publish
-        working-directory: packages/create-eslint-config
-        run: |
-          PUBLISHED=$(npm view @infra-x/create-eslint-config version 2>/dev/null || echo "none")
-          LOCAL=$(node -p "require('./package.json').version")
-          if [ "$PUBLISHED" != "$LOCAL" ]; then
-            npm publish --access public
-          else
-            echo "Already published $LOCAL, skipping."
-          fi
+          publish: pnpm changeset publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
