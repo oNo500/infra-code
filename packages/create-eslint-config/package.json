@@ -37,8 +37,6 @@
     "tsdown": "^0.20.3",
     "typescript": "^5.9.3"
   },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"

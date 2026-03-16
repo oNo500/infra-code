@@ -76,3 +76,7 @@ Opt-in:
 | `storybook` | Storybook rules |
 
 All options support an `overrides` field for custom rule overrides, and most accept a `files` glob array.
+
+## Roadmap
+
+- **oxlint 集成**：计划引入 oxlint 作为快速检查层，通过 `eslint-plugin-oxlint` 禁用 ESLint 中与 oxlint 重复的规则（core/typescript/unicorn），减少 ESLint 规则数量约 50%，显著提升 CI lint 速度
