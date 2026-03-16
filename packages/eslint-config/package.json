@@ -55,7 +55,7 @@
     "typescript-eslint": "^8.56.1"
   },
   "peerDependencies": {
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.2 || ^10.0.0",
     "globals": "17.4.0",
     "jiti": "2.6.1",
     "prettier": "^3.7.4",
