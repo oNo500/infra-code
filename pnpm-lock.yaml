@@ -46,8 +46,8 @@ importers:
         specifier: ^2.13.0
         version: 2.13.0(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3)
       '@eslint/compat':
-        specifier: 1.4.1
-        version: 1.4.1(eslint@10.0.3(jiti@2.6.1))
+        specifier: 2.0.3
+        version: 2.0.3(eslint@10.0.3(jiti@2.6.1))
       '@eslint/core':
         specifier: 0.17.0
         version: 0.17.0
@@ -713,11 +713,11 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.0.0'
 
-  '@eslint/compat@1.4.1':
-    resolution: {integrity: sha512-cfO82V9zxxGBxcQDr1lfaYB7wykTa0b00mGa36FrJl7iTFd0Z2cHfEYuxcBRP/iNijCsWsEkA+jzT8hGYmv33w==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+  '@eslint/compat@2.0.3':
+    resolution: {integrity: sha512-SjIJhGigp8hmd1YGIBwh7Ovri7Kisl42GYFjrOyHhtfYGGoLW6teYi/5p8W50KSsawUPpuLOSmsq1bD0NGQLBw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     peerDependencies:
-      eslint: ^8.40 || 9
+      eslint: ^8.40 || 9 || 10
     peerDependenciesMeta:
       eslint:
         optional: true
@@ -4186,9 +4186,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/compat@1.4.1(eslint@10.0.3(jiti@2.6.1))':
+  '@eslint/compat@2.0.3(eslint@10.0.3(jiti@2.6.1))':
     dependencies:
-      '@eslint/core': 0.17.0
+      '@eslint/core': 1.1.1
     optionalDependencies:
       eslint: 10.0.3(jiti@2.6.1)
 
