@@ -7,6 +7,7 @@ on:
 permissions:
   id-token: write
   contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -21,4 +22,8 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm changeset publish --provenance --access public
+      - uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish --provenance --access public
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
