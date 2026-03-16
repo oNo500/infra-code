@@ -4,7 +4,7 @@
     "config:recommended"
   ],
   "dependencyDashboardApproval": false,
-  "schedule": ["every day"],
+  "schedule": ["at any time"],
   "vulnerabilityAlerts": {
     "labels": ["security"]
   },
