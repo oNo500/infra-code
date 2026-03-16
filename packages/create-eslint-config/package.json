@@ -34,7 +34,7 @@
     "@infra-x/typescript-config": "workspace:*",
     "@types/node": "^25.3.3",
     "eslint": "^10.0.2",
-    "tsdown": "^0.20.3",
+    "tsdown": "^0.21.0",
     "typescript": "^5.9.3"
   },
   "exports": {
