@@ -6,7 +6,7 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "check-types": "turbo run check-types",
+    "typecheck": "turbo run typecheck",
     "release": "changeset publish"
   },
   "devDependencies": {

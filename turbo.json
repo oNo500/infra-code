@@ -9,7 +9,7 @@
     },
     "lint": {},
     "lint:fix": {},
-    "check-types": {
+    "typecheck": {
       "dependsOn": ["^build"]
     }
   }
