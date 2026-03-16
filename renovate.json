@@ -6,7 +6,6 @@
   "dependencyDashboardApproval": false,
   "schedule": ["every day"],
   "vulnerabilityAlerts": {
-    "enabled": true,
     "labels": ["security"]
   },
   "packageRules": [
