@@ -78,7 +78,7 @@ export function imports(options: ImportsOptions = {}): Linter.Config[] {
         ],
         'import-x/consistent-type-specifier-style': 'error',
         'import-x/no-named-as-default': 'warn',
-        // maxDepth 避免全图遍历导致性能问题
+        // maxDepth prevents full-graph traversal for performance
         'import-x/no-cycle': ['error', { maxDepth: 5 }],
         'import-x/no-deprecated': 'warn',
         'import-x/no-extraneous-dependencies': 'error',

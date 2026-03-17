@@ -3,7 +3,7 @@
  */
 import reactPlugin from '@eslint-react/eslint-plugin'
 import { defineConfig } from 'eslint/config'
-// import reactHooksPlugin from 'eslint-plugin-react-hooks'// reactPlugin 新版本已经包含了 reactHooksPlugin
+// import reactHooksPlugin from 'eslint-plugin-react-hooks' // reactPlugin already includes reactHooksPlugin in newer versions
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 import { GLOB_JSX } from '../utils'
@@ -26,7 +26,7 @@ export function react(options: ReactOptions = {}): Linter.Config[] {
       ...(vite ? [reactRefresh.configs.recommended] : []),
     ],
     rules: {
-      // attributes: false 允许在 JSX 事件属性（如 onClick）上传入 async 函数，此场景仅在 React 中存在
+      // attributes: false allows passing async functions to JSX event attributes (e.g. onClick), which is valid in React
       '@typescript-eslint/no-misused-promises': [
         'error',
         {
