@@ -17,8 +17,6 @@
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "files": [
     "dist"
@@ -38,7 +36,6 @@
     "@next/eslint-plugin-next": "^16.1.6",
     "@stylistic/eslint-plugin": "^5.9.0",
     "@vitest/eslint-plugin": "^1.6.9",
-    "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-better-tailwindcss": "^4.3.1",
     "eslint-plugin-boundaries": "^5.4.0",
@@ -47,7 +44,6 @@
     "eslint-plugin-jsdoc": "^62.7.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-package-json": "^0.91.0",
-    "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-storybook": "^10.2.14",
@@ -58,15 +54,11 @@
     "eslint": "^9.39.2 || ^10.0.0",
     "globals": "17.4.0",
     "jiti": "2.6.1",
-    "prettier": "^3.7.4",
     "storybook": ">=10.0.0",
     "typescript": "^5.9.3"
   },
   "peerDependenciesMeta": {
     "jiti": {
-      "optional": true
-    },
-    "prettier": {
       "optional": true
     },
     "storybook": {
@@ -84,7 +76,6 @@
     "eslint": "^10.0.2",
     "globals": "17.4.0",
     "jiti": "2.6.1",
-    "prettier": "^3.8.1",
     "tsdown": "^0.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"

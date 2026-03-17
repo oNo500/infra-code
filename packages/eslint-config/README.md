@@ -19,7 +19,6 @@ export default composeConfig({
   react: true,
   tailwind: true,
   imports: true,
-  prettier: true,
 })
 ```
 
@@ -67,7 +66,6 @@ Opt-in:
 | `nextjs` | Next.js rules |
 | `tailwind` | Tailwind CSS class ordering (`entryPoint` defaults to `src/global.css`) |
 | `imports` | Import ordering and resolution |
-| `prettier` | Prettier formatting (should be last) |
 | `a11y` | Accessibility rules |
 | `jsdoc` | JSDoc rules |
 | `boundaries` | Module boundary enforcement |

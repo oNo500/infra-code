@@ -140,8 +140,6 @@ export interface PackageJsonOptions extends OptionsOverrides {
   enforceForPrivate?: boolean
 }
 
-export type PrettierOptions = OptionsOverrides
-
 export interface ReactOptions extends OptionsFiles, OptionsOverrides {
   /**
    * Whether to enable react-refresh plugin (for Vite projects).
