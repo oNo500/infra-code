@@ -16,9 +16,6 @@
  * ```
  */
 
-import { defineConfig } from 'eslint/config'
-import { configs as tsConfigs, parser as tsParser } from 'typescript-eslint'
-
 import { a11y } from './configs/a11y'
 import { tailwind } from './configs/better-tailwindcss'
 import { boundaries } from './configs/boundaries'
@@ -83,9 +80,6 @@ export interface ComposeConfigOptions {
   unicorn?: boolean | UnicornOptions
   /** Dependency optimization suggestions @default true */
   depend?: boolean | DependOptions
-  /** Rules for config files (*.config.ts) without type-checking @default true */
-  configFiles?: boolean
-
   // Framework configuration
   /** React configuration */
   react?: boolean | ReactOptions
@@ -178,26 +172,7 @@ export function composeConfig(options: ComposeConfigOptions = {}): Linter.Config
     configs.push(...fn({ ...injected, ...base }))
   }
 
-  return options.configFiles === false
-    ? configs
-    : defineConfig([
-        {
-          ignores: ['*.config.ts', '*.config.mts'],
-          extends: [configs],
-        },
-        {
-          name: 'typescript/config-files',
-          files: ['*.config.ts', '*.config.mts'],
-          extends: [tsConfigs.recommended],
-          languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-              project: false,
-              tsconfigRootDir: (typeof options.typescript === 'object' ? options.typescript.tsconfigRootDir : undefined) ?? process.cwd(),
-            },
-          },
-        },
-      ])
+  return configs
 }
 
 // ============================================================================

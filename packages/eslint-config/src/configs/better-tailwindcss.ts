@@ -13,7 +13,7 @@ import type { Linter } from 'eslint'
  * Tailwind CSS rule configuration
  */
 export function tailwind(options: TailwindOptions = {}): Linter.Config[] {
-  const { files = [GLOB_JSX], overrides = {}, entryPoint = 'src/global.css' } = options
+  const { files = [GLOB_JSX], overrides = {}, entryPoint = 'src/styles/global.css' } = options
 
   return defineConfig({
     name: 'tailwind/rules',

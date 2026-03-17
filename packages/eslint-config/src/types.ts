@@ -11,17 +11,6 @@ export interface OptionsOverrides {
 }
 
 /**
- * Stylistic options
- */
-export interface OptionsStylistic {
-  /**
-   * Whether to enable stylistic rules
-   * @default true
-   */
-  stylistic?: boolean
-}
-
-/**
  * File matching options
  */
 export interface OptionsFiles {
@@ -104,7 +93,7 @@ export interface IgnoresOptions {
   gitignore?: boolean
 }
 
-export interface ImportsOptions extends OptionsOverrides, OptionsStylistic {
+export interface ImportsOptions extends OptionsOverrides {
   /**
    * Whether to enable TypeScript support
    * Automatically injected as true by composeConfig when the global typescript option is enabled
