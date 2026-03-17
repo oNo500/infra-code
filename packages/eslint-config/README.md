@@ -56,7 +56,7 @@ Each option accepts `true` (defaults), an options object, or `false` (disable).
 
 ## Options
 
-Default-on: `ignores` · `javascript` · `typescript` · `stylistic` · `unicorn` · `depend` · `configFiles`
+Default-on: `globalIgnores` · `javascript` · `typescript` · `stylistic` · `unicorn` · `depend`
 
 Opt-in:
 
@@ -72,9 +72,18 @@ Opt-in:
 | `packageJson` | `package.json` rules |
 | `vitest` | Vitest testing rules |
 | `storybook` | Storybook rules |
+| `oxlint` | Disable ESLint rules already covered by oxlint (requires oxlint to run separately) |
 
 All options support an `overrides` field for custom rule overrides, and most accept a `files` glob array.
 
-## Roadmap
+## Oxlint Integration
 
-- **oxlint 集成**：计划引入 oxlint 作为快速检查层，通过 `eslint-plugin-oxlint` 禁用 ESLint 中与 oxlint 重复的规则（core/typescript/unicorn），减少 ESLint 规则数量约 50%，显著提升 CI lint 速度
+When running oxlint alongside ESLint, enable the `oxlint` option to disable duplicate rules:
+
+```typescript
+// uses flat/recommended preset
+composeConfig({ oxlint: true })
+
+// generate disabled rules from your oxlint config file
+composeConfig({ oxlint: { configFile: './.oxlintrc.json' } })
+```
