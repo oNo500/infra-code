@@ -28,6 +28,7 @@ import { nextjs } from './configs/nextjs'
 import { packageJson } from './configs/package-json'
 import { react } from './configs/react'
 import { storybook } from './configs/storybook'
+import { oxlintConfig } from './configs/oxlint'
 import { stylistic } from './configs/stylistic'
 import { typescript } from './configs/typescript'
 import { unicorn } from './configs/unicorn'
@@ -42,6 +43,7 @@ import type {
   JavaScriptOptions,
   JsdocOptions,
   NextjsOptions,
+  OxlintOptions,
   PackageJsonOptions,
   ReactOptions,
   StorybookOptions,
@@ -107,6 +109,15 @@ export interface ComposeConfigOptions {
   vitest?: boolean | VitestOptions
   /** Storybook rules */
   storybook?: boolean | StorybookOptions
+
+  // Linter integration
+  /**
+   * Disable ESLint rules already covered by oxlint.
+   * Requires oxlint to be run separately.
+   * - `true` uses the `flat/recommended` preset
+   * - `{ configFile }` generates disabled rules from your oxlint config file
+   */
+  oxlint?: boolean | OxlintOptions
 }
 
 // ============================================================================
@@ -156,6 +167,7 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
   { key: 'packageJson', fn: packageJson },
   { key: 'vitest', fn: vitest },
   { key: 'storybook', fn: storybook },
+  { key: 'oxlint', fn: oxlintConfig },
 ]
 
 /** Composes ESLint configs in the correct internal order */
@@ -188,6 +200,7 @@ export type {
   JavaScriptOptions,
   JsdocOptions,
   NextjsOptions,
+  OxlintOptions,
   PackageJsonOptions,
   ReactOptions,
   StorybookOptions,

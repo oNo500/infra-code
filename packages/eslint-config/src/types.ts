@@ -150,3 +150,12 @@ export type UnicornOptions = OptionsFiles & OptionsOverrides
 export type VitestOptions = OptionsFiles & OptionsOverrides & {
   isInEditor?: boolean
 }
+
+export interface OxlintOptions {
+  /**
+   * Path to oxlint config file for dynamic rule generation.
+   * When provided, uses `buildFromOxlintConfigFile()` instead of the `flat/recommended` preset.
+   * @example './.oxlintrc.json'
+   */
+  configFile?: string
+}
