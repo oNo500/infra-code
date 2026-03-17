@@ -2,14 +2,6 @@
 
 Composable ESLint flat config factory for infra-x projects.
 
-## Release
-
-```bash
-pnpm release
-```
-
-交互式选择版本号，自动 bump `package.json`、提交、打 tag。
-
 ## Installation
 
 ```bash
