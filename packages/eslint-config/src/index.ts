@@ -12,7 +12,6 @@
  *   react: true,
  *   tailwind: true,
  *   imports: { typescript: true },
- *   prettier: true,
  * })
  * ```
  */
@@ -30,7 +29,6 @@ import { javascript } from './configs/javascript'
 import { jsdoc } from './configs/jsdoc'
 import { nextjs } from './configs/nextjs'
 import { packageJson } from './configs/package-json'
-import { prettier } from './configs/prettier'
 import { react } from './configs/react'
 import { storybook } from './configs/storybook'
 import { stylistic } from './configs/stylistic'
@@ -48,7 +46,6 @@ import type {
   JsdocOptions,
   NextjsOptions,
   PackageJsonOptions,
-  PrettierOptions,
   ReactOptions,
   StorybookOptions,
   StylisticOptions,
@@ -100,8 +97,6 @@ export interface ComposeConfigOptions {
   // Tooling configuration
   /** Import ordering and rules */
   imports?: boolean | ImportsOptions
-  /** Prettier formatting */
-  prettier?: boolean | PrettierOptions
 
   // Quality configuration
   /** Accessibility rules */
@@ -167,7 +162,6 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
   { key: 'packageJson', fn: packageJson },
   { key: 'vitest', fn: vitest },
   { key: 'storybook', fn: storybook },
-  { key: 'prettier', fn: prettier },
 ]
 
 /** Composes ESLint configs in the correct internal order */
@@ -220,7 +214,6 @@ export type {
   JsdocOptions,
   NextjsOptions,
   PackageJsonOptions,
-  PrettierOptions,
   ReactOptions,
   StorybookOptions,
   StylisticOptions,
