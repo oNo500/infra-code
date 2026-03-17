@@ -98,10 +98,10 @@ export interface DependOptions extends OptionsOverrides {
 }
 
 export interface IgnoresOptions {
-  /** Custom ignore patterns; pass false to disable the built-in defaults */
-  ignores?: string[] | false
-  /** Path to .gitignore file, or a boolean to enable/disable auto-detection */
-  gitignore?: string | boolean
+  /** Additional ignore patterns to merge with DEFAULT_IGNORES; pass false to disable all global ignores */
+  ignores?: string | string[] | false
+  /** Whether to parse .gitignore and merge into global ignores @default true */
+  gitignore?: boolean
 }
 
 export interface ImportsOptions extends OptionsOverrides, OptionsStylistic {

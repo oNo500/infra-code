@@ -23,7 +23,7 @@ import { a11y } from './configs/a11y'
 import { tailwind } from './configs/better-tailwindcss'
 import { boundaries } from './configs/boundaries'
 import { depend } from './configs/depend'
-import { ignores } from './configs/ignores'
+import { ignores } from './configs/global-ignores'
 import { imports } from './configs/imports'
 import { javascript } from './configs/javascript'
 import { jsdoc } from './configs/jsdoc'
@@ -72,7 +72,7 @@ import type { Linter } from 'eslint'
 export interface ComposeConfigOptions {
   // Base configuration (enabled by default)
   /** Ignore patterns configuration @default true */
-  ignores?: boolean | IgnoresOptions
+  globalIgnores?: boolean | IgnoresOptions
   /** JavaScript base configuration @default true */
   javascript?: boolean | JavaScriptOptions
   /** TypeScript configuration @default true */
@@ -132,7 +132,7 @@ type ConfigEntry = {
 
 const CONFIG_REGISTRY: ConfigEntry[] = [
   // Enabled by default
-  { key: 'ignores', fn: ignores, defaultOn: true },
+  { key: 'globalIgnores', fn: ignores, defaultOn: true },
   { key: 'javascript', fn: javascript, defaultOn: true },
   {
     key: 'typescript',
