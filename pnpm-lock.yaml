@@ -105,6 +105,9 @@ importers:
       eslint-plugin-unicorn:
         specifier: ^63.0.0
         version: 63.0.0(eslint@10.0.3(jiti@2.6.1))
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
       storybook:
         specifier: '>=10.0.0'
         version: 10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -6654,8 +6657,7 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  prettier@3.8.1:
-    optional: true
+  prettier@3.8.1: {}
 
   pretty-format@27.5.1:
     dependencies:

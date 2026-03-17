@@ -78,10 +78,8 @@ export function imports(options: ImportsOptions = {}): Linter.Config[] {
         ],
         'import-x/consistent-type-specifier-style': 'error',
         'import-x/no-named-as-default': 'warn',
-        // maxDepth 避免全图遍历导致性能问题
+        // maxDepth prevents full-graph traversal for performance
         'import-x/no-cycle': ['error', { maxDepth: 5 }],
-        // ignoreExports 防止入口文件的导出被误报为未使用
-        'import-x/no-unused-modules': ['error', { unusedExports: true, ignoreExports: ['**/index.ts', '**/index.tsx'] }],
         'import-x/no-deprecated': 'warn',
         'import-x/no-extraneous-dependencies': 'error',
         'import-x/no-relative-parent-imports': noRelativeParentImports ? 'error' : 'off',

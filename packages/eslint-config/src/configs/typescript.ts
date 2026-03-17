@@ -34,7 +34,7 @@ export function typescript(options: TypeScriptOptions = {}): Linter.Config[] {
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-deprecated': 'warn',
-      // '@typescript-eslint/no-inferrable-types': 'off', 会导致冗余的类型注解
+      // '@typescript-eslint/no-inferrable-types': 'off', would cause redundant type annotations
       '@typescript-eslint/unbound-method': 'warn',
 
       ...overrides,

@@ -106,7 +106,7 @@ export interface ImportsOptions extends OptionsOverrides {
    */
   noRelativeParentImports?: boolean
   /**
-   * Root directory for tsconfig.json lookup; restricts resolver scope in monorepo to avoid cross-app漫游
+   * Root directory for tsconfig.json lookup; restricts resolver scope in monorepo to avoid cross-app roaming
    * Automatically injected by composeConfig from the global typescript.tsconfigRootDir option
    */
   tsconfigRootDir?: string
