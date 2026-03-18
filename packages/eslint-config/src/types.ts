@@ -38,6 +38,12 @@ export interface OptionsTailwind {
    * @default 'src/global.css'
    */
   entryPoint?: string
+  /**
+   * Font size of the `<html>` element in pixels.
+   * Used by `enforce-canonical-classes` to determine if arbitrary values can be replaced with predefined sizing scales.
+   * @default 16
+   */
+  rootFontSize?: number
 }
 
 // ============================================================================
