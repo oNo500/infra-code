@@ -23,9 +23,7 @@ export function tailwind(options: TailwindOptions = {}): Linter.Config[] {
     ],
     rules: {
       'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
-      'better-tailwindcss/enforce-canonical-classes': ['error', {
-        rootFontSize: 16, // base font size
-      }],
+      'better-tailwindcss/enforce-canonical-classes': 'error',
       ...overrides,
     },
     settings: {
