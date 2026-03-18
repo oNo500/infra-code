@@ -1,5 +1,11 @@
 # @infra-x/eslint-config
 
+## 0.1.10
+
+### Patch Changes
+
+- Add `better-tailwindcss/enforce-canonical-classes` rule with rootFontSize 16
+
 ## 0.1.9
 
 ### Patch Changes
