@@ -13,7 +13,7 @@ import type { Linter } from 'eslint'
  * Tailwind CSS rule configuration
  */
 export function tailwind(options: TailwindOptions = {}): Linter.Config[] {
-  const { files = [GLOB_JSX], overrides = {}, entryPoint = 'src/styles/global.css', rootFontSize } = options
+  const { files = [GLOB_JSX], overrides = {}, entryPoint = 'src/styles/globals.css', rootFontSize } = options
 
   if (rootFontSize === undefined) {
     console.warn(
