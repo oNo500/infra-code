@@ -1,5 +1,11 @@
 # @infra-x/eslint-config
 
+## 0.1.11
+
+### Patch Changes
+
+- ce4df19: fix tailwind entryPoint default filename
+
 ## 0.1.10
 
 ### Patch Changes
