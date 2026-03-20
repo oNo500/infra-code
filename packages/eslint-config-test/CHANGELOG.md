@@ -1,5 +1,12 @@
 # @infra-x/eslint-config-test
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies
+  - @infra-x/eslint-config@0.1.13
+
 ## 0.0.7
 
 ### Patch Changes

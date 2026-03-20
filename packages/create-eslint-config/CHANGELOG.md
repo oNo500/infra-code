@@ -1,5 +1,11 @@
 # @infra-x/create-eslint-config
 
+## 0.2.6
+
+### Patch Changes
+
+- up boundaries
+
 ## 0.2.5
 
 ### Patch Changes
