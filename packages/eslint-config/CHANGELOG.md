@@ -1,5 +1,11 @@
 # @infra-x/eslint-config
 
+## 0.1.12
+
+### Patch Changes
+
+- up config
+
 ## 0.1.11
 
 ### Patch Changes
