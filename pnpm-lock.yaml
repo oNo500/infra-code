@@ -74,7 +74,7 @@ importers:
         version: 4.3.2(eslint@10.0.3(jiti@2.6.1))(tailwindcss@4.2.0)(typescript@5.9.3)
       eslint-plugin-boundaries:
         specifier: ^6.0.0
-        version: 6.0.0(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3(jiti@2.6.1))
+        version: 6.0.1(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3(jiti@2.6.1))
       eslint-plugin-depend:
         specifier: ^1.5.0
         version: 1.5.0(eslint@10.0.3(jiti@2.6.1))
@@ -2050,8 +2050,8 @@ packages:
       oxlint:
         optional: true
 
-  eslint-plugin-boundaries@6.0.0:
-    resolution: {integrity: sha512-qZEdclbVfRvHaQkP1ph3/zvxPLBoNxcd7MZLyW8fkMWpYWcGAMEzJrSHGZdv3JGLNRHfTDgOTdL/jOewvOcPFw==}
+  eslint-plugin-boundaries@6.0.1:
+    resolution: {integrity: sha512-uKoFltdL0azxgMjCs0wIat0on2kTIZi//I20Mu3rYK7NEWzH+xqUNOyDLHvDwVu0fGR5IyNZ5+ubLtyLqlQbew==}
     engines: {node: '>=18.18'}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -5575,7 +5575,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  eslint-plugin-boundaries@6.0.0(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3(jiti@2.6.1)):
+  eslint-plugin-boundaries@6.0.1(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3(jiti@2.6.1)):
     dependencies:
       '@boundaries/elements': 2.0.0(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@10.0.3(jiti@2.6.1))
       chalk: 4.1.2
