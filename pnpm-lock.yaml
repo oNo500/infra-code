@@ -103,8 +103,8 @@ importers:
         specifier: ^10.2.14
         version: 10.3.4(eslint@10.2.0(jiti@2.6.1))(storybook@10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       eslint-plugin-unicorn:
-        specifier: ^63.0.0
-        version: 63.0.0(eslint@10.2.0(jiti@2.6.1))
+        specifier: ^64.0.0
+        version: 64.0.0(eslint@10.2.0(jiti@2.6.1))
       storybook:
         specifier: '>=10.0.0'
         version: 10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1894,8 +1894,8 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  core-js-compat@3.48.0:
-    resolution: {integrity: sha512-OM4cAF3D6VtH/WkLtWvyNC56EZVXsZdU3iqaMG2B4WvYrlqU831pc4UtG5yp0sE9z8Y02wVN7PjW5Zf9Gt0f1Q==}
+  core-js-compat@3.49.0:
+    resolution: {integrity: sha512-VQXt1jr9cBz03b331DFDCCP90b3fanciLkgiOoy8SBHy06gNf+vQ1A3WFLqG7I8TipYIKeYK9wxd0tUrvHcOZA==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -2273,8 +2273,8 @@ packages:
       eslint: '>=8'
       storybook: ^10.3.4
 
-  eslint-plugin-unicorn@63.0.0:
-    resolution: {integrity: sha512-Iqecl9118uQEXYh7adylgEmGfkn5es3/mlQTLLkd4pXkIk9CTGrAbeUux+YljSa2ohXCBmQQ0+Ej1kZaFgcfkA==}
+  eslint-plugin-unicorn@64.0.0:
+    resolution: {integrity: sha512-rNZwalHh8i0UfPlhNwg5BTUO1CMdKNmjqe+TgzOTZnpKoi8VBgsW7u9qCHIdpxEzZ1uwrJrPF0uRb7l//K38gA==}
     engines: {node: ^20.10.0 || >=21.0.0}
     peerDependencies:
       eslint: '>=9.38.0'
@@ -2503,10 +2503,6 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
-    engines: {node: '>=18'}
-
-  globals@16.5.0:
-    resolution: {integrity: sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ==}
     engines: {node: '>=18'}
 
   globals@17.4.0:
@@ -5417,7 +5413,7 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  core-js-compat@3.48.0:
+  core-js-compat@3.49.0:
     dependencies:
       browserslist: 4.28.1
 
@@ -6005,24 +6001,24 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-unicorn@63.0.0(eslint@10.2.0(jiti@2.6.1)):
+  eslint-plugin-unicorn@64.0.0(eslint@10.2.0(jiti@2.6.1)):
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
       '@eslint-community/eslint-utils': 4.9.1(eslint@10.2.0(jiti@2.6.1))
       change-case: 5.4.4
       ci-info: 4.4.0
       clean-regexp: 1.0.0
-      core-js-compat: 3.48.0
+      core-js-compat: 3.49.0
       eslint: 10.2.0(jiti@2.6.1)
       find-up-simple: 1.0.1
-      globals: 16.5.0
+      globals: 17.4.0
       indent-string: 5.0.0
       is-builtin-module: 5.0.0
       jsesc: 3.1.0
       pluralize: 8.0.0
       regexp-tree: 0.1.27
       regjsparser: 0.13.0
-      semver: 7.7.3
+      semver: 7.7.4
       strip-indent: 4.1.1
 
   eslint-scope@8.4.0:
@@ -6322,8 +6318,6 @@ snapshots:
       is-glob: 4.0.3
 
   globals@14.0.0: {}
-
-  globals@16.5.0: {}
 
   globals@17.4.0: {}
 
