@@ -27,8 +27,15 @@ export default defineConfig({
 
 | Preset | Description |
 |--------|-------------|
-| `base` | TypeScript, Import, Depend. Always include first. |
+| `base` | TypeScript, Import, Depend + type-aware linting. Always include first. |
 | `unicorn` | 100+ code quality rules (optional, recommended) |
+
+#### Node.js
+
+| Preset | Description |
+|--------|-------------|
+| `node` | Node.js specific rules |
+| `promise` | Promise best practices (16 rules) |
 
 #### Frameworks
 

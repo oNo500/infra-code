@@ -61,8 +61,9 @@ function loadGitignorePatterns(): string[] {
 // ============================================================================
 
 /**
- * Base lint preset — enables TypeScript, Import (native), and Depend plugins.
- * Always include this as the first preset in `extends`.
+ * Base lint preset — enables TypeScript, Import (native), Depend plugins,
+ * and type-aware linting via tsgolint. Always include first.
+ * Requires `oxlint-tsgolint` (bundled as dependency).
  */
 export const base: OxlintConfig = defineConfig({
   plugins: ['typescript', 'import'],
@@ -70,6 +71,10 @@ export const base: OxlintConfig = defineConfig({
   categories: {
     correctness: 'error',
     suspicious: 'warn',
+  },
+  options: {
+    typeAware: true,
+    typeCheck: true,
   },
   env: {
     browser: true,
@@ -157,6 +162,20 @@ export const reactVite: OxlintConfig = defineConfig({
 /** Next.js lint preset — enables native nextjs plugin. */
 export const nextjs: OxlintConfig = defineConfig({
   plugins: ['nextjs'],
+})
+
+// ============================================================================
+// Node.js presets
+// ============================================================================
+
+/** Node.js lint preset — enables native node plugin. */
+export const node: OxlintConfig = defineConfig({
+  plugins: ['node'],
+})
+
+/** Promise lint preset — enables native promise plugin (16 rules). */
+export const promise: OxlintConfig = defineConfig({
+  plugins: ['promise'],
 })
 
 // ============================================================================
