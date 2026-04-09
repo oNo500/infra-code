@@ -23,7 +23,7 @@ import { defineConfig } from 'oxlint'
 
 import { GLOB_JSX, GLOB_TESTS, GLOB_TS, isInEditorEnv } from './utils'
 
-import type { OxlintConfig } from 'oxlint'
+import type { ExternalPluginEntry, OxlintConfig } from 'oxlint'
 
 // ============================================================================
 // Ignore patterns
@@ -63,11 +63,32 @@ function loadGitignorePatterns(): string[] {
 }
 
 // ============================================================================
-// Helper
+// Helpers
 // ============================================================================
 
 function preset(defaults: OxlintConfig, overrides?: Partial<OxlintConfig>): OxlintConfig {
   return defineConfig(defu(overrides as OxlintConfig, defaults))
+}
+
+/**
+ * Resolve a jsPlugin package name to its absolute path.
+ * This allows oxlint to load plugins directly without relying on
+ * Node module resolution from the consumer's CWD — fixes pnpm strict mode.
+ */
+function resolvePlugin(name: string): string {
+  try {
+    return require.resolve(name)
+  } catch {
+    // Fallback to package name if resolve fails (e.g. not installed)
+    return name
+  }
+}
+
+function resolvePlugins(plugins: ExternalPluginEntry[]): ExternalPluginEntry[] {
+  return plugins.map((p) => {
+    if (typeof p === 'string') return resolvePlugin(p)
+    return { ...p, specifier: resolvePlugin(p.specifier) }
+  })
 }
 
 // ============================================================================
@@ -132,7 +153,7 @@ export function unicorn(overrides?: Partial<OxlintConfig>): OxlintConfig {
 /** Dependency optimization — flags packages replaceable with native APIs or micro-utilities. */
 export function depend(overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset({
-    jsPlugins: ['eslint-plugin-depend'],
+    jsPlugins: resolvePlugins(['eslint-plugin-depend']),
     rules: {
       'depend/ban-dependencies': ['error', {
         presets: ['native', 'microutilities', 'preferred'],
@@ -170,7 +191,7 @@ export function react(overrides?: Partial<OxlintConfig>): OxlintConfig {
 export function reactVite(overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset({
     plugins: ['react'],
-    jsPlugins: ['eslint-plugin-react-refresh'],
+    jsPlugins: resolvePlugins(['eslint-plugin-react-refresh']),
   }, overrides)
 }
 
@@ -240,7 +261,7 @@ export function vitest(options?: VitestOptions): OxlintConfig {
 
 /** Storybook lint preset — loads eslint-plugin-storybook via jsPlugin. */
 export function storybook(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({ jsPlugins: ['eslint-plugin-storybook'] }, overrides)
+  return preset({ jsPlugins: resolvePlugins(['eslint-plugin-storybook']) }, overrides)
 }
 
 // ============================================================================
@@ -259,7 +280,7 @@ export function tailwind(options: TailwindOptions = {}): OxlintConfig {
   const { entryPoint = 'src/styles/globals.css', rootFontSize = 16, files, ...overrides } = options
 
   return preset({
-    jsPlugins: ['eslint-plugin-better-tailwindcss'],
+    jsPlugins: resolvePlugins(['eslint-plugin-better-tailwindcss']),
     settings: { 'better-tailwindcss': { entryPoint, rootFontSize } },
     overrides: [{
       files: files ?? [GLOB_JSX],
@@ -291,7 +312,7 @@ export function boundaries(config: {
   rules: BoundaryRule[]
 }, overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset({
-    jsPlugins: ['eslint-plugin-boundaries'],
+    jsPlugins: resolvePlugins(['eslint-plugin-boundaries']),
     settings: { 'boundaries/elements': config.elements },
     rules: {
       'boundaries/dependencies': ['error', {
@@ -316,9 +337,9 @@ export function boundaries(config: {
  */
 export function nestjs(overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset({
-    jsPlugins: [
+    jsPlugins: resolvePlugins([
       { name: 'nestjs-typed', specifier: '@darraghor/eslint-plugin-nestjs-typed' },
-    ],
+    ]),
     rules: {
       // DI
       'nestjs-typed/injectable-should-be-provided': 'error',
@@ -344,7 +365,7 @@ export function nestjs(overrides?: Partial<OxlintConfig>): OxlintConfig {
 /** Drizzle ORM lint preset — loads eslint-plugin-drizzle via jsPlugin. */
 export function drizzle(overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset({
-    jsPlugins: ['eslint-plugin-drizzle'],
+    jsPlugins: resolvePlugins(['eslint-plugin-drizzle']),
     rules: {
       'drizzle/enforce-delete-with-where': 'error',
       'drizzle/enforce-update-with-where': 'error',
