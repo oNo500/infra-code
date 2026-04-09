@@ -39,9 +39,11 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
+    "@darraghor/eslint-plugin-nestjs-typed": "^7.1.28",
     "eslint-plugin-better-tailwindcss": "^4.3.1",
     "eslint-plugin-boundaries": "^6.0.0",
     "eslint-plugin-depend": "^1.5.0",
+    "eslint-plugin-drizzle": "^0.2.3",
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-storybook": "^10.2.14",
     "oxfmt": "^0.44.0",
@@ -50,9 +52,13 @@
     "std-env": "^4.0.0"
   },
   "peerDependencies": {
+    "class-validator": "*",
     "storybook": ">=10.0.0"
   },
   "peerDependenciesMeta": {
+    "class-validator": {
+      "optional": true
+    },
     "storybook": {
       "optional": true
     }

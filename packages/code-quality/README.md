@@ -45,6 +45,13 @@ export default defineConfig({
 | `reactVite` | React + React Hooks + React Refresh (for Vite) |
 | `nextjs` | Next.js rules + Core Web Vitals |
 
+#### Backend / ORM
+
+| Preset | Description |
+|--------|-------------|
+| `nestjs` | NestJS DI validation, Swagger consistency, decorator checks (19 rules) |
+| `drizzle` | Drizzle ORM — enforce where clause on delete/update |
+
 #### Quality
 
 | Preset | Description |
