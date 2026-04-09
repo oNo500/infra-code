@@ -7,7 +7,7 @@
  * import { base, react, vitest } from '@infra-x/code-quality/lint'
  * import { defineConfig } from 'oxlint'
  *
- * export default defineConfig({ extends: [base, react, vitest] })
+ * export default defineConfig({ extends: [base, unicorn, react, vitest] })
  * ```
  */
 import { existsSync, readFileSync } from 'node:fs'
@@ -61,11 +61,11 @@ function loadGitignorePatterns(): string[] {
 // ============================================================================
 
 /**
- * Base lint preset — enables TypeScript, Unicorn, Import (native), and Depend plugins.
+ * Base lint preset — enables TypeScript, Import (native), and Depend plugins.
  * Always include this as the first preset in `extends`.
  */
 export const base: OxlintConfig = defineConfig({
-  plugins: ['typescript', 'unicorn', 'import'],
+  plugins: ['typescript', 'import'],
   jsPlugins: ['eslint-plugin-depend'],
   categories: {
     correctness: 'error',
@@ -79,9 +79,6 @@ export const base: OxlintConfig = defineConfig({
   },
   ignorePatterns: [...DEFAULT_IGNORES, ...loadGitignorePatterns()],
   rules: {
-    // Unicorn overrides
-    'unicorn/no-null': 'off',
-
     // Depend
     'depend/ban-dependencies': ['error', {
       presets: ['native', 'microutilities', 'preferred'],
@@ -129,6 +126,14 @@ export const base: OxlintConfig = defineConfig({
       },
     },
   ],
+})
+
+/** Unicorn lint preset — enables 100+ code quality rules. */
+export const unicorn: OxlintConfig = defineConfig({
+  plugins: ['unicorn'],
+  rules: {
+    'unicorn/no-null': 'off',
+  },
 })
 
 // ============================================================================
