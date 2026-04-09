@@ -20,6 +20,11 @@
 - Oxfmt currently has no `extends` mechanism (must spread manually)
 - Track upstream progress; switch to `extends` when available for cleaner consumer DX
 
+### NestJS: re-enable consistent-type-imports with typeAware
+- `typescript/consistent-type-imports` is currently disabled for NestJS projects
+- Reason: without type-aware linting, the rule incorrectly converts NestJS DI constructor params to `import type`, breaking dependency injection at runtime
+- When `typeAware` preset is usable (requires TS 7.0+), oxlint can distinguish DI class references from pure type usage — re-enable the rule then
+
 ### Native rule coverage
 - Monitor oxlint native plugin additions to replace remaining jsPlugins:
   - eslint-plugin-depend
