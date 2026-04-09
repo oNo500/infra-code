@@ -13,21 +13,22 @@ pnpm add -D @infra-x/code-quality
 Create `oxlint.config.ts`:
 
 ```ts
-import { base, react, vitest } from '@infra-x/code-quality/lint'
+import { base, unicorn, react, vitest } from '@infra-x/code-quality/lint'
 import { defineConfig } from 'oxlint'
 
 export default defineConfig({
-  extends: [base, react, vitest],
+  extends: [base, unicorn, react, vitest],
 })
 ```
 
 ### Available presets
 
-#### Always needed
+#### Core
 
 | Preset | Description |
 |--------|-------------|
-| `base` | TypeScript, Unicorn, Import, Depend. Always include first. |
+| `base` | TypeScript, Import, Depend. Always include first. |
+| `unicorn` | 100+ code quality rules (optional, recommended) |
 
 #### Frameworks
 
@@ -54,11 +55,12 @@ export default defineConfig({
 #### Configurable (functions)
 
 ```ts
-import { base, tailwind, boundaries } from '@infra-x/code-quality/lint'
+import { base, unicorn, tailwind, boundaries } from '@infra-x/code-quality/lint'
 
 export default defineConfig({
   extends: [
     base,
+    unicorn,
     tailwind({ entryPoint: 'src/styles/globals.css', rootFontSize: 16 }),
     boundaries({
       elements: [
