@@ -1,18 +1,24 @@
 /**
  * Oxlint lint presets
  *
+ * Every preset is a function that accepts optional overrides, merged via `defu`.
+ * User overrides take priority over preset defaults.
+ *
  * @example
  * ```ts
  * // oxlint.config.ts
- * import { base, react, vitest } from '@infra-x/code-quality/lint'
+ * import { base, unicorn, react, vitest } from '@infra-x/code-quality/lint'
  * import { defineConfig } from 'oxlint'
  *
- * export default defineConfig({ extends: [base, unicorn, react, vitest] })
+ * export default defineConfig({
+ *   extends: [base(), unicorn(), react(), vitest()],
+ * })
  * ```
  */
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
+import { defu } from 'defu'
 import { defineConfig } from 'oxlint'
 
 import { GLOB_JSX, GLOB_TESTS, GLOB_TS, isInEditorEnv } from './utils'
@@ -57,308 +63,294 @@ function loadGitignorePatterns(): string[] {
 }
 
 // ============================================================================
-// Base preset (always needed)
+// Helper
+// ============================================================================
+
+function preset(defaults: OxlintConfig, overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return defineConfig(defu(overrides as OxlintConfig, defaults))
+}
+
+// ============================================================================
+// Core
 // ============================================================================
 
 /**
- * Base lint preset — enables TypeScript, Import (native), Depend plugins,
- * and type-aware linting via tsgolint. Always include first.
- * Requires `oxlint-tsgolint` (bundled as dependency).
+ * Base lint preset — enables TypeScript + Import plugins, categories, env, ignores.
+ * Always include first. Does NOT include unicorn or depend — add them separately.
  */
-export const base: OxlintConfig = defineConfig({
-  plugins: ['typescript', 'import'],
-  jsPlugins: ['eslint-plugin-depend'],
-  categories: {
-    correctness: 'error',
-    suspicious: 'warn',
-  },
-  env: {
-    browser: true,
-    node: true,
-    es2026: true,
-    builtin: true,
-  },
-  ignorePatterns: [...DEFAULT_IGNORES, ...loadGitignorePatterns()],
-  rules: {
-    // Depend
-    'depend/ban-dependencies': ['error', {
-      presets: ['native', 'microutilities', 'preferred'],
-      modules: [],
-      allowed: ['dotenv'],
-    }],
-  },
-  overrides: [
-    {
-      // TypeScript-specific rules
-      files: [GLOB_TS],
-      rules: {
-        'typescript/ban-ts-comment': 'error',
-        'typescript/no-duplicate-enum-values': 'error',
-        'typescript/no-empty-object-type': 'error',
-        'typescript/no-explicit-any': 'error',
-        'typescript/no-extra-non-null-assertion': 'error',
-        'typescript/no-misused-new': 'error',
-        'typescript/no-namespace': 'error',
-        'typescript/no-non-null-asserted-optional-chain': 'error',
-        'typescript/no-require-imports': 'error',
-        'typescript/no-this-alias': 'error',
-        'typescript/no-unnecessary-type-constraint': 'error',
-        'typescript/no-unsafe-declaration-merging': 'error',
-        'typescript/no-unsafe-function-type': 'error',
-        'typescript/no-wrapper-object-types': 'error',
-        'typescript/prefer-as-const': 'error',
-        'typescript/prefer-namespace-keyword': 'error',
-        'typescript/triple-slash-reference': 'error',
-        'typescript/adjacent-overload-signatures': 'error',
-        'typescript/array-type': 'error',
-        'typescript/ban-tslint-comment': 'error',
-        'typescript/class-literal-property-style': 'error',
-        'typescript/consistent-generic-constructors': 'error',
-        'typescript/consistent-indexed-object-style': 'error',
-        'typescript/consistent-type-assertions': 'error',
-        'typescript/no-confusing-non-null-assertion': 'error',
-        'typescript/no-inferrable-types': 'error',
-        'typescript/prefer-for-of': 'error',
-        'typescript/prefer-function-type': 'error',
-        'typescript/consistent-type-definitions': 'off',
-        'typescript/consistent-type-imports': 'error',
-        'no-unused-vars': 'off',
-        'no-empty-function': 'error',
-      },
+export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    plugins: ['typescript', 'import'],
+    categories: {
+      correctness: 'error',
+      suspicious: 'warn',
     },
-  ],
-})
+    env: {
+      browser: true,
+      node: true,
+      es2026: true,
+      builtin: true,
+    },
+    ignorePatterns: [...DEFAULT_IGNORES, ...loadGitignorePatterns()],
+    overrides: [
+      {
+        files: [GLOB_TS],
+        rules: {
+          // Only list rules that DIFFER from categories defaults
+          'typescript/consistent-type-definitions': 'off',
+          'typescript/consistent-type-imports': 'error',
+          'no-unused-vars': 'off',
+        },
+      },
+    ],
+  }, overrides)
+}
 
 /**
  * Type-aware lint preset — enables 59 type-aware rules via tsgolint + type checking.
  * Requires TypeScript 7.0+ and `oxlint-tsgolint` (bundled as dependency).
  */
-export const typeAware: OxlintConfig = defineConfig({
-  options: {
-    typeAware: true,
-    typeCheck: true,
-  },
-})
+export function typeAware(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    options: {
+      typeAware: true,
+      typeCheck: true,
+    },
+  }, overrides)
+}
 
 /** Unicorn lint preset — enables 100+ code quality rules. */
-export const unicorn: OxlintConfig = defineConfig({
-  plugins: ['unicorn'],
-  rules: {
-    'unicorn/no-null': 'off',
-  },
-})
+export function unicorn(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    plugins: ['unicorn'],
+    rules: {
+      'unicorn/no-null': 'off',
+    },
+  }, overrides)
+}
+
+/** Dependency optimization — flags packages replaceable with native APIs or micro-utilities. */
+export function depend(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    jsPlugins: ['eslint-plugin-depend'],
+    rules: {
+      'depend/ban-dependencies': ['error', {
+        presets: ['native', 'microutilities', 'preferred'],
+        modules: [],
+        allowed: ['dotenv'],
+      }],
+    },
+  }, overrides)
+}
 
 // ============================================================================
-// Framework presets
-// ============================================================================
-
-/** React lint preset — enables native react + react-hooks plugin. */
-export const react: OxlintConfig = defineConfig({
-  plugins: ['react'],
-})
-
-/**
- * React preset with react-refresh support (for Vite projects).
- * Use instead of `react` when using Vite.
- */
-export const reactVite: OxlintConfig = defineConfig({
-  plugins: ['react'],
-  jsPlugins: ['eslint-plugin-react-refresh'],
-})
-
-/** Next.js lint preset — enables native nextjs plugin. */
-export const nextjs: OxlintConfig = defineConfig({
-  plugins: ['nextjs'],
-})
-
-// ============================================================================
-// Node.js presets
+// Node.js
 // ============================================================================
 
 /** Node.js lint preset — enables native node plugin. */
-export const node: OxlintConfig = defineConfig({
-  plugins: ['node'],
-})
+export function node(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ plugins: ['node'] }, overrides)
+}
 
 /** Promise lint preset — enables native promise plugin (16 rules). */
-export const promise: OxlintConfig = defineConfig({
-  plugins: ['promise'],
-})
+export function promise(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ plugins: ['promise'] }, overrides)
+}
 
 // ============================================================================
-// Quality presets
+// Frameworks
+// ============================================================================
+
+/** React lint preset — enables native react + react-hooks plugin. */
+export function react(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ plugins: ['react'] }, overrides)
+}
+
+/** React + react-refresh preset (for Vite projects). Use instead of `react`. */
+export function reactVite(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    plugins: ['react'],
+    jsPlugins: ['eslint-plugin-react-refresh'],
+  }, overrides)
+}
+
+/** Next.js lint preset — enables native nextjs plugin. */
+export function nextjs(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ plugins: ['nextjs'] }, overrides)
+}
+
+// ============================================================================
+// Quality
 // ============================================================================
 
 /** Accessibility lint preset — enables native jsx-a11y plugin. */
-export const a11y: OxlintConfig = defineConfig({
-  plugins: ['jsx-a11y'],
-})
-
-/** JSDoc lint preset — enables native jsdoc plugin. */
-export const jsdoc: OxlintConfig = defineConfig({
-  plugins: ['jsdoc'],
-})
-
-// ============================================================================
-// Testing presets
-// ============================================================================
-
-/** Vitest lint preset — enables native vitest plugin with test-file scoping. */
-export const vitest: OxlintConfig = defineConfig({
-  plugins: ['vitest'],
-  settings: {
-    vitest: { typecheck: true },
-  },
-  overrides: [
-    {
-      files: GLOB_TESTS,
-      rules: {
-        'vitest/expect-expect': 'error',
-        'vitest/no-conditional-expect': 'error',
-        'vitest/no-identical-title': 'error',
-        'vitest/no-import-node-test': 'error',
-        'vitest/no-interpolation-in-snapshots': 'error',
-        'vitest/no-mocks-import': 'error',
-        'vitest/no-standalone-expect': 'error',
-        'vitest/valid-describe-callback': 'error',
-        'vitest/valid-expect': 'error',
-        'vitest/valid-title': 'error',
-        'vitest/consistent-test-it': ['error', { fn: 'it', withinDescribe: 'it' }],
-        'vitest/prefer-hooks-in-order': 'error',
-        'vitest/prefer-lowercase-title': 'error',
-        'vitest/no-disabled-tests': isInEditorEnv() ? 'warn' : 'error',
-        'vitest/no-focused-tests': isInEditorEnv() ? 'warn' : 'error',
-
-        // Relax rules in test context
-        'no-console': 'off',
-        'unicorn/no-null': 'off',
-        'typescript/ban-ts-comment': 'off',
-      },
-    },
-  ],
-})
-
-/** Storybook lint preset — loads eslint-plugin-storybook via jsPlugin. */
-export const storybook: OxlintConfig = defineConfig({
-  jsPlugins: ['eslint-plugin-storybook'],
-})
-
-// ============================================================================
-// Configurable presets (functions — need user options)
-// ============================================================================
-
-interface TailwindLintOptions {
-  entryPoint?: string
-  rootFontSize?: number
+export function a11y(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ plugins: ['jsx-a11y'] }, overrides)
 }
 
-/** Tailwind CSS lint preset — loads eslint-plugin-better-tailwindcss via jsPlugin. */
-export function tailwind(options: TailwindLintOptions = {}): OxlintConfig {
-  const { entryPoint = 'src/styles/globals.css', rootFontSize = 16 } = options
+/** JSDoc lint preset — enables native jsdoc plugin. */
+export function jsdoc(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ plugins: ['jsdoc'] }, overrides)
+}
 
-  return defineConfig({
-    jsPlugins: ['eslint-plugin-better-tailwindcss'],
-    settings: {
-      'better-tailwindcss': { entryPoint, rootFontSize },
-    },
+// ============================================================================
+// Testing
+// ============================================================================
+
+interface VitestOptions extends Partial<OxlintConfig> {
+  /** Test file glob patterns. Replaces the default GLOB_TESTS. */
+  files?: string[]
+}
+
+/** Vitest lint preset — enables native vitest plugin with test-file scoping. */
+export function vitest(options?: VitestOptions): OxlintConfig {
+  const { files, ...overrides } = options ?? {}
+
+  return preset({
+    plugins: ['vitest'],
+    settings: { vitest: { typecheck: true } },
     overrides: [
       {
-        files: [GLOB_JSX],
+        files: files ?? GLOB_TESTS,
         rules: {
-          'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
-          'better-tailwindcss/enforce-canonical-classes': 'error',
+          'vitest/expect-expect': 'error',
+          'vitest/no-conditional-expect': 'error',
+          'vitest/no-identical-title': 'error',
+          'vitest/no-import-node-test': 'error',
+          'vitest/no-interpolation-in-snapshots': 'error',
+          'vitest/no-mocks-import': 'error',
+          'vitest/no-standalone-expect': 'error',
+          'vitest/valid-describe-callback': 'error',
+          'vitest/valid-expect': 'error',
+          'vitest/valid-title': 'error',
+          'vitest/consistent-test-it': ['error', { fn: 'it', withinDescribe: 'it' }],
+          'vitest/prefer-hooks-in-order': 'error',
+          'vitest/prefer-lowercase-title': 'error',
+          'vitest/no-disabled-tests': isInEditorEnv() ? 'warn' : 'error',
+          'vitest/no-focused-tests': isInEditorEnv() ? 'warn' : 'error',
+          // Relax in test context
+          'no-console': 'off',
+          'unicorn/no-null': 'off',
+          'typescript/ban-ts-comment': 'off',
         },
       },
     ],
-  })
+  }, overrides)
 }
 
-interface BoundariesElement {
+/** Storybook lint preset — loads eslint-plugin-storybook via jsPlugin. */
+export function storybook(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({ jsPlugins: ['eslint-plugin-storybook'] }, overrides)
+}
+
+// ============================================================================
+// Tailwind / Boundaries
+// ============================================================================
+
+interface TailwindOptions extends Partial<OxlintConfig> {
+  entryPoint?: string
+  rootFontSize?: number
+  /** File glob patterns for tailwind rules. @default GLOB_JSX */
+  files?: string[]
+}
+
+/** Tailwind CSS lint preset — loads eslint-plugin-better-tailwindcss via jsPlugin. */
+export function tailwind(options: TailwindOptions = {}): OxlintConfig {
+  const { entryPoint = 'src/styles/globals.css', rootFontSize = 16, files, ...overrides } = options
+
+  return preset({
+    jsPlugins: ['eslint-plugin-better-tailwindcss'],
+    settings: { 'better-tailwindcss': { entryPoint, rootFontSize } },
+    overrides: [{
+      files: files ?? [GLOB_JSX],
+      rules: {
+        'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
+        'better-tailwindcss/enforce-canonical-classes': 'error',
+      },
+    }],
+  }, overrides)
+}
+
+interface BoundaryElement {
   type: string
   pattern: string | string[]
   capture?: string[]
   mode?: 'file' | 'folder' | 'full'
 }
 
-interface BoundariesRule {
+interface BoundaryRule {
   from: string | string[]
   allow?: (string | [string, Record<string, string>])[]
   disallow?: string[]
   message?: string
 }
 
-interface BoundariesLintOptions {
-  elements: BoundariesElement[]
-  rules: BoundariesRule[]
-}
-
 /** Architectural boundaries lint preset — loads eslint-plugin-boundaries via jsPlugin. */
-export function boundaries(options: BoundariesLintOptions): OxlintConfig {
-  return defineConfig({
+export function boundaries(config: {
+  elements: BoundaryElement[]
+  rules: BoundaryRule[]
+}, overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
     jsPlugins: ['eslint-plugin-boundaries'],
-    settings: {
-      'boundaries/elements': options.elements,
-    },
+    settings: { 'boundaries/elements': config.elements },
     rules: {
-      'boundaries/dependencies': [
-        'error',
-        {
-          default: 'disallow',
-          rules: options.rules.map((rule) => ({
-            from: Array.isArray(rule.from) ? rule.from : [rule.from],
-            allow: rule.allow,
-            message: rule.message,
-          })),
-        },
-      ],
+      'boundaries/dependencies': ['error', {
+        default: 'disallow',
+        rules: config.rules.map((rule) => ({
+          from: Array.isArray(rule.from) ? rule.from : [rule.from],
+          allow: rule.allow,
+          message: rule.message,
+        })),
+      }],
     },
-  })
+  }, overrides)
 }
 
 // ============================================================================
-// ORM / Backend presets
+// Backend / ORM
 // ============================================================================
 
 /**
  * NestJS lint preset — loads @darraghor/eslint-plugin-nestjs-typed via jsPlugin.
  * Covers DI validation, Swagger consistency, decorator bug prevention (19 AST rules).
- * 3 type-aware rules are excluded (require ESLint, not supported in jsPlugin).
  */
-export const nestjs: OxlintConfig = defineConfig({
-  jsPlugins: [
-    { name: 'nestjs-typed', specifier: '@darraghor/eslint-plugin-nestjs-typed' },
-  ],
-  rules: {
-    // DI
-    'nestjs-typed/injectable-should-be-provided': 'error',
-    'nestjs-typed/provided-injected-should-match-factory-parameters': 'error',
-    'nestjs-typed/use-injectable-provided-token': 'error',
-
-    // Swagger
-    'nestjs-typed/api-property-matches-property-optionality': 'error',
-    'nestjs-typed/controllers-should-supply-api-tags': 'error',
-    'nestjs-typed/api-method-should-specify-api-response': 'error',
-    'nestjs-typed/api-property-returning-array-should-set-array': 'error',
-    'nestjs-typed/api-property-should-have-api-extra-models': 'error',
-    'nestjs-typed/api-operation-summary-description-capitalized': 'error',
-
-    // Bug prevention
-    'nestjs-typed/param-decorator-name-matches-route-param': 'error',
-    'nestjs-typed/validate-nested-of-array-should-set-each': 'error',
-    'nestjs-typed/all-properties-are-whitelisted': 'error',
-    'nestjs-typed/no-duplicate-decorators': 'error',
-    'nestjs-typed/validation-pipe-should-use-forbid-unknown': 'error',
-  },
-})
+export function nestjs(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    jsPlugins: [
+      { name: 'nestjs-typed', specifier: '@darraghor/eslint-plugin-nestjs-typed' },
+    ],
+    rules: {
+      // DI
+      'nestjs-typed/injectable-should-be-provided': 'error',
+      'nestjs-typed/provided-injected-should-match-factory-parameters': 'error',
+      'nestjs-typed/use-injectable-provided-token': 'error',
+      // Swagger
+      'nestjs-typed/api-property-matches-property-optionality': 'error',
+      'nestjs-typed/controllers-should-supply-api-tags': 'error',
+      'nestjs-typed/api-method-should-specify-api-response': 'error',
+      'nestjs-typed/api-property-returning-array-should-set-array': 'error',
+      'nestjs-typed/api-property-should-have-api-extra-models': 'error',
+      'nestjs-typed/api-operation-summary-description-capitalized': 'error',
+      // Bug prevention
+      'nestjs-typed/param-decorator-name-matches-route-param': 'error',
+      'nestjs-typed/validate-nested-of-array-should-set-each': 'error',
+      'nestjs-typed/all-properties-are-whitelisted': 'error',
+      'nestjs-typed/no-duplicate-decorators': 'error',
+      'nestjs-typed/validation-pipe-should-use-forbid-unknown': 'error',
+    },
+  }, overrides)
+}
 
 /** Drizzle ORM lint preset — loads eslint-plugin-drizzle via jsPlugin. */
-export const drizzle: OxlintConfig = defineConfig({
-  jsPlugins: ['eslint-plugin-drizzle'],
-  rules: {
-    'drizzle/enforce-delete-with-where': 'error',
-    'drizzle/enforce-update-with-where': 'error',
-  },
-})
+export function drizzle(overrides?: Partial<OxlintConfig>): OxlintConfig {
+  return preset({
+    jsPlugins: ['eslint-plugin-drizzle'],
+    rules: {
+      'drizzle/enforce-delete-with-where': 'error',
+      'drizzle/enforce-update-with-where': 'error',
+    },
+  }, overrides)
+}
 
 // ============================================================================
 // Re-exports
