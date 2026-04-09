@@ -313,6 +313,51 @@ export function boundaries(options: BoundariesLintOptions): OxlintConfig {
 }
 
 // ============================================================================
+// ORM / Backend presets
+// ============================================================================
+
+/**
+ * NestJS lint preset — loads @darraghor/eslint-plugin-nestjs-typed via jsPlugin.
+ * Covers DI validation, Swagger consistency, decorator bug prevention (19 AST rules).
+ * 3 type-aware rules are excluded (require ESLint, not supported in jsPlugin).
+ */
+export const nestjs: OxlintConfig = defineConfig({
+  jsPlugins: [
+    { name: 'nestjs-typed', specifier: '@darraghor/eslint-plugin-nestjs-typed' },
+  ],
+  rules: {
+    // DI
+    'nestjs-typed/injectable-should-be-provided': 'error',
+    'nestjs-typed/provided-injected-should-match-factory-parameters': 'error',
+    'nestjs-typed/use-injectable-provided-token': 'error',
+
+    // Swagger
+    'nestjs-typed/api-property-matches-property-optionality': 'error',
+    'nestjs-typed/controllers-should-supply-api-tags': 'error',
+    'nestjs-typed/api-method-should-specify-api-response': 'error',
+    'nestjs-typed/api-property-returning-array-should-set-array': 'error',
+    'nestjs-typed/api-property-should-have-api-extra-models': 'error',
+    'nestjs-typed/api-operation-summary-description-capitalized': 'error',
+
+    // Bug prevention
+    'nestjs-typed/param-decorator-name-matches-route-param': 'error',
+    'nestjs-typed/validate-nested-of-array-should-set-each': 'error',
+    'nestjs-typed/all-properties-are-whitelisted': 'error',
+    'nestjs-typed/no-duplicate-decorators': 'error',
+    'nestjs-typed/validation-pipe-should-use-forbid-unknown': 'error',
+  },
+})
+
+/** Drizzle ORM lint preset — loads eslint-plugin-drizzle via jsPlugin. */
+export const drizzle: OxlintConfig = defineConfig({
+  jsPlugins: ['eslint-plugin-drizzle'],
+  rules: {
+    'drizzle/enforce-delete-with-where': 'error',
+    'drizzle/enforce-update-with-where': 'error',
+  },
+})
+
+// ============================================================================
 // Re-exports
 // ============================================================================
 
