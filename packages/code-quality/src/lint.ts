@@ -72,10 +72,6 @@ export const base: OxlintConfig = defineConfig({
     correctness: 'error',
     suspicious: 'warn',
   },
-  options: {
-    typeAware: true,
-    typeCheck: true,
-  },
   env: {
     browser: true,
     node: true,
@@ -131,6 +127,17 @@ export const base: OxlintConfig = defineConfig({
       },
     },
   ],
+})
+
+/**
+ * Type-aware lint preset — enables 59 type-aware rules via tsgolint + type checking.
+ * Requires TypeScript 7.0+ and `oxlint-tsgolint` (bundled as dependency).
+ */
+export const typeAware: OxlintConfig = defineConfig({
+  options: {
+    typeAware: true,
+    typeCheck: true,
+  },
 })
 
 /** Unicorn lint preset — enables 100+ code quality rules. */
@@ -190,10 +197,6 @@ export const a11y: OxlintConfig = defineConfig({
 /** JSDoc lint preset — enables native jsdoc plugin. */
 export const jsdoc: OxlintConfig = defineConfig({
   plugins: ['jsdoc'],
-  rules: {
-    'jsdoc/match-description': 'off',
-    'jsdoc/informative-docs': 'off',
-  },
 })
 
 // ============================================================================
