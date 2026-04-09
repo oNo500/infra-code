@@ -17,9 +17,24 @@ import { base, unicorn, react, vitest } from '@infra-x/code-quality/lint'
 import { defineConfig } from 'oxlint'
 
 export default defineConfig({
-  extends: [base, unicorn, react, vitest],
+  extends: [base(), unicorn(), react(), vitest()],
 })
 ```
+
+Every preset is a function. Call without arguments for defaults, or pass overrides:
+
+```ts
+export default defineConfig({
+  extends: [
+    base({ rules: { 'no-console': 'off' } }),
+    unicorn({ rules: { 'unicorn/no-array-for-each': 'off' } }),
+    vitest({ files: ['**/*.e2e-spec.ts', '**/*.spec.ts'] }),
+  ],
+})
+```
+
+> [!IMPORTANT]
+> Overrides use deep merge via `defu` — `rules`, `plugins`, `settings` etc. are **merged** (user values take priority). But `files` is **replaced** entirely — if you pass `files`, it overrides the preset default, not appends to it.
 
 ### Available presets
 
@@ -27,54 +42,67 @@ export default defineConfig({
 
 | Preset | Description |
 |--------|-------------|
-| `base` | TypeScript, Import, Depend + type-aware linting. Always include first. |
-| `unicorn` | 100+ code quality rules (optional, recommended) |
+| `base()` | TypeScript, Import, categories, env, ignores. Always include first. |
+| `typeAware()` | 59 type-aware rules via tsgolint (requires TS 7.0+) |
+| `unicorn()` | 100+ code quality rules |
+| `depend()` | Flag packages replaceable with native APIs or micro-utilities |
 
 #### Node.js
 
 | Preset | Description |
 |--------|-------------|
-| `node` | Node.js specific rules |
-| `promise` | Promise best practices (16 rules) |
+| `node()` | Node.js specific rules |
+| `promise()` | Promise best practices (16 rules) |
 
 #### Frameworks
 
 | Preset | Description |
 |--------|-------------|
-| `react` | React + React Hooks |
-| `reactVite` | React + React Hooks + React Refresh (for Vite) |
-| `nextjs` | Next.js rules + Core Web Vitals |
+| `react()` | React + React Hooks |
+| `reactVite()` | React + React Hooks + React Refresh (for Vite) |
+| `nextjs()` | Next.js rules + Core Web Vitals |
 
 #### Backend / ORM
 
 | Preset | Description |
 |--------|-------------|
-| `nestjs` | NestJS DI validation, Swagger consistency, decorator checks (19 rules) |
-| `drizzle` | Drizzle ORM — enforce where clause on delete/update |
+| `nestjs()` | NestJS DI validation, Swagger consistency, decorator checks (19 rules) |
+| `drizzle()` | Drizzle ORM — enforce where clause on delete/update |
 
 #### Quality
 
 | Preset | Description |
 |--------|-------------|
-| `a11y` | JSX accessibility (WCAG) |
-| `jsdoc` | JSDoc validation |
+| `a11y()` | JSX accessibility (WCAG) |
+| `jsdoc()` | JSDoc validation |
 
 #### Testing
 
 | Preset | Description |
 |--------|-------------|
-| `vitest` | Vitest best practices, environment-aware |
-| `storybook` | Storybook best practices |
+| `vitest()` | Vitest best practices, environment-aware |
+| `storybook()` | Storybook best practices |
 
-#### Configurable (functions)
+#### Full example
 
 ```ts
-import { base, unicorn, tailwind, boundaries } from '@infra-x/code-quality/lint'
+import {
+  base, unicorn, depend, node, promise,
+  nestjs, drizzle, vitest,
+  tailwind, boundaries,
+} from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
 
 export default defineConfig({
   extends: [
-    base,
-    unicorn,
+    base(),
+    unicorn(),
+    depend(),
+    node(),
+    promise(),
+    nestjs(),
+    drizzle({ rules: { 'drizzle/enforce-delete-with-where': ['error', { drizzleObjectName: 'db' }] } }),
+    vitest({ files: ['**/*.spec.ts', '**/*.e2e-spec.ts'] }),
     tailwind({ entryPoint: 'src/styles/globals.css', rootFontSize: 16 }),
     boundaries({
       elements: [
@@ -98,7 +126,7 @@ Create `oxfmt.config.ts`:
 import { format } from '@infra-x/code-quality/format'
 import { defineConfig } from 'oxfmt'
 
-export default defineConfig({ ...format })
+export default defineConfig({ ...format() })
 ```
 
 ### Defaults
@@ -117,9 +145,7 @@ export default defineConfig({ ...format })
 
 ```ts
 export default defineConfig({
-  ...format,
-  printWidth: 120,
-  semi: true,
+  ...format({ printWidth: 120, semi: true }),
 })
 ```
 
@@ -129,7 +155,7 @@ export default defineConfig({
 import { format, tailwindFormat } from '@infra-x/code-quality/format'
 
 export default defineConfig({
-  ...format,
+  ...format(),
   ...tailwindFormat({ stylesheet: 'src/styles/globals.css' }),
 })
 ```
@@ -141,8 +167,8 @@ export default defineConfig({
   "scripts": {
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "format": "oxfmt --write",
-    "format:check": "oxfmt --check"
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check ."
   }
 }
 ```
