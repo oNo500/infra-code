@@ -1,17 +1,15 @@
 /**
  * Utility functions and constants
  */
+import { env, isCI } from 'std-env'
 
 // ============================================================================
 // Environment detection
 // ============================================================================
 
 function isInGitHooksOrLintStaged(): boolean {
-  const envVars = [
-    process.env['GIT_PARAMS'],
-    process.env['VSCODE_GIT_COMMAND'],
-  ]
-  return envVars.some(Boolean) || process.env['npm_lifecycle_script']?.startsWith('lint-staged') === true
+  return !!(env['GIT_PARAMS'] || env['VSCODE_GIT_COMMAND'])
+    || env['npm_lifecycle_script']?.startsWith('lint-staged') === true
 }
 
 /**
@@ -21,18 +19,9 @@ function isInGitHooksOrLintStaged(): boolean {
  * Returns true in VSCode, JetBrains IDE, Vim/Neovim.
  */
 export function isInEditorEnv(): boolean {
-  if (process.env['CI'])
-    return false
-  if (isInGitHooksOrLintStaged())
-    return false
-  const envVars = [
-    process.env['VSCODE_PID'],
-    process.env['VSCODE_CWD'],
-    process.env['JETBRAINS_IDE'],
-    process.env['VIM'],
-    process.env['NVIM'],
-  ]
-  return envVars.some(Boolean)
+  if (isCI) return false
+  if (isInGitHooksOrLintStaged()) return false
+  return !!(env['VSCODE_PID'] || env['VSCODE_CWD'] || env['JETBRAINS_IDE'] || env['VIM'] || env['NVIM'])
 }
 
 // ============================================================================
