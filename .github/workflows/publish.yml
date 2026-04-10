@@ -29,3 +29,4 @@ jobs:
           publish: pnpm changeset publish --provenance --access public
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
