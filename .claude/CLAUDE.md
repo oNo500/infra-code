@@ -7,8 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 pnpm install        # install dependencies
 pnpm build          # build all packages (turbo)
-pnpm lint           # lint all packages
-pnpm lint:fix       # auto-fix lint issues
+pnpm lint           # lint all packages (oxlint, root config)
+pnpm lint:fix       # auto-fix lint issues (oxlint)
+pnpm format         # format all files (oxfmt)
+pnpm format:check   # check formatting without writing
 pnpm typecheck      # type-check all packages (depends on build)
 pnpm changeset      # create a changeset for version bump
 ```
@@ -17,11 +19,18 @@ pnpm changeset      # create a changeset for version bump
 
 Turborepo monorepo with pnpm workspaces:
 
-- `packages/eslint-config` — shared ESLint config presets
-- `packages/code-quality` — code quality tooling
+- `packages/code-quality` — shared Oxlint + Oxfmt presets (recommended)
+- `packages/eslint-config` — ESLint config presets (legacy)
 - `packages/create-eslint-config` — CLI scaffolding tool
 - `packages/typescript-config` — shared TypeScript configs
 - `packages/eslint-config-test` — test fixtures for eslint-config
+
+## Tooling
+
+- Lint/format config lives at monorepo root (`oxlint.config.ts`, `oxfmt.config.ts`)
+- `code-quality` is the primary lint/format package; `eslint-config` is legacy
+- oxlint `typeAware: true` is set globally; each package's own `tsconfig.json` is auto-detected
+- `eslint-config` and `eslint-config-test` are excluded from oxlint
 
 ## Git Workflow
 
