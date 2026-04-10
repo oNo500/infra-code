@@ -37,6 +37,15 @@ Turborepo monorepo with pnpm workspaces:
 - Default branch: `master` (PR target)
 - Use `pnpm changeset` for version bumps before merging
 
+### Release flow (changesets)
+
+1. Create a changeset file: `pnpm changeset` (or write `.changeset/<name>.md` manually)
+2. Commit the changeset file along with code changes and push to `master`
+3. `changesets/action` in CI detects the changeset and **automatically creates a "Version Packages" PR** (bumps version, updates CHANGELOG)
+4. Merge that PR to trigger the actual npm publish
+
+> **Do NOT** run `pnpm changeset version` locally — let CI handle version bumps and publishing via the PR flow.
+
 ## Principles
 
 - **No emoji**: Do not use emoji in code unless explicitly requested
