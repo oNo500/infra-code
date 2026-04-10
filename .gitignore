@@ -88,4 +88,4 @@ storybook-static
 
 # ai
 .agents
-.claude
+!.claude
