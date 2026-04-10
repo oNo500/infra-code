@@ -46,7 +46,10 @@
     "isolatedDeclarations": true,
     // 每个文件的导出类型必须可推断，配合 bundler 并行生成 dts
 
-    "noPropertyAccessFromIndexSignature": true
+    "noPropertyAccessFromIndexSignature": true,
     // 强制使用方括号访问索引签名属性
+
+    "types": ["node"]
+    // 包含 Node.js 类型定义
   }
 }
