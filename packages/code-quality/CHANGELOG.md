@@ -1,5 +1,11 @@
 # @infra-x/code-quality
 
+## 0.4.0
+
+### Minor Changes
+
+- b4b9db3: Move oxlint and oxfmt to peerDependencies. Consumers must now explicitly install both packages to get CLI binaries under pnpm strict isolation mode. Added documentation for type-aware linting and monorepo nested config setup.
+
 ## 0.2.0
 
 ### Minor Changes
