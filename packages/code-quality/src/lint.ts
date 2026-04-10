@@ -67,7 +67,7 @@ function loadGitignorePatterns(): string[] {
 // ============================================================================
 
 function preset(defaults: OxlintConfig, overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return defineConfig(defu(overrides as OxlintConfig, defaults))
+  return defineConfig(defu(overrides ?? {}, defaults))
 }
 
 /**
@@ -105,7 +105,7 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
       plugins: ['typescript', 'import'],
       categories: {
         correctness: 'error',
-        suspicious: 'warn',
+        suspicious: 'error',
       },
       env: {
         browser: true,
