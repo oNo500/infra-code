@@ -148,6 +148,92 @@ export default defineConfig({
 > })
 > ```
 
+### Type-aware linting
+
+The `typeAware()` preset enables 59 type-aware rules via [`oxlint-tsgolint`](https://www.npmjs.com/package/oxlint-tsgolint) and `typeCheck`.
+
+```ts
+import { base, typeAware, unicorn } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
+
+export default defineConfig({
+  extends: [base(), typeAware(), unicorn()],
+})
+```
+
+> [!IMPORTANT]
+> `typeAware` and `typeCheck` are [**root-config-only** options](https://oxc.rs/docs/guide/usage/linter/nested-config.html). Oxlint will report an error if either is set in a nested (per-package) config file. Always place `typeAware()` in the root config only.
+
+Each package's own `tsconfig.json` is auto-detected by oxlint — no extra configuration needed. See [type-aware linting](https://oxc.rs/docs/guide/usage/linter/type-aware.html) for details.
+
+### Monorepo (nested configs)
+
+Oxlint supports [nested configuration](https://oxc.rs/docs/guide/usage/linter/nested-config.html) for monorepos. Each package can have its own `oxlint.config.ts` that extends the root config and adds package-specific presets.
+
+#### How it works
+
+For each file being linted, oxlint uses the **nearest** config file relative to that file. Configs are **not** automatically merged — a package config must explicitly `extends` the root to inherit shared rules.
+
+```
+my-monorepo/
+├── oxlint.config.ts          # root config (shared baseline + typeAware)
+├── packages/
+│   ├── web/
+│   │   ├── oxlint.config.ts  # extends root, adds react + nextjs
+│   │   └── src/
+│   ├── api/
+│   │   ├── oxlint.config.ts  # extends root, adds nestjs + drizzle
+│   │   └── src/
+│   └── shared/               # no config — inherits root directly
+│       └── src/
+```
+
+#### Root config
+
+Keep shared baseline and `typeAware()` at the root:
+
+```ts
+// oxlint.config.ts (root)
+import { base, typeAware, unicorn, depend } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
+
+export default defineConfig({
+  extends: [base(), typeAware(), unicorn(), depend()],
+})
+```
+
+#### Package configs
+
+Each package extends the root and adds its own presets. Only `rules`, `plugins`, and `overrides` are [inherited via `extends`](https://oxc.rs/docs/guide/usage/linter/nested-config.html#extending-configuration-files) — `options` (including `typeAware`) are **not** inherited, which is the correct behavior.
+
+```ts
+// packages/web/oxlint.config.ts
+import rootConfig from '../../oxlint.config.ts'
+import { react, nextjs, vitest, tailwind } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
+
+export default defineConfig({
+  extends: [rootConfig, react(), nextjs(), vitest(), tailwind()],
+})
+```
+
+```ts
+// packages/api/oxlint.config.ts
+import rootConfig from '../../oxlint.config.ts'
+import { node, nestjs, drizzle, vitest } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
+
+export default defineConfig({
+  extends: [rootConfig, node(), nestjs(), drizzle(), vitest()],
+})
+```
+
+> [!WARNING]
+> Passing `-c` or `--config` explicitly on the CLI [**disables** nested config lookup](https://oxc.rs/docs/guide/usage/linter/nested-config.html#what-to-expect). Let oxlint auto-detect configs by running without `-c`.
+
+> [!TIP]
+> Packages without their own `oxlint.config.ts` automatically use the root config — no setup needed for packages that only need the shared baseline.
+
 ## Format (Oxfmt)
 
 Create `oxfmt.config.ts`:
