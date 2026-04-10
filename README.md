@@ -1,69 +1,45 @@
 # infra-code
 
-Personal dev infrastructure monorepo, primarily focused on ESLint configuration.
-
-Inspired by [antfu/eslint-config](https://github.com/antfu/eslint-config), with less abstraction and more flexibility.
+Personal dev infrastructure monorepo — shared lint, format, and TypeScript configs.
 
 ## Packages
 
-- [`@infra-x/eslint-config`](./packages/eslint-config) — Composable ESLint config with sensible presets
+- [`@infra-x/code-quality`](./packages/code-quality) — Shared [Oxlint](https://oxc.rs/) + [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) presets (recommended)
 - [`@infra-x/typescript-config`](./packages/typescript-config) — Shared TypeScript config presets
+- [`@infra-x/eslint-config`](./packages/eslint-config) — Composable ESLint config (legacy, for existing projects)
 - [`@infra-x/create-eslint-config`](./packages/create-eslint-config) — CLI tool for scaffolding ESLint config in a monorepo
 
 ## Usage
 
-### Monorepo
-
-Use `@infra-x/create-eslint-config` to copy the config into your `packages/` directory, so you can adjust it freely:
+### Lint & Format (Oxlint + Oxfmt)
 
 ```bash
-pnpm dlx @infra-x/create-eslint-config
+pnpm add -D @infra-x/code-quality
 ```
-
-### Polyrepo
-
-Use `composeConfig` from `@infra-x/eslint-config` to enable presets with optional overrides:
 
 ```ts
-import { composeConfig } from '@infra-x/eslint-config'
+// oxlint.config.ts
+import { base, unicorn, depend, react, vitest } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
 
-export default composeConfig({
-  typescript: { tsconfigRootDir: import.meta.dirname },
-  react: true,
-  prettier: true,
+export default defineConfig({
+  extends: [base(), unicorn(), depend(), react(), vitest()],
 })
 ```
-
-For multiple config segments (e.g. separate test rules):
 
 ```ts
-import { GLOB_TESTS, composeConfig } from '@infra-x/eslint-config'
-import { defineConfig } from 'eslint/config'
+// oxfmt.config.ts
+import { format } from '@infra-x/code-quality/format'
+import { defineConfig } from 'oxfmt'
 
-const appConfig = defineConfig({
-  extends: composeConfig({
-    typescript: { tsconfigRootDir: import.meta.dirname },
-    imports: true,
-    react: true,
-    nextjs: true,
-  }),
-})
-
-const vitestConfig = defineConfig({
-  files: GLOB_TESTS,
-  extends: composeConfig({
-    typescript: { tsconfigRootDir: import.meta.dirname },
-    vitest: true,
-    unicorn: false,
-    stylistic: false,
-    depend: false,
-  }),
-})
-
-export default [...appConfig, ...vitestConfig]
+export default defineConfig({ ...format() })
 ```
 
-For TypeScript, extend one of the provided presets in your `tsconfig.json`:
+See [`@infra-x/code-quality` README](./packages/code-quality/README.md) for all presets and options.
+
+### TypeScript
+
+Extend one of the provided presets in your `tsconfig.json`:
 
 ```json
 {
@@ -73,3 +49,7 @@ For TypeScript, extend one of the provided presets in your `tsconfig.json`:
 
 > [!TIP]
 > In projects with multiple `tsconfig` files using `references`, use `tsc -b --noEmit` instead of `tsc --noEmit`.
+
+### ESLint (Legacy)
+
+For existing projects still on ESLint, see [`@infra-x/eslint-config` README](./packages/eslint-config/README.md).
