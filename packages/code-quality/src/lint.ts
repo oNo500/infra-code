@@ -21,7 +21,7 @@ import path from 'node:path'
 import { defu } from 'defu'
 import { defineConfig } from 'oxlint'
 
-import { GLOB_JSX, GLOB_TESTS, GLOB_TS, isInEditorEnv } from './utils'
+import { GLOB_JSX, GLOB_SRC, GLOB_TESTS, GLOB_TS, isInEditorEnv } from './utils'
 
 import type { ExternalPluginEntry, OxlintConfig } from 'oxlint'
 
@@ -124,6 +124,13 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
             'no-unused-vars': 'off',
           },
         },
+        {
+          files: [GLOB_SRC],
+          rules: {
+            // CSS/style side-effect imports are standard in all frontend frameworks
+            'import/no-unassigned-import': 'off',
+          },
+        },
       ],
     },
     overrides,
@@ -199,7 +206,16 @@ export function promise(overrides?: Partial<OxlintConfig>): OxlintConfig {
 
 /** React lint preset — enables native react + react-hooks plugin. */
 export function react(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({ plugins: ['react'] }, overrides)
+  return preset(
+    {
+      plugins: ['react'],
+      rules: {
+        // Automatic JSX runtime (React 17+) does not require explicit React import
+        'react/react-in-jsx-scope': 'off',
+      },
+    },
+    overrides,
+  )
 }
 
 /** React + react-refresh preset (for Vite projects). Use instead of `react`. */
@@ -208,6 +224,9 @@ export function reactVite(overrides?: Partial<OxlintConfig>): OxlintConfig {
     {
       plugins: ['react'],
       jsPlugins: resolvePlugins(['eslint-plugin-react-refresh']),
+      rules: {
+        'react/react-in-jsx-scope': 'off',
+      },
     },
     overrides,
   )
@@ -269,6 +288,7 @@ export function vitest(options?: VitestOptions): OxlintConfig {
             'vitest/no-disabled-tests': isInEditorEnv() ? 'warn' : 'error',
             'vitest/no-focused-tests': isInEditorEnv() ? 'warn' : 'error',
             // Relax in test context
+            'vitest/require-mock-type-parameters': 'off',
             'no-console': 'off',
             'unicorn/no-null': 'off',
             'typescript/ban-ts-comment': 'off',
