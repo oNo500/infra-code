@@ -11,6 +11,18 @@ importers:
       '@changesets/cli':
         specifier: ^2.30.0
         version: 2.30.0(@types/node@25.6.0)
+      '@infra-x/code-quality':
+        specifier: ^0.3.2
+        version: 0.3.2(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(storybook@10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(tailwindcss@4.2.0)(typescript@6.0.2)
+      oxfmt:
+        specifier: ^0.44.0
+        version: 0.44.0
+      oxlint:
+        specifier: ^1.59.0
+        version: 1.59.0(oxlint-tsgolint@0.20.0)
+      oxlint-tsgolint:
+        specifier: ^0.20.0
+        version: 0.20.0
       turbo:
         specifier: ^2.8.12
         version: 2.9.5
@@ -881,6 +893,17 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@infra-x/code-quality@0.3.2':
+    resolution: {integrity: sha512-xwIeCOEenXKkZz6VN9bCH3HE4sT8RB4CCwZiC+gvCKMLXyIohjRADs+iBTYJ/oyCw3sOSl7peH8tQJsA/X/Hdw==}
+    peerDependencies:
+      class-validator: '*'
+      storybook: '>=10.0.0'
+    peerDependenciesMeta:
+      class-validator:
+        optional: true
+      storybook:
+        optional: true
 
   '@inquirer/external-editor@1.0.3':
     resolution: {integrity: sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA==}
@@ -4811,6 +4834,34 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@infra-x/code-quality@0.3.2(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(storybook@10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(tailwindcss@4.2.0)(typescript@6.0.2)':
+    dependencies:
+      '@darraghor/eslint-plugin-nestjs-typed': 7.1.28(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)
+      defu: 6.1.7
+      eslint-plugin-better-tailwindcss: 4.4.0(eslint@10.2.0(jiti@2.6.1))(oxlint@1.59.0(oxlint-tsgolint@0.20.0))(tailwindcss@4.2.0)(typescript@6.0.2)
+      eslint-plugin-boundaries: 6.0.2(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-typescript@4.4.4)(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-depend: 1.5.0(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-drizzle: 0.2.3(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-react-refresh: 0.5.2(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-storybook: 10.3.5(eslint@10.2.0(jiti@2.6.1))(storybook@10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@6.0.2)
+      oxfmt: 0.44.0
+      oxlint: 1.59.0(oxlint-tsgolint@0.20.0)
+      oxlint-tsgolint: 0.20.0
+      std-env: 4.0.0
+    optionalDependencies:
+      class-validator: 0.15.1
+      storybook: 10.2.4(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+    transitivePeerDependencies:
+      - '@eslint/css'
+      - '@typescript-eslint/parser'
+      - eslint
+      - eslint-import-resolver-node
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+      - tailwindcss
+      - typescript
 
   '@inquirer/external-editor@1.0.3(@types/node@25.6.0)':
     dependencies:
