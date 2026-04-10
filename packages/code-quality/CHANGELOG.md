@@ -1,5 +1,11 @@
 # @infra-x/code-quality
 
+## 0.5.0
+
+### Minor Changes
+
+- 9690788: Promote suspicious category from warn to error in base preset. Suspicious rules now block CI instead of only warning.
+
 ## 0.4.1
 
 ### Patch Changes
