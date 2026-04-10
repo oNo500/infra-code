@@ -57,9 +57,7 @@ export function ignores(options: IgnoresOptions = {}): Linter.Config[] {
     }
   }
 
-  const userPatterns = userIgnores
-    ? (Array.isArray(userIgnores) ? userIgnores : [userIgnores])
-    : []
+  const userPatterns = userIgnores ? (Array.isArray(userIgnores) ? userIgnores : [userIgnores]) : []
 
   return defineConfig([
     globalIgnores(

@@ -10,20 +10,26 @@ All options accept `true` (use defaults), `false` (disable), or an options objec
 
 ```typescript
 interface IgnoresOptions {
-  ignores?: string[] | false  // false disables default ignores
-  gitignore?: string | boolean  // false disables gitignore reading; string = custom path
+  ignores?: string[] | false // false disables default ignores
+  gitignore?: string | boolean // false disables gitignore reading; string = custom path
 }
 ```
 
 ```typescript
 // Append custom ignore paths
-ignores: { ignores: ['generated/**', 'dist/**'] }
+ignores: {
+  ignores: ['generated/**', 'dist/**']
+}
 
 // Disable default ignores (keep gitignore reading)
-ignores: { ignores: false }
+ignores: {
+  ignores: false
+}
 
 // Disable gitignore reading
-ignores: { gitignore: false }
+ignores: {
+  gitignore: false
+}
 ```
 
 ### `javascript`
@@ -39,9 +45,9 @@ type JavaScriptOptions = {
 
 ```typescript
 type TypeScriptOptions = {
-  tsconfigRootDir?: string     // required for type-aware rules
+  tsconfigRootDir?: string // required for type-aware rules
   allowDefaultProject?: string[] // auto-injected: ['*.config.ts', '*.config.mts']
-  defaultProject?: string        // auto-injected: 'tsconfig.config.json'
+  defaultProject?: string // auto-injected: 'tsconfig.config.json'
   files?: string[]
   overrides?: Record<string, unknown>
 }
@@ -68,15 +74,17 @@ type UnicornOptions = {
 
 ```typescript
 interface DependOptions {
-  presets?: ('native' | 'microutilities' | 'preferred')[]  // default: all three
-  modules?: string[]   // additional banned modules
-  allowed?: string[]   // exempt from presets
+  presets?: ('native' | 'microutilities' | 'preferred')[] // default: all three
+  modules?: string[] // additional banned modules
+  allowed?: string[] // exempt from presets
   overrides?: Record<string, unknown>
 }
 ```
 
 ```typescript
-depend: { allowed: ['lodash', 'ramda'] }
+depend: {
+  allowed: ['lodash', 'ramda']
+}
 ```
 
 ---
@@ -104,8 +112,8 @@ type NextjsOptions = { overrides?: Record<string, unknown> }
 
 ```typescript
 type TailwindOptions = {
-  entryPoint?: string  // default: 'src/global.css'
-  files?: string[]     // default: GLOB_JSX ('**/*.{jsx,tsx}')
+  entryPoint?: string // default: 'src/global.css'
+  files?: string[] // default: GLOB_JSX ('**/*.{jsx,tsx}')
   overrides?: Record<string, unknown>
 }
 ```
@@ -121,7 +129,7 @@ type TailwindOptions = {
 ```typescript
 interface ImportsOptions {
   typescript?: boolean
-  noRelativeParentImports?: boolean  // ban '../' imports, default: false
+  noRelativeParentImports?: boolean // ban '../' imports, default: false
   stylistic?: boolean
   overrides?: Record<string, unknown>
 }
@@ -129,7 +137,9 @@ interface ImportsOptions {
 
 ```typescript
 // Disallow ../relative imports (enforce path aliases)
-imports: { noRelativeParentImports: true }
+imports: {
+  noRelativeParentImports: true
+}
 ```
 
 ### `prettier`
@@ -184,7 +194,7 @@ interface BoundariesOptions {
 
 ```typescript
 interface PackageJsonOptions {
-  stylistic?: boolean         // default: true
+  stylistic?: boolean // default: true
   enforceForPrivate?: boolean // default: false
   overrides?: Record<string, unknown>
 }
@@ -215,6 +225,14 @@ type StorybookOptions = { overrides?: Record<string, unknown> }
 ## Exported Glob Patterns
 
 ```typescript
-import { GLOB_SRC, GLOB_JS, GLOB_TS, GLOB_JSX, GLOB_TESTS, GLOB_JSON, GLOB_MARKDOWN } from '@infra-x/eslint-config'
+import {
+  GLOB_SRC,
+  GLOB_JS,
+  GLOB_TS,
+  GLOB_JSX,
+  GLOB_TESTS,
+  GLOB_JSON,
+  GLOB_MARKDOWN,
+} from '@infra-x/eslint-config'
 // monorepo: from '@workspace/eslint-config'
 ```

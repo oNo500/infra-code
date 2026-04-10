@@ -10,11 +10,10 @@
  * Detects whether running inside Git Hooks or lint-staged
  */
 function isInGitHooksOrLintStaged(): boolean {
-  const envVars = [
-    process.env['GIT_PARAMS'],
-    process.env['VSCODE_GIT_COMMAND'],
-  ]
-  return envVars.some(Boolean) || process.env['npm_lifecycle_script']?.startsWith('lint-staged') === true
+  const envVars = [process.env['GIT_PARAMS'], process.env['VSCODE_GIT_COMMAND']]
+  return (
+    envVars.some(Boolean) || process.env['npm_lifecycle_script']?.startsWith('lint-staged') === true
+  )
 }
 
 /**
@@ -31,10 +30,8 @@ function isInGitHooksOrLintStaged(): boolean {
  * - Vim / Neovim
  */
 export function isInEditorEnv(): boolean {
-  if (process.env['CI'])
-    return false
-  if (isInGitHooksOrLintStaged())
-    return false
+  if (process.env['CI']) return false
+  if (isInGitHooksOrLintStaged()) return false
   const envVars = [
     process.env['VSCODE_PID'],
     process.env['VSCODE_CWD'],

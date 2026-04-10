@@ -153,9 +153,10 @@ export type TypeScriptOptions = OptionsFiles & OptionsOverrides & OptionsTypeScr
 
 export type UnicornOptions = OptionsFiles & OptionsOverrides
 
-export type VitestOptions = OptionsFiles & OptionsOverrides & {
-  isInEditor?: boolean
-}
+export type VitestOptions = OptionsFiles &
+  OptionsOverrides & {
+    isInEditor?: boolean
+  }
 
 export interface OxlintOptions {
   /**

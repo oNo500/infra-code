@@ -1,8 +1,8 @@
+import plugin from 'eslint-plugin-package-json'
 /**
  * package.json rule configuration for file consistency checks, field validation, and dependency management
  */
 import { defineConfig } from 'eslint/config'
-import plugin from 'eslint-plugin-package-json'
 
 import type { PackageJsonOptions } from '../types'
 import type { Linter } from 'eslint'

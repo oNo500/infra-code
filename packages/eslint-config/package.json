@@ -1,26 +1,26 @@
 {
   "name": "@infra-x/eslint-config",
-  "type": "module",
   "version": "0.1.13",
   "description": "A shared ESLint config for infra-x projects.",
-  "author": "infra-x",
   "license": "MIT",
+  "author": "infra-x",
   "repository": {
     "type": "git",
     "url": "https://github.com/oNo500/infra-code.git",
     "directory": "packages/eslint-config"
   },
-  "publishConfig": {
-    "access": "public"
-  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
-  "types": "./dist/index.d.mts",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
@@ -44,13 +44,25 @@
     "eslint-plugin-import-x": "4.16.2",
     "eslint-plugin-jsdoc": "^62.7.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-oxlint": "^1.0.0",
     "eslint-plugin-package-json": "^0.91.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "eslint-plugin-oxlint": "^1.0.0",
     "eslint-plugin-storybook": "^10.2.14",
     "eslint-plugin-unicorn": "^63.0.0",
     "typescript-eslint": "^8.56.1"
+  },
+  "devDependencies": {
+    "@infra-x/typescript-config": "workspace:*",
+    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
+    "@types/node": "^25.3.3",
+    "bumpp": "^10.4.1",
+    "eslint": "^10.0.2",
+    "globals": "17.4.0",
+    "jiti": "2.6.1",
+    "tsdown": "^0.21.0",
+    "typescript": "^6.0.0",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",
@@ -69,17 +81,5 @@
     "typescript": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "@infra-x/typescript-config": "workspace:*",
-    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
-    "@types/node": "^25.3.3",
-    "bumpp": "^10.4.1",
-    "eslint": "^10.0.2",
-    "globals": "17.4.0",
-    "jiti": "2.6.1",
-    "tsdown": "^0.21.0",
-    "typescript": "^6.0.0",
-    "vitest": "^4.0.18"
   }
 }

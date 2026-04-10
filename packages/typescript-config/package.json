@@ -7,9 +7,6 @@
     "url": "https://github.com/oNo500/infra-code.git",
     "directory": "packages/typescript-config"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "files": [
     "tsconfig.base.json",
     "tsconfig.library.json",
@@ -30,5 +27,8 @@
     "./tsconfig.vite.json": "./tsconfig.vite.json",
     "./tsconfig.vitest.json": "./tsconfig.vitest.json",
     "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

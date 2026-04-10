@@ -8,8 +8,10 @@ import { env, isCI } from 'std-env'
 // ============================================================================
 
 function isInGitHooksOrLintStaged(): boolean {
-  return !!(env['GIT_PARAMS'] || env['VSCODE_GIT_COMMAND'])
-    || env['npm_lifecycle_script']?.startsWith('lint-staged') === true
+  return (
+    !!(env['GIT_PARAMS'] || env['VSCODE_GIT_COMMAND']) ||
+    env['npm_lifecycle_script']?.startsWith('lint-staged') === true
+  )
 }
 
 /**
@@ -21,7 +23,13 @@ function isInGitHooksOrLintStaged(): boolean {
 export function isInEditorEnv(): boolean {
   if (isCI) return false
   if (isInGitHooksOrLintStaged()) return false
-  return !!(env['VSCODE_PID'] || env['VSCODE_CWD'] || env['JETBRAINS_IDE'] || env['VIM'] || env['NVIM'])
+  return !!(
+    env['VSCODE_PID'] ||
+    env['VSCODE_CWD'] ||
+    env['JETBRAINS_IDE'] ||
+    env['VIM'] ||
+    env['NVIM']
+  )
 }
 
 // ============================================================================

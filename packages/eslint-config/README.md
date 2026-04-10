@@ -60,19 +60,19 @@ Default-on: `globalIgnores` · `javascript` · `typescript` · `stylistic` · `u
 
 Opt-in:
 
-| Option | Description |
-|---|---|
-| `react` | React + react-hooks rules; set `vite: true` for react-refresh |
-| `nextjs` | Next.js rules |
-| `tailwind` | Tailwind CSS class ordering (`entryPoint` defaults to `src/global.css`) |
-| `imports` | Import ordering and resolution |
-| `a11y` | Accessibility rules |
-| `jsdoc` | JSDoc rules |
-| `boundaries` | Module boundary enforcement |
-| `packageJson` | `package.json` rules |
-| `vitest` | Vitest testing rules |
-| `storybook` | Storybook rules |
-| `oxlint` | Disable ESLint rules already covered by oxlint (requires oxlint to run separately) |
+| Option        | Description                                                                        |
+| ------------- | ---------------------------------------------------------------------------------- |
+| `react`       | React + react-hooks rules; set `vite: true` for react-refresh                      |
+| `nextjs`      | Next.js rules                                                                      |
+| `tailwind`    | Tailwind CSS class ordering (`entryPoint` defaults to `src/global.css`)            |
+| `imports`     | Import ordering and resolution                                                     |
+| `a11y`        | Accessibility rules                                                                |
+| `jsdoc`       | JSDoc rules                                                                        |
+| `boundaries`  | Module boundary enforcement                                                        |
+| `packageJson` | `package.json` rules                                                               |
+| `vitest`      | Vitest testing rules                                                               |
+| `storybook`   | Storybook rules                                                                    |
+| `oxlint`      | Disable ESLint rules already covered by oxlint (requires oxlint to run separately) |
 
 All options support an `overrides` field for custom rule overrides, and most accept a `files` glob array.
 

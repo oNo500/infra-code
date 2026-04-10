@@ -1,23 +1,18 @@
 {
   "name": "@infra-x/code-quality",
-  "type": "module",
   "version": "0.3.2",
   "description": "Shared Oxlint + Oxfmt presets for infra-x projects. Lint and format, one install.",
-  "author": "infra-x",
   "license": "MIT",
+  "author": "infra-x",
   "repository": {
     "type": "git",
     "url": "https://github.com/oNo500/infra-code.git",
     "directory": "packages/code-quality"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "exports": {
-    "./format": "./dist/format.mjs",
-    "./lint": "./dist/lint.mjs",
-    "./package.json": "./package.json"
-  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
   "typesVersions": {
     "*": {
       "lint": [
@@ -28,9 +23,14 @@
       ]
     }
   },
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    "./format": "./dist/format.mjs",
+    "./lint": "./dist/lint.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
@@ -52,6 +52,13 @@
     "oxlint-tsgolint": "^0.20.0",
     "std-env": "^4.0.0"
   },
+  "devDependencies": {
+    "@infra-x/typescript-config": "workspace:*",
+    "@types/node": "^25.3.3",
+    "bumpp": "^10.4.1",
+    "tsdown": "^0.21.0",
+    "typescript": "^6.0.0"
+  },
   "peerDependencies": {
     "class-validator": "*",
     "storybook": ">=10.0.0"
@@ -63,12 +70,5 @@
     "storybook": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "@infra-x/typescript-config": "workspace:*",
-    "@types/node": "^25.3.3",
-    "bumpp": "^10.4.1",
-    "tsdown": "^0.21.0",
-    "typescript": "^6.0.0"
   }
 }

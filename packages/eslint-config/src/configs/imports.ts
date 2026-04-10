@@ -1,8 +1,8 @@
+import { importX } from 'eslint-plugin-import-x'
 /**
  * Import rule configuration providing import ordering, circular dependency detection, and TypeScript support
  */
 import { defineConfig } from 'eslint/config'
-import { importX } from 'eslint-plugin-import-x'
 
 import { GLOB_SRC } from '../utils'
 
@@ -10,7 +10,12 @@ import type { ImportsOptions } from '../types'
 import type { ESLint, Linter } from 'eslint'
 
 export function imports(options: ImportsOptions = {}): Linter.Config[] {
-  const { overrides = {}, typescript = false, noRelativeParentImports = false, tsconfigRootDir } = options
+  const {
+    overrides = {},
+    typescript = false,
+    noRelativeParentImports = false,
+    tsconfigRootDir,
+  } = options
 
   const files = [GLOB_SRC]
 
@@ -52,14 +57,7 @@ export function imports(options: ImportsOptions = {}): Linter.Config[] {
         'import-x/order': [
           'error',
           {
-            'groups': [
-              'builtin',
-              'external',
-              'internal',
-              ['parent', 'sibling'],
-              'index',
-              'type',
-            ],
+            'groups': ['builtin', 'external', 'internal', ['parent', 'sibling'], 'index', 'type'],
             'newlines-between': 'always',
             'alphabetize': {
               order: 'asc',

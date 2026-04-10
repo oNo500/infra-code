@@ -43,56 +43,63 @@ export default defineConfig({
 
 #### Core
 
-| Preset | Description |
-|--------|-------------|
-| `base()` | TypeScript, Import, categories, env, ignores. Always include first. |
+| Preset        | Description                                                         |
+| ------------- | ------------------------------------------------------------------- |
+| `base()`      | TypeScript, Import, categories, env, ignores. Always include first. |
 | `typeAware()` | 59 type-aware rules via tsgolint (requires TS 7.0+ tsconfig compat) |
-| `unicorn()` | 100+ code quality rules |
-| `depend()` | Flag packages replaceable with native APIs or micro-utilities |
+| `unicorn()`   | 100+ code quality rules                                             |
+| `depend()`    | Flag packages replaceable with native APIs or micro-utilities       |
 
 #### Node.js
 
-| Preset | Description |
-|--------|-------------|
-| `node()` | Node.js specific rules |
+| Preset      | Description                       |
+| ----------- | --------------------------------- |
+| `node()`    | Node.js specific rules            |
 | `promise()` | Promise best practices (16 rules) |
 
 #### Frameworks
 
-| Preset | Description |
-|--------|-------------|
-| `react()` | React + React Hooks |
+| Preset        | Description                                    |
+| ------------- | ---------------------------------------------- |
+| `react()`     | React + React Hooks                            |
 | `reactVite()` | React + React Hooks + React Refresh (for Vite) |
-| `nextjs()` | Next.js rules + Core Web Vitals |
+| `nextjs()`    | Next.js rules + Core Web Vitals                |
 
 #### Backend / ORM
 
-| Preset | Description |
-|--------|-------------|
-| `nestjs()` | NestJS DI validation, Swagger consistency, decorator checks (19 rules) |
-| `drizzle()` | Drizzle ORM — enforce where clause on delete/update |
+| Preset      | Description                                                            |
+| ----------- | ---------------------------------------------------------------------- |
+| `nestjs()`  | NestJS DI validation, Swagger consistency, decorator checks (19 rules) |
+| `drizzle()` | Drizzle ORM — enforce where clause on delete/update                    |
 
 #### Quality
 
-| Preset | Description |
-|--------|-------------|
-| `a11y()` | JSX accessibility (WCAG) |
-| `jsdoc()` | JSDoc validation |
+| Preset    | Description              |
+| --------- | ------------------------ |
+| `a11y()`  | JSX accessibility (WCAG) |
+| `jsdoc()` | JSDoc validation         |
 
 #### Testing
 
-| Preset | Description |
-|--------|-------------|
-| `vitest()` | Vitest best practices, environment-aware |
-| `storybook()` | Storybook best practices |
+| Preset        | Description                              |
+| ------------- | ---------------------------------------- |
+| `vitest()`    | Vitest best practices, environment-aware |
+| `storybook()` | Storybook best practices                 |
 
 #### Full example
 
 ```ts
 import {
-  base, unicorn, depend, node, promise,
-  nestjs, drizzle, vitest,
-  tailwind, boundaries,
+  base,
+  unicorn,
+  depend,
+  node,
+  promise,
+  nestjs,
+  drizzle,
+  vitest,
+  tailwind,
+  boundaries,
 } from '@infra-x/code-quality/lint'
 import { defineConfig } from 'oxlint'
 
@@ -104,7 +111,9 @@ export default defineConfig({
     node(),
     promise(),
     nestjs(),
-    drizzle({ rules: { 'drizzle/enforce-delete-with-where': ['error', { drizzleObjectName: 'db' }] } }),
+    drizzle({
+      rules: { 'drizzle/enforce-delete-with-where': ['error', { drizzleObjectName: 'db' }] },
+    }),
     vitest({ files: ['**/*.spec.ts', '**/*.e2e-spec.ts'] }),
     tailwind({ entryPoint: 'src/styles/globals.css', rootFontSize: 16 }),
     boundaries({
@@ -127,13 +136,15 @@ export default defineConfig({
 > ```ts
 > export default defineConfig({
 >   extends: [base(), nestjs()],
->   overrides: [{
->     files: ['**/*.{ts,mts,cts,tsx}'],
->     rules: {
->       'typescript/consistent-type-imports': 'off',
->       'typescript/no-extraneous-class': ['error', { allowWithDecorator: true }],
+>   overrides: [
+>     {
+>       files: ['**/*.{ts,mts,cts,tsx}'],
+>       rules: {
+>         'typescript/consistent-type-imports': 'off',
+>         'typescript/no-extraneous-class': ['error', { allowWithDecorator: true }],
+>       },
 >     },
->   }],
+>   ],
 > })
 > ```
 
@@ -150,15 +161,15 @@ export default defineConfig({ ...format() })
 
 ### Defaults
 
-| Option | Value |
-|--------|-------|
-| `semi` | `false` |
-| `singleQuote` | `true` |
-| `trailingComma` | `all` |
-| `printWidth` | `100` |
-| `tabWidth` | `2` |
-| Import sorting | Grouped with newlines |
-| Package.json sorting | Enabled |
+| Option               | Value                 |
+| -------------------- | --------------------- |
+| `semi`               | `false`               |
+| `singleQuote`        | `true`                |
+| `trailingComma`      | `all`                 |
+| `printWidth`         | `100`                 |
+| `tabWidth`           | `2`                   |
+| Import sorting       | Grouped with newlines |
+| Package.json sorting | Enabled               |
 
 ### Override
 

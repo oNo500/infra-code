@@ -2,9 +2,9 @@
  * React ESLint configuration integrating @eslint-react, react-hooks, and react-refresh plugins
  */
 import reactPlugin from '@eslint-react/eslint-plugin'
-import { defineConfig } from 'eslint/config'
 // import reactHooksPlugin from 'eslint-plugin-react-hooks' // reactPlugin already includes reactHooksPlugin in newer versions
 import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig } from 'eslint/config'
 
 import { GLOB_JSX } from '../utils'
 

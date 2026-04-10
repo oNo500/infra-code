@@ -10,11 +10,7 @@ import type { VitestOptions } from '../types'
 import type { Linter } from 'eslint'
 
 export function vitest(options: VitestOptions = {}): Linter.Config[] {
-  const {
-    files = GLOB_TESTS,
-    overrides = {},
-    isInEditor = isInEditorEnv(),
-  } = options
+  const { files = GLOB_TESTS, overrides = {}, isInEditor = isInEditorEnv() } = options
 
   return defineConfig([
     {

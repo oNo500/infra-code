@@ -1,25 +1,29 @@
 {
   "name": "@infra-x/create-eslint-config",
-  "type": "module",
   "version": "0.2.6",
   "description": "CLI to copy ESLint config source into a monorepo.",
-  "author": "infra-x",
   "license": "MIT",
+  "author": "infra-x",
   "repository": {
     "type": "git",
     "url": "https://github.com/oNo500/infra-code.git",
     "directory": "packages/create-eslint-config"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "bin": {
-    "create-eslint-config": "./dist/index.mjs",
-    "cec": "./dist/index.mjs"
+    "cec": "./dist/index.mjs",
+    "create-eslint-config": "./dist/index.mjs"
   },
   "files": [
     "dist"
   ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
@@ -38,9 +42,5 @@
     "eslint": "^10.0.2",
     "tsdown": "^0.21.0",
     "typescript": "^6.0.0"
-  },
-  "exports": {
-    ".": "./dist/index.mjs",
-    "./package.json": "./package.json"
   }
 }

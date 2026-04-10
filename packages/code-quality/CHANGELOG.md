@@ -10,7 +10,6 @@
   Format preset: no semi, single quote, import sorting, package.json sorting, tailwindFormat()
 
   Features:
-
   - Type-aware linting via tsgolint (59 rules)
   - Oxfmt handles formatting + import sorting (replaces ESLint stylistic + import-x/order)
   - NestJS DI/Swagger validation (19 AST rules via jsPlugin)

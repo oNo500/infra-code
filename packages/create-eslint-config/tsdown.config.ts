@@ -15,14 +15,16 @@ export default defineConfig({
       await cp(src, dest, {
         recursive: true,
         filter: (source) =>
-          !source.includes('node_modules')
-          && !source.includes('/dist')
-          && !source.endsWith('tsdown.config.ts'),
+          !source.includes('node_modules') &&
+          !source.includes('/dist') &&
+          !source.endsWith('tsdown.config.ts'),
       })
 
       const [templatePkg, eslintConfigPkg] = await Promise.all([
         readFile(join(import.meta.dirname, 'template.package.json'), 'utf8').then(JSON.parse),
-        readFile(join(import.meta.dirname, '../eslint-config/package.json'), 'utf8').then(JSON.parse),
+        readFile(join(import.meta.dirname, '../eslint-config/package.json'), 'utf8').then(
+          JSON.parse,
+        ),
       ])
 
       const pkg = {

@@ -1,8 +1,8 @@
+import boundariesPlugin from 'eslint-plugin-boundaries'
 /**
  * eslint-plugin-boundaries configuration for enforcing architectural boundary rules
  */
 import { defineConfig } from 'eslint/config'
-import boundariesPlugin from 'eslint-plugin-boundaries'
 
 import { GLOB_SRC } from '../utils'
 

@@ -1,8 +1,8 @@
+import jsdocPlugin from 'eslint-plugin-jsdoc'
 /**
  * JSDoc comment validation configuration using TypeScript-optimized recommended rules
  */
 import { defineConfig } from 'eslint/config'
-import jsdocPlugin from 'eslint-plugin-jsdoc'
 
 import type { JsdocOptions } from '../types'
 import type { Linter } from 'eslint'

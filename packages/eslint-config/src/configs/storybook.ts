@@ -1,8 +1,8 @@
+import storybookPlugin from 'eslint-plugin-storybook'
 /**
  * Storybook ESLint configuration using the official plugin for best practices enforcement
  */
 import { defineConfig } from 'eslint/config'
-import storybookPlugin from 'eslint-plugin-storybook'
 
 import type { StorybookOptions } from '../types'
 import type { Linter } from 'eslint'

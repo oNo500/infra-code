@@ -100,31 +100,34 @@ function resolvePlugins(plugins: ExternalPluginEntry[]): ExternalPluginEntry[] {
  * Always include first. Does NOT include unicorn or depend — add them separately.
  */
 export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    plugins: ['typescript', 'import'],
-    categories: {
-      correctness: 'error',
-      suspicious: 'warn',
-    },
-    env: {
-      browser: true,
-      node: true,
-      es2026: true,
-      builtin: true,
-    },
-    ignorePatterns: [...DEFAULT_IGNORES, ...loadGitignorePatterns()],
-    overrides: [
-      {
-        files: [GLOB_TS],
-        rules: {
-          // Only list rules that DIFFER from categories defaults
-          'typescript/consistent-type-definitions': 'off',
-          'typescript/consistent-type-imports': 'error',
-          'no-unused-vars': 'off',
-        },
+  return preset(
+    {
+      plugins: ['typescript', 'import'],
+      categories: {
+        correctness: 'error',
+        suspicious: 'warn',
       },
-    ],
-  }, overrides)
+      env: {
+        browser: true,
+        node: true,
+        es2026: true,
+        builtin: true,
+      },
+      ignorePatterns: [...DEFAULT_IGNORES, ...loadGitignorePatterns()],
+      overrides: [
+        {
+          files: [GLOB_TS],
+          rules: {
+            // Only list rules that DIFFER from categories defaults
+            'typescript/consistent-type-definitions': 'off',
+            'typescript/consistent-type-imports': 'error',
+            'no-unused-vars': 'off',
+          },
+        },
+      ],
+    },
+    overrides,
+  )
 }
 
 /**
@@ -132,36 +135,48 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
  * Requires TypeScript 7.0+ and `oxlint-tsgolint` (bundled as dependency).
  */
 export function typeAware(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    options: {
-      typeAware: true,
-      typeCheck: true,
+  return preset(
+    {
+      options: {
+        typeAware: true,
+        typeCheck: true,
+      },
     },
-  }, overrides)
+    overrides,
+  )
 }
 
 /** Unicorn lint preset — enables 100+ code quality rules. */
 export function unicorn(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    plugins: ['unicorn'],
-    rules: {
-      'unicorn/no-null': 'off',
+  return preset(
+    {
+      plugins: ['unicorn'],
+      rules: {
+        'unicorn/no-null': 'off',
+      },
     },
-  }, overrides)
+    overrides,
+  )
 }
 
 /** Dependency optimization — flags packages replaceable with native APIs or micro-utilities. */
 export function depend(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    jsPlugins: resolvePlugins(['eslint-plugin-depend']),
-    rules: {
-      'depend/ban-dependencies': ['error', {
-        presets: ['native', 'microutilities', 'preferred'],
-        modules: [],
-        allowed: ['dotenv'],
-      }],
+  return preset(
+    {
+      jsPlugins: resolvePlugins(['eslint-plugin-depend']),
+      rules: {
+        'depend/ban-dependencies': [
+          'error',
+          {
+            presets: ['native', 'microutilities', 'preferred'],
+            modules: [],
+            allowed: ['dotenv'],
+          },
+        ],
+      },
     },
-  }, overrides)
+    overrides,
+  )
 }
 
 // ============================================================================
@@ -189,10 +204,13 @@ export function react(overrides?: Partial<OxlintConfig>): OxlintConfig {
 
 /** React + react-refresh preset (for Vite projects). Use instead of `react`. */
 export function reactVite(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    plugins: ['react'],
-    jsPlugins: resolvePlugins(['eslint-plugin-react-refresh']),
-  }, overrides)
+  return preset(
+    {
+      plugins: ['react'],
+      jsPlugins: resolvePlugins(['eslint-plugin-react-refresh']),
+    },
+    overrides,
+  )
 }
 
 /** Next.js lint preset — enables native nextjs plugin. */
@@ -227,36 +245,39 @@ interface VitestOptions extends Partial<OxlintConfig> {
 export function vitest(options?: VitestOptions): OxlintConfig {
   const { files, ...overrides } = options ?? {}
 
-  return preset({
-    plugins: ['vitest'],
-    settings: { vitest: { typecheck: true } },
-    overrides: [
-      {
-        files: files ?? GLOB_TESTS,
-        rules: {
-          'vitest/expect-expect': 'error',
-          'vitest/no-conditional-expect': 'error',
-          'vitest/no-identical-title': 'error',
-          'vitest/no-import-node-test': 'error',
-          'vitest/no-interpolation-in-snapshots': 'error',
-          'vitest/no-mocks-import': 'error',
-          'vitest/no-standalone-expect': 'error',
-          'vitest/valid-describe-callback': 'error',
-          'vitest/valid-expect': 'error',
-          'vitest/valid-title': 'error',
-          'vitest/consistent-test-it': ['error', { fn: 'it', withinDescribe: 'it' }],
-          'vitest/prefer-hooks-in-order': 'error',
-          'vitest/prefer-lowercase-title': 'error',
-          'vitest/no-disabled-tests': isInEditorEnv() ? 'warn' : 'error',
-          'vitest/no-focused-tests': isInEditorEnv() ? 'warn' : 'error',
-          // Relax in test context
-          'no-console': 'off',
-          'unicorn/no-null': 'off',
-          'typescript/ban-ts-comment': 'off',
+  return preset(
+    {
+      plugins: ['vitest'],
+      settings: { vitest: { typecheck: true } },
+      overrides: [
+        {
+          files: files ?? GLOB_TESTS,
+          rules: {
+            'vitest/expect-expect': 'error',
+            'vitest/no-conditional-expect': 'error',
+            'vitest/no-identical-title': 'error',
+            'vitest/no-import-node-test': 'error',
+            'vitest/no-interpolation-in-snapshots': 'error',
+            'vitest/no-mocks-import': 'error',
+            'vitest/no-standalone-expect': 'error',
+            'vitest/valid-describe-callback': 'error',
+            'vitest/valid-expect': 'error',
+            'vitest/valid-title': 'error',
+            'vitest/consistent-test-it': ['error', { fn: 'it', withinDescribe: 'it' }],
+            'vitest/prefer-hooks-in-order': 'error',
+            'vitest/prefer-lowercase-title': 'error',
+            'vitest/no-disabled-tests': isInEditorEnv() ? 'warn' : 'error',
+            'vitest/no-focused-tests': isInEditorEnv() ? 'warn' : 'error',
+            // Relax in test context
+            'no-console': 'off',
+            'unicorn/no-null': 'off',
+            'typescript/ban-ts-comment': 'off',
+          },
         },
-      },
-    ],
-  }, overrides)
+      ],
+    },
+    overrides,
+  )
 }
 
 /** Storybook lint preset — loads eslint-plugin-storybook via jsPlugin. */
@@ -279,17 +300,22 @@ interface TailwindOptions extends Partial<OxlintConfig> {
 export function tailwind(options: TailwindOptions = {}): OxlintConfig {
   const { entryPoint = 'src/styles/globals.css', rootFontSize = 16, files, ...overrides } = options
 
-  return preset({
-    jsPlugins: resolvePlugins(['eslint-plugin-better-tailwindcss']),
-    settings: { 'better-tailwindcss': { entryPoint, rootFontSize } },
-    overrides: [{
-      files: files ?? [GLOB_JSX],
-      rules: {
-        'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
-        'better-tailwindcss/enforce-canonical-classes': 'error',
-      },
-    }],
-  }, overrides)
+  return preset(
+    {
+      jsPlugins: resolvePlugins(['eslint-plugin-better-tailwindcss']),
+      settings: { 'better-tailwindcss': { entryPoint, rootFontSize } },
+      overrides: [
+        {
+          files: files ?? [GLOB_JSX],
+          rules: {
+            'better-tailwindcss/enforce-consistent-line-wrapping': ['error', { printWidth: 0 }],
+            'better-tailwindcss/enforce-canonical-classes': 'error',
+          },
+        },
+      ],
+    },
+    overrides,
+  )
 }
 
 interface BoundaryElement {
@@ -307,24 +333,33 @@ interface BoundaryRule {
 }
 
 /** Architectural boundaries lint preset — loads eslint-plugin-boundaries via jsPlugin. */
-export function boundaries(config: {
-  elements: BoundaryElement[]
-  rules: BoundaryRule[]
-}, overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    jsPlugins: resolvePlugins(['eslint-plugin-boundaries']),
-    settings: { 'boundaries/elements': config.elements },
-    rules: {
-      'boundaries/dependencies': ['error', {
-        default: 'disallow',
-        rules: config.rules.map((rule) => ({
-          from: Array.isArray(rule.from) ? rule.from : [rule.from],
-          allow: rule.allow,
-          message: rule.message,
-        })),
-      }],
+export function boundaries(
+  config: {
+    elements: BoundaryElement[]
+    rules: BoundaryRule[]
+  },
+  overrides?: Partial<OxlintConfig>,
+): OxlintConfig {
+  return preset(
+    {
+      jsPlugins: resolvePlugins(['eslint-plugin-boundaries']),
+      settings: { 'boundaries/elements': config.elements },
+      rules: {
+        'boundaries/dependencies': [
+          'error',
+          {
+            default: 'disallow',
+            rules: config.rules.map((rule) => ({
+              from: Array.isArray(rule.from) ? rule.from : [rule.from],
+              allow: rule.allow,
+              message: rule.message,
+            })),
+          },
+        ],
+      },
     },
-  }, overrides)
+    overrides,
+  )
 }
 
 // ============================================================================
@@ -336,41 +371,47 @@ export function boundaries(config: {
  * Covers DI validation, Swagger consistency, decorator bug prevention (19 AST rules).
  */
 export function nestjs(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    jsPlugins: resolvePlugins([
-      { name: 'nestjs-typed', specifier: '@darraghor/eslint-plugin-nestjs-typed' },
-    ]),
-    rules: {
-      // DI
-      'nestjs-typed/injectable-should-be-provided': 'error',
-      'nestjs-typed/provided-injected-should-match-factory-parameters': 'error',
-      'nestjs-typed/use-injectable-provided-token': 'error',
-      // Swagger
-      'nestjs-typed/api-property-matches-property-optionality': 'error',
-      'nestjs-typed/controllers-should-supply-api-tags': 'error',
-      'nestjs-typed/api-method-should-specify-api-response': 'error',
-      'nestjs-typed/api-property-returning-array-should-set-array': 'error',
-      'nestjs-typed/api-property-should-have-api-extra-models': 'error',
-      'nestjs-typed/api-operation-summary-description-capitalized': 'error',
-      // Bug prevention
-      'nestjs-typed/param-decorator-name-matches-route-param': 'error',
-      'nestjs-typed/validate-nested-of-array-should-set-each': 'error',
-      'nestjs-typed/all-properties-are-whitelisted': 'error',
-      'nestjs-typed/no-duplicate-decorators': 'error',
-      'nestjs-typed/validation-pipe-should-use-forbid-unknown': 'error',
+  return preset(
+    {
+      jsPlugins: resolvePlugins([
+        { name: 'nestjs-typed', specifier: '@darraghor/eslint-plugin-nestjs-typed' },
+      ]),
+      rules: {
+        // DI
+        'nestjs-typed/injectable-should-be-provided': 'error',
+        'nestjs-typed/provided-injected-should-match-factory-parameters': 'error',
+        'nestjs-typed/use-injectable-provided-token': 'error',
+        // Swagger
+        'nestjs-typed/api-property-matches-property-optionality': 'error',
+        'nestjs-typed/controllers-should-supply-api-tags': 'error',
+        'nestjs-typed/api-method-should-specify-api-response': 'error',
+        'nestjs-typed/api-property-returning-array-should-set-array': 'error',
+        'nestjs-typed/api-property-should-have-api-extra-models': 'error',
+        'nestjs-typed/api-operation-summary-description-capitalized': 'error',
+        // Bug prevention
+        'nestjs-typed/param-decorator-name-matches-route-param': 'error',
+        'nestjs-typed/validate-nested-of-array-should-set-each': 'error',
+        'nestjs-typed/all-properties-are-whitelisted': 'error',
+        'nestjs-typed/no-duplicate-decorators': 'error',
+        'nestjs-typed/validation-pipe-should-use-forbid-unknown': 'error',
+      },
     },
-  }, overrides)
+    overrides,
+  )
 }
 
 /** Drizzle ORM lint preset — loads eslint-plugin-drizzle via jsPlugin. */
 export function drizzle(overrides?: Partial<OxlintConfig>): OxlintConfig {
-  return preset({
-    jsPlugins: resolvePlugins(['eslint-plugin-drizzle']),
-    rules: {
-      'drizzle/enforce-delete-with-where': 'error',
-      'drizzle/enforce-update-with-where': 'error',
+  return preset(
+    {
+      jsPlugins: resolvePlugins(['eslint-plugin-drizzle']),
+      rules: {
+        'drizzle/enforce-delete-with-where': 'error',
+        'drizzle/enforce-update-with-where': 'error',
+      },
     },
-  }, overrides)
+    overrides,
+  )
 }
 
 // ============================================================================

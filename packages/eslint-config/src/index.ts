@@ -153,9 +153,8 @@ const CONFIG_REGISTRY: ConfigEntry[] = [
     fn: imports,
     inject: (options) => ({
       typescript: options.typescript !== false,
-      tsconfigRootDir: typeof options.typescript === 'object'
-        ? options.typescript.tsconfigRootDir
-        : undefined,
+      tsconfigRootDir:
+        typeof options.typescript === 'object' ? options.typescript.tsconfigRootDir : undefined,
     }),
   },
   { key: 'react', fn: react },

@@ -1,8 +1,8 @@
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 /**
  * eslint-plugin-jsx-a11y configuration for detecting accessibility issues in JSX (WCAG standard)
  */
 import { defineConfig } from 'eslint/config'
-import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 import { GLOB_JSX } from '../utils'
 

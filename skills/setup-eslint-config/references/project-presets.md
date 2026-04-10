@@ -7,6 +7,7 @@ Each preset includes three files. All tsconfig files extend from `@infra-x/types
 ## Vite + React
 
 ### tsconfig.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.vite.json",
@@ -15,6 +16,7 @@ Each preset includes three files. All tsconfig files extend from `@infra-x/types
 ```
 
 ### tsconfig.config.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.config.json",
@@ -23,6 +25,7 @@ Each preset includes three files. All tsconfig files extend from `@infra-x/types
 ```
 
 ### eslint.config.mts
+
 ```typescript
 import { composeConfig } from '@infra-x/eslint-config'
 
@@ -39,6 +42,7 @@ export default composeConfig({
 ## Next.js
 
 ### tsconfig.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.nextjs.json",
@@ -47,6 +51,7 @@ export default composeConfig({
 ```
 
 ### tsconfig.config.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.config.json",
@@ -55,6 +60,7 @@ export default composeConfig({
 ```
 
 ### eslint.config.mts
+
 ```typescript
 import { composeConfig } from '@infra-x/eslint-config'
 
@@ -74,6 +80,7 @@ Optional: add `tailwind: true` if using Tailwind CSS.
 ## Node.js Library
 
 ### tsconfig.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.library.json",
@@ -82,6 +89,7 @@ Optional: add `tailwind: true` if using Tailwind CSS.
 ```
 
 ### tsconfig.config.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.config.json",
@@ -90,6 +98,7 @@ Optional: add `tailwind: true` if using Tailwind CSS.
 ```
 
 ### eslint.config.mts
+
 ```typescript
 import { composeConfig } from '@infra-x/eslint-config'
 
@@ -104,6 +113,7 @@ export default composeConfig({
 ## React Component Library
 
 ### tsconfig.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.react-library.json",
@@ -112,6 +122,7 @@ export default composeConfig({
 ```
 
 ### tsconfig.config.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.config.json",
@@ -120,6 +131,7 @@ export default composeConfig({
 ```
 
 ### eslint.config.mts
+
 ```typescript
 import { composeConfig } from '@infra-x/eslint-config'
 
@@ -136,6 +148,7 @@ export default composeConfig({
 ## NestJS
 
 ### tsconfig.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.nestjs.json",
@@ -144,6 +157,7 @@ export default composeConfig({
 ```
 
 ### tsconfig.config.json
+
 ```json
 {
   "extends": "@infra-x/typescript-config/tsconfig.config.json",
@@ -152,6 +166,7 @@ export default composeConfig({
 ```
 
 ### eslint.config.mts
+
 ```typescript
 import { composeConfig } from '@infra-x/eslint-config'
 

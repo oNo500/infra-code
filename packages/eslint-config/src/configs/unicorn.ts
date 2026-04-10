@@ -1,8 +1,8 @@
+import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 /**
  * Unicorn ESLint configuration providing 100+ powerful rules to improve code quality and consistency
  */
 import { defineConfig } from 'eslint/config'
-import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 
 import { GLOB_SRC } from '../utils'
 

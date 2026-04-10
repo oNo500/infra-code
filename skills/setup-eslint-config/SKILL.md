@@ -1,6 +1,6 @@
 ---
 name: setup-eslint-config
-description: "Configure @infra-x/eslint-config for projects. Use when a user wants to: (1) set up ESLint for a new project (generate eslint.config.mts, tsconfig.json, tsconfig.config.json), (2) modify or extend an existing eslint.config.mts using composeConfig(), (3) understand what a specific composeConfig option does (typescript, react, imports, prettier, vitest, etc.), (4) working in a monorepo and need to run create-eslint-config CLI, (5) user mentions @infra-x/eslint-config, @infra-x/create-eslint-config, or @infra-x/typescript-config."
+description: 'Configure @infra-x/eslint-config for projects. Use when a user wants to: (1) set up ESLint for a new project (generate eslint.config.mts, tsconfig.json, tsconfig.config.json), (2) modify or extend an existing eslint.config.mts using composeConfig(), (3) understand what a specific composeConfig option does (typescript, react, imports, prettier, vitest, etc.), (4) working in a monorepo and need to run create-eslint-config CLI, (5) user mentions @infra-x/eslint-config, @infra-x/create-eslint-config, or @infra-x/typescript-config.'
 ---
 
 # setup-eslint-config
@@ -11,12 +11,12 @@ This skill provides complete knowledge of `@infra-x/eslint-config` and `@infra-x
 
 ## Scenario Decision
 
-| User Request | Action |
-|---|---|
-| "帮我配置 ESLint" / "新项目接入" | Load `references/project-presets.md`, ask project type, generate three files |
-| "修改 eslint.config.mts" / "加一个选项" | Load `references/config-options.md`, apply targeted change |
-| "这个选项是什么意思" | Load `references/config-options.md`, explain the option |
-| monorepo 场景 | Run `pnpm dlx @infra-x/create-eslint-config` CLI (see Monorepo section) |
+| User Request                            | Action                                                                       |
+| --------------------------------------- | ---------------------------------------------------------------------------- |
+| "帮我配置 ESLint" / "新项目接入"        | Load `references/project-presets.md`, ask project type, generate three files |
+| "修改 eslint.config.mts" / "加一个选项" | Load `references/config-options.md`, apply targeted change                   |
+| "这个选项是什么意思"                    | Load `references/config-options.md`, explain the option                      |
+| monorepo 场景                           | Run `pnpm dlx @infra-x/create-eslint-config` CLI (see Monorepo section)      |
 
 ## Default-On Options
 
@@ -65,14 +65,16 @@ pnpm dlx @infra-x/create-eslint-config
 Copies `eslint-config/` into cwd with full source (`src/index.ts` + all configs), `package.json` (`name: @workspace/eslint-config`), exports point to `./src/index.ts` (no build needed).
 
 Add to workspace:
+
 ```yaml
 # pnpm-workspace.yaml
 packages:
-  - "packages/*"
-  - "eslint-config"
+  - 'packages/*'
+  - 'eslint-config'
 ```
 
 Root `eslint.config.ts`:
+
 ```typescript
 import { composeConfig } from '@workspace/eslint-config'
 
