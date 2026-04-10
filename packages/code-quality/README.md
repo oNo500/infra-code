@@ -8,16 +8,19 @@ Shared [Oxlint](https://oxc.rs/) + [Oxfmt](https://oxc.rs/docs/guide/usage/forma
 pnpm add -D @infra-x/code-quality
 ```
 
+> [!TIP]
+> Works with pnpm strict mode out of the box — jsPlugin paths are resolved internally via `require.resolve()`, no hoisting hacks needed.
+
 ## Lint (Oxlint)
 
 Create `oxlint.config.ts`:
 
 ```ts
-import { base, unicorn, react, vitest } from '@infra-x/code-quality/lint'
+import { base, unicorn, depend, react, vitest } from '@infra-x/code-quality/lint'
 import { defineConfig } from 'oxlint'
 
 export default defineConfig({
-  extends: [base(), unicorn(), react(), vitest()],
+  extends: [base(), unicorn(), depend(), react(), vitest()],
 })
 ```
 
@@ -43,7 +46,7 @@ export default defineConfig({
 | Preset | Description |
 |--------|-------------|
 | `base()` | TypeScript, Import, categories, env, ignores. Always include first. |
-| `typeAware()` | 59 type-aware rules via tsgolint (requires TS 7.0+) |
+| `typeAware()` | 59 type-aware rules via tsgolint (requires TS 7.0+ tsconfig compat) |
 | `unicorn()` | 100+ code quality rules |
 | `depend()` | Flag packages replaceable with native APIs or micro-utilities |
 
@@ -117,6 +120,22 @@ export default defineConfig({
   ],
 })
 ```
+
+> [!WARNING]
+> **NestJS projects** must disable `typescript/consistent-type-imports` — NestJS DI uses runtime class references in constructor params, and without type-aware linting this rule incorrectly converts them to `import type`, breaking DI at runtime.
+>
+> ```ts
+> export default defineConfig({
+>   extends: [base(), nestjs()],
+>   overrides: [{
+>     files: ['**/*.{ts,mts,cts,tsx}'],
+>     rules: {
+>       'typescript/consistent-type-imports': 'off',
+>       'typescript/no-extraneous-class': ['error', { allowWithDecorator: true }],
+>     },
+>   }],
+> })
+> ```
 
 ## Format (Oxfmt)
 
