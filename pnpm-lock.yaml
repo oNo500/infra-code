@@ -31,7 +31,7 @@ importers:
     dependencies:
       '@darraghor/eslint-plugin-nestjs-typed':
         specifier: ^7.1.28
-        version: 7.1.28(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)
+        version: 7.1.29(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)
       class-validator:
         specifier: '*'
         version: 0.15.1
@@ -411,6 +411,14 @@ packages:
 
   '@darraghor/eslint-plugin-nestjs-typed@7.1.28':
     resolution: {integrity: sha512-0u++3fWYN33ESR5TK8Dtsh1iL+ItyECDcSZZyz9g/jr+igNYnILPp3zqFcB+asieUccmjmz0N9jAUZMQ7et/hQ==}
+    engines: {node: '>=22.0.0'}
+    peerDependencies:
+      '@typescript-eslint/parser': ^7.0.0 || ^8.0.0
+      class-validator: '*'
+      eslint: '>=9.18.0'
+
+  '@darraghor/eslint-plugin-nestjs-typed@7.1.29':
+    resolution: {integrity: sha512-i+e2fDveQUYwkZIE9Qw4tdN55RrwDbRGLRbFGP2aKadI/pv9u5Igtrrjy20+zrJ+5vP7oUP6FcZp8P7SDx9XeQ==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@typescript-eslint/parser': ^7.0.0 || ^8.0.0
@@ -4300,6 +4308,25 @@ snapshots:
       - supports-color
       - typescript
 
+  '@darraghor/eslint-plugin-nestjs-typed@7.1.29(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)':
+    dependencies:
+      '@typescript-eslint/parser': 8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)
+      '@typescript-eslint/scope-manager': 8.58.1
+      '@typescript-eslint/type-utils': 8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)
+      '@typescript-eslint/utils': 8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)
+      class-validator: 0.15.1
+      eslint: 10.2.0(jiti@2.6.1)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.4.4)(eslint@10.2.0(jiti@2.6.1))
+      glob: 13.0.0
+      reflect-metadata: 0.2.2
+      ts-api-utils: 2.5.0(typescript@6.0.2)
+    transitivePeerDependencies:
+      - eslint-import-resolver-node
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+      - typescript
+
   '@emnapi/core@1.8.1':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
@@ -5113,7 +5140,7 @@ snapshots:
   '@typescript-eslint/project-service@8.58.0(typescript@6.0.2)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.58.0(typescript@6.0.2)
-      '@typescript-eslint/types': 8.58.1
+      '@typescript-eslint/types': 8.58.0
       debug: 4.4.3
       typescript: 6.0.2
     transitivePeerDependencies:
