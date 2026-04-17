@@ -10,13 +10,14 @@
   - `tsconfig gen` — unified command; scaffolds `tsconfig.config.ts` on first run (interactive via @clack/prompts, or from flags), regenerates from existing config on subsequent runs
   - `tsconfig sync --check` — CI drift detection
   - `tsconfig explain [layer]` — field-source attribution with `--field`, `--format json`, `--hypothetical`
-- Profile: `nextjs()`
+- Profiles: `nextjs()`, `viteReact()`, `libNode()`, `libReact()`, `appBun()`, `appNestjs()`
+- `--once` mode for one-shot JSON-only generation
 
 ## Next (0.1.0, minimal-viable package)
 
-- Profiles: `viteReact()`, `libNode()`, `libReact()`, `appBun()`, `appNestjs()`
 - Migrate `starters/cli` to the new package as proof of concept
 - CHANGELOG tracking via changesets
+- Potentially: parameterized profiles (`nextjs({ version: 16, turbopack: true })`)
 
 ## Phase 2 (post-MVP)
 
