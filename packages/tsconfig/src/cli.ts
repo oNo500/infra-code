@@ -104,6 +104,7 @@ interface ScaffoldOpts {
 async function scaffold(opts: ScaffoldOpts): Promise<void> {
   const { cwd, args, isTty, force } = opts
   let once = opts.once
+  let skipJson = false
   let profileName = args.profile
   let layerNames: string[]
   let paths: Record<string, readonly string[]> | undefined
@@ -197,6 +198,20 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       }
       if (mode === 'once') once = true
     }
+
+    // Managed mode: ask whether to also emit tsconfig.*.json right now.
+    // Users who want to review the DSL first can say no and run `tsconfig gen` later.
+    if (!once) {
+      const emitNow = await p.confirm({
+        message: 'Also generate tsconfig.*.json now?',
+        initialValue: true,
+      })
+      if (p.isCancel(emitNow)) {
+        p.cancel('Cancelled')
+        process.exit(0)
+      }
+      if (!emitNow) skipJson = true
+    }
   } else {
     // Non-interactive path.
     if (!profileName) {
@@ -223,12 +238,18 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       paths,
       force,
       once,
+      skipJson,
     })
     spinner?.stop('Done')
     if (interactive) {
-      const msg = result.configFile
-        ? `Created ${result.configFile} and ${result.generatedFiles.length} tsconfig file(s)`
-        : `Created ${result.generatedFiles.length} tsconfig file(s) (one-shot, no DSL)`
+      let msg: string
+      if (skipJson && result.configFile) {
+        msg = `Created ${result.configFile}. Run \`tsconfig gen\` when ready to emit JSON.`
+      } else if (!result.configFile) {
+        msg = `Created ${result.generatedFiles.length} tsconfig file(s) (one-shot, no DSL)`
+      } else {
+        msg = `Created ${result.configFile} and ${result.generatedFiles.length} tsconfig file(s)`
+      }
       p.outro(msg)
     } else {
       if (result.configFile) console.log(`write  ${result.configFile}`)
