@@ -5,6 +5,7 @@ import { defineCommand, runMain } from 'citty'
 import { defineTsconfig } from './define'
 import { explainTsconfig, renderExplain } from './explain'
 import { parsePathsArg, runInit } from './init'
+import { LAYER_PRESETS } from './layer-presets'
 import { configExists, isRenderedConfig, loadTsconfigConfig } from './loader'
 import { PROFILES } from './profiles/registry'
 import { checkAgainstDisk, syncToDisk } from './sync'
@@ -64,14 +65,11 @@ const gen = defineCommand({
     const hasArgs = hasScaffoldArgs(args)
     const isTty = Boolean(process.stdout.isTTY)
 
-    // --once: generate JSON only, don't touch tsconfig.config.ts.
-    // Safe to run even when config exists — it doesn't overwrite the DSL.
     if (args.once) {
       await scaffold({ cwd, args, isTty, force: false, once: true })
       return
     }
 
-    // Guard: user passed scaffold args but config already exists — refuse silent override.
     if (exists && hasArgs && !args.force) {
       console.error(
         'tsconfig.config.ts already exists. Refusing to overwrite — edit it directly, or pass --force. Use --once to generate JSON only without touching the DSL.',
@@ -79,7 +77,6 @@ const gen = defineCommand({
       process.exit(1)
     }
 
-    // Case 1: config exists (and no conflicting scaffold args) → regenerate from it.
     if (exists && !hasArgs) {
       const rendered = await loadRendered(cwd)
       const result = await syncToDisk(rendered, cwd)
@@ -88,7 +85,6 @@ const gen = defineCommand({
       return
     }
 
-    // Case 2: scaffold. Either no config exists, or --force was passed.
     await scaffold({ cwd, args, isTty, force: args.force || (exists && hasArgs), once: false })
   },
 })
@@ -111,8 +107,7 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
 
   if (args.paths) paths = parsePathsArg(args.paths)
 
-  const hasAnyArg = Boolean(args.profile || args.layers || args.paths)
-  const interactive = isTty && !hasAnyArg
+  const interactive = isTty && !hasScaffoldArgs(args)
 
   if (interactive) {
     p.intro('tsconfig')
@@ -134,10 +129,11 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
     const chosen = await p.multiselect({
       message: 'Which tsconfig layers do you need? (space to toggle, enter to confirm; leave empty for single tsconfig.json)',
       options: [
-        { value: 'app', label: 'app', hint: 'development + IDE' },
-        { value: 'test', label: 'test', hint: 'adds vitest/globals types' },
-        { value: 'build', label: 'build', hint: 'excludes test files' },
-        { value: 'ci', label: 'ci', hint: 'adds declarationMap' },
+        ...Object.entries(LAYER_PRESETS).map(([value, preset]) => ({
+          value,
+          label: preset.label,
+          hint: preset.hint,
+        })),
         { value: 'custom', label: 'custom…', hint: 'enter your own names' },
       ],
       required: false,
@@ -174,7 +170,6 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
     const raw = (pathsInput as string).trim()
     if (raw) paths = parsePathsArg(raw)
 
-    // Only ask about mode if --once wasn't already passed on the command line.
     if (!once) {
       const mode = await p.select({
         message: 'Maintenance mode?',
@@ -199,8 +194,6 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       if (mode === 'once') once = true
     }
 
-    // Managed mode: ask whether to also emit tsconfig.*.json right now.
-    // Users who want to review the DSL first can say no and run `tsconfig gen` later.
     if (!once) {
       const emitNow = await p.confirm({
         message: 'Also generate tsconfig.*.json now?',
@@ -213,7 +206,6 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       if (!emitNow) skipJson = true
     }
   } else {
-    // Non-interactive path.
     if (!profileName) {
       console.error(
         'No tsconfig.config.ts found and --profile not provided.\n' +

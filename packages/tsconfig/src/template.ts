@@ -1,3 +1,5 @@
+import { buildLayer } from './layer-presets'
+
 export interface TemplateInput {
   /** Profile's camelCase function name, e.g. 'viteReact'. */
   profileFnName: string
@@ -7,8 +9,6 @@ export interface TemplateInput {
 
 /**
  * Render a tsconfig.config.ts source file based on scaffolding choices.
- * Kept deliberately string-based — one time scaffolding, not a live template.
- *
  * Exports a plain DefineTsconfigInput (not a pre-resolved RenderedConfig) so
  * that both `tsconfig gen` (which renders) and `tsconfig explain` (which needs
  * the unresolved source) can consume it.
@@ -37,29 +37,11 @@ export function renderConfigTemplate(input: TemplateInput): string {
     const base = layers[0]!
     lines.push('  layers: {')
     for (const name of layers) {
-      if (name === 'test' && name !== base) {
-        lines.push('    test: {')
-        lines.push(`      extends: '${base}',`)
-        lines.push(`      compilerOptions: {`)
-        lines.push(`        types: ['vitest/globals'],`)
-        lines.push(`      },`)
-        lines.push(`      include: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],`)
-        lines.push('    },')
-      } else if (name === 'build' && name !== base) {
-        lines.push('    build: {')
-        lines.push(`      extends: '${base}',`)
-        lines.push(`      exclude: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],`)
-        lines.push('    },')
-      } else if (name === 'ci' && name !== base) {
-        lines.push('    ci: {')
-        lines.push(`      extends: '${base}',`)
-        lines.push(`      compilerOptions: {`)
-        lines.push(`        declarationMap: true,`)
-        lines.push(`        sourceMap: true,`)
-        lines.push(`      },`)
-        lines.push('    },')
-      } else {
+      const layer = buildLayer(name, base)
+      if (Object.keys(layer).length === 0) {
         lines.push(`    ${name}: {},`)
+      } else {
+        lines.push(`    ${name}: ${serializeLayer(layer, '    ')},`)
       }
     }
     lines.push('  },')
@@ -67,4 +49,39 @@ export function renderConfigTemplate(input: TemplateInput): string {
 
   lines.push('} satisfies DefineTsconfigInput')
   return lines.join('\n') + '\n'
+}
+
+/**
+ * Serialize a LayerInput to TS source, matching the style used elsewhere in
+ * the generated template (single quotes for strings, 2-space indent).
+ */
+function serializeLayer(layer: object, indent: string): string {
+  const entries = Object.entries(layer)
+  const inner = indent + '  '
+  const lines = ['{']
+  for (const [key, value] of entries) {
+    lines.push(`${inner}${key}: ${serializeValue(value, inner)},`)
+  }
+  lines.push(`${indent}}`)
+  return lines.join('\n')
+}
+
+function serializeValue(value: unknown, indent: string): string {
+  if (value === null || value === undefined) return String(value)
+  if (typeof value === 'string') return `'${value}'`
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (Array.isArray(value)) {
+    const items = value.map((v) => serializeValue(v, indent))
+    return `[${items.join(', ')}]`
+  }
+  if (typeof value === 'object') {
+    const inner = indent + '  '
+    const lines = ['{']
+    for (const [k, v] of Object.entries(value as object)) {
+      lines.push(`${inner}${k}: ${serializeValue(v, inner)},`)
+    }
+    lines.push(`${indent}}`)
+    return lines.join('\n')
+  }
+  return JSON.stringify(value)
 }

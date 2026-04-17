@@ -1,10 +1,7 @@
-import { applyProvenance, provenanceToCompilerOptions, valueWithoutSource } from './provenance'
+import { buildLayerChain, pickExclude, pickInclude, resolvePrimary } from './layer-chain'
+import { applyProvenance, valueWithoutSource } from './provenance'
 import type { Provenance, Source } from './provenance'
-import type {
-  DefineTsconfigInput,
-  LayerInput,
-  RenderedTsconfig,
-} from './types'
+import type { DefineTsconfigInput, LayerInput } from './types'
 
 export interface ExplainedLayer {
   filename: string
@@ -85,50 +82,6 @@ function explainLayer(
   }
 }
 
-function buildLayerChain(
-  name: string,
-  layers: Record<string, LayerInput>,
-  seen: Set<string>,
-): string[] {
-  if (seen.has(name)) {
-    throw new Error(`Circular layer extends: ${[...seen, name].join(' → ')}`)
-  }
-  seen.add(name)
-  const layer = layers[name]
-  if (!layer) throw new Error(`Layer '${name}' not found`)
-  if (!layer.extends) return [name]
-  return [...buildLayerChain(layer.extends, layers, seen), name]
-}
-
-function pickInclude(
-  input: DefineTsconfigInput,
-  chain: string[],
-  layers: Record<string, LayerInput>,
-): readonly string[] | undefined {
-  for (let i = chain.length - 1; i >= 0; i--) {
-    const inc = layers[chain[i]!]?.include
-    if (inc) return inc
-  }
-  return input.include ?? input.profile?.include
-}
-
-function pickExclude(
-  input: DefineTsconfigInput,
-  chain: string[],
-  layers: Record<string, LayerInput>,
-): readonly string[] | undefined {
-  for (let i = chain.length - 1; i >= 0; i--) {
-    const exc = layers[chain[i]!]?.exclude
-    if (exc) return exc
-  }
-  return input.exclude ?? input.profile?.exclude
-}
-
-function resolvePrimary(primary: string | undefined, names: string[]): string {
-  if (primary) return primary
-  if (names.includes('app')) return 'app'
-  return names[0]!
-}
 
 export interface RenderExplainOptions {
   layer?: string
@@ -259,12 +212,3 @@ function formatValue(v: unknown): string {
   return String(v)
 }
 
-/** Utility: collapse an ExplainedLayer back to a plain RenderedTsconfig for testing / diffing. */
-export function explainToRendered(layer: ExplainedLayer): RenderedTsconfig {
-  const result: RenderedTsconfig = {
-    compilerOptions: provenanceToCompilerOptions(layer.compilerOptions),
-  }
-  if (layer.include) result.include = layer.include
-  if (layer.exclude) result.exclude = layer.exclude
-  return result
-}
