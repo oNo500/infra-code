@@ -659,7 +659,6 @@ jobs:
           publish: bunx changeset publish --provenance --access public
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
 Key differences from the current file:
@@ -668,7 +667,7 @@ Key differences from the current file:
 - `pnpm install --frozen-lockfile` → `bun install --frozen-lockfile`
 - `pnpm build` → `bun run build`
 - `pnpm changeset publish` → `bunx changeset publish`
-- Added `NPM_TOKEN` env (in case the repo's existing publish relied on npm auth via a setup step we're removing — confirm by checking GitHub repo secrets after push; if `NPM_TOKEN` is absent, the job will fail loudly, not silently, so this is a safe guess)
+- No `NPM_TOKEN` env: the repo already uses npm OIDC trusted publishing (driven by `permissions: id-token: write`). Authentication is automatic.
 
 - [ ] **Step 2: Sanity-parse**
 
