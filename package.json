@@ -8,8 +8,8 @@
   "scripts": {
     "build": "bun --filter='*' run build",
     "typecheck": "bun --filter='*' run typecheck",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
+    "lint": "oxlint --disable-nested-config",
+    "lint:fix": "oxlint --disable-nested-config --fix",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "release": "bunx changeset publish"

@@ -1,6 +1,6 @@
 ---
-"@infra-x/code-quality": patch
-"@infra-x/typescript-config": patch
+'@infra-x/code-quality': patch
+'@infra-x/typescript-config': patch
 ---
 
 Internal: migrate the repository from pnpm + Turborepo to Bun
