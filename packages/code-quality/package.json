@@ -60,9 +60,9 @@
     "typescript": "^6.0.0"
   },
   "peerDependencies": {
-    "oxlint": ">=1.59.0",
-    "oxfmt": ">=0.44.0",
     "class-validator": "*",
+    "oxfmt": ">=0.44.0",
+    "oxlint": ">=1.59.0",
     "storybook": ">=10.0.0"
   },
   "peerDependenciesMeta": {

@@ -18,7 +18,7 @@ The outcome: one repo, one toolchain (Bun), two clearly separated product surfac
 ## 2. Non-goals
 
 - No breaking API changes to `@infra-x/code-quality` or `@infra-x/typescript-config` in this migration. Preset behaviour stays identical. The version bump that accompanies the infra change will be `patch` (maintenance), not `minor` or `major`.
-- No migration of `base-bun` starters' stack — they stay on Bun, React 19, Hono, etc. Only their *location* changes.
+- No migration of `base-bun` starters' stack — they stay on Bun, React 19, Hono, etc. Only their _location_ changes.
 - No new starter added in this migration.
 - No attempt to unify `packages/*` and `starters/*` under a single Bun workspace graph. The two surfaces stay independent.
 
@@ -60,16 +60,19 @@ infra-code/
 **Identity:** `@infra-x/code-quality`, `@infra-x/typescript-config` (and any future `@infra-x/*` package).
 
 **Runtime contract (immutable):**
+
 - Built output runs on **Node 20+ and Bun** — no `Bun.*` APIs, no `bun:*` protocol imports in source.
 - ESM only, types shipped alongside JS (`.d.mts`).
 - Consumed by the outside world via `npm install @infra-x/<pkg>` — we do not assume downstream users have Bun.
 
 **Development contract (new):**
+
 - Developed with Bun: `bun install`, `bun run build`, `bun test`, `bun publish`.
 - `package.json` of each package still declares `"prepublishOnly": "bun run build"` (was `pnpm run build`).
 - Versioning continues via `changesets` (`bunx changeset add` / `bunx changeset version` / `bunx changeset publish`).
 
 **Guards against Bun-leaks into published code:**
+
 - Each package `tsconfig.json` uses `"types": ["node"]` only (no `"bun"`). Using `Bun.*` triggers a TS error during `bun run build`.
 - CI adds one Node-run smoke step per package: after `bun run build`, execute `node --input-type=module -e "import('@infra-x/<pkg>/<subpath>').then(m => console.log(Object.keys(m)))"` against the built artifacts. If a package ever accidentally emits Bun-only output, this fails.
 
@@ -78,6 +81,7 @@ infra-code/
 **Identity:** `base-bun-cli`, `base-bun-server`, `base-bun-web` (package names unchanged from current base-bun templates).
 
 **Contract:**
+
 - Bun-first: each starter has its own `bun.lock` and is fetched by users via `bunx giget@latest gh:oNo500/infra-code/starters/<name> <dest>` (path updated from `oNo500/base-bun/templates/*`).
 - **Not** part of the root Bun workspace — fetching with giget must produce a self-contained project with no lingering `workspace:*` references.
 - Each starter continues to consume `@infra-x/code-quality` and `@infra-x/typescript-config` via **npm-resolved versions**, not workspace links. This preserves the "fetch and run" experience and forces the starters to dogfood the actually-published version of the presets.
@@ -92,13 +96,14 @@ infra-code/
   1. Change a package under `packages/code-quality/`.
   2. In that package: `bun run build`.
   3. In a starter: `bun install` and, temporarily, either `bun link` the package or publish a dev version and bump the starter's dependency.
-  This is slightly more friction than a single Bun workspace, but avoids polluting published starters with `workspace:*` placeholders.
+     This is slightly more friction than a single Bun workspace, but avoids polluting published starters with `workspace:*` placeholders.
 
 ## 5. Package-Manager Migration Details
 
 ### 5.1 Root `package.json`
 
 Before:
+
 ```json
 {
   "name": "boilerplate",
@@ -117,6 +122,7 @@ Before:
 ```
 
 After:
+
 ```json
 {
   "name": "infra-code",
@@ -135,6 +141,7 @@ After:
 ```
 
 Notes:
+
 - `name` renamed from `boilerplate` to `infra-code` (clarity; name is private, no publish impact).
 - `"private": true` declared so `bun publish` never targets the root.
 - `"workspaces"` intentionally lists only `packages/*`. Starters are deliberately excluded.
@@ -158,20 +165,24 @@ For each of `packages/code-quality/package.json` and `packages/typescript-config
 ### 5.4 Bun workspace semantics vs Turbo semantics
 
 Turbo's one meaningful piece of wiring was:
+
 ```json
 { "tasks": { "typecheck": { "dependsOn": ["^build"] } } }
 ```
+
 i.e. build dependencies before typechecking. With Bun workspaces the equivalent is to run the tasks sequentially at the root:
+
 ```
 bun --filter '@infra-x/*' run build && bun --filter '@infra-x/*' run typecheck
 ```
+
 `bun --filter` respects topological order by default when packages depend on each other via `workspace:*`, so `code-quality` (which declares `@infra-x/typescript-config: workspace:*`) will be handled after `typescript-config`. We lose Turbo's cross-run caching, which is acceptable given the tiny build matrix (2 packages).
 
 ## 6. Guarding Node Compatibility of Packages
 
 ### 6.1 TypeScript-level guard
 
-Each published package's `tsconfig.json` pins `"types": ["node"]` (and *not* `"bun"`). Importing `Bun.file`, `Bun.$`, `Bun.serve`, etc. surfaces as a TS error at build time. `bun:sqlite` / `bun:test` likewise fail to resolve since the Bun-specific modules aren't in the declared types.
+Each published package's `tsconfig.json` pins `"types": ["node"]` (and _not_ `"bun"`). Importing `Bun.file`, `Bun.$`, `Bun.serve`, etc. surfaces as a TS error at build time. `bun:sqlite` / `bun:test` likewise fail to resolve since the Bun-specific modules aren't in the declared types.
 
 ### 6.2 Runtime-level guard
 
@@ -246,6 +257,7 @@ Creating a changeset for package deletion is not required (changesets only versi
 Triggers: PR + push to master.
 
 Steps:
+
 1. `actions/checkout@v4`
 2. `oven-sh/setup-bun@v2`
 3. `bun install --frozen-lockfile`
@@ -258,6 +270,7 @@ Steps:
 ### 9.2 `starters-ci.yml` (new)
 
 Matrix over `[cli, server, web]`. For each:
+
 1. `actions/checkout@v4`
 2. `oven-sh/setup-bun@v2`
 3. `cd starters/$TEMPLATE && bun install --frozen-lockfile`
@@ -271,6 +284,7 @@ Equivalent in spirit to the existing `base-bun/.github/workflows/validate-templa
 ### 9.3 `publish.yml` updates
 
 Current:
+
 ```yaml
 - uses: pnpm/action-setup@v5
 - uses: actions/setup-node@v4
@@ -282,9 +296,10 @@ Current:
 ```
 
 After:
+
 ```yaml
 - uses: oven-sh/setup-bun@v2
-- uses: actions/setup-node@v4              # still needed — npm publish runs under Node
+- uses: actions/setup-node@v4 # still needed — npm publish runs under Node
   with:
     registry-url: 'https://registry.npmjs.org'
 - run: bun install --frozen-lockfile
@@ -295,6 +310,7 @@ After:
 ```
 
 Notes:
+
 - Node is still set up because `changesets/action@v1` invokes `npm publish` internally, which needs the Node + `registry-url` setup for auth. We don't use `bun publish` here; the changesets ecosystem around npm is more mature.
 - Provenance (`--provenance`) continues to work because the underlying publish is still `npm publish`.
 
@@ -330,14 +346,14 @@ The root `README.md` is rewritten to explicitly document two product surfaces:
 
 ## 12. Risks and Mitigations
 
-| Risk | Mitigation |
-|---|---|
-| `bun publish` or Bun workspace doesn't handle `@infra-x/code-quality`'s `workspace:*` dependency on `@infra-x/typescript-config` correctly at publish time | Keep `npm publish` via changesets (§9.3). Only `install` and `build` run through Bun. |
-| TypeScript 6.x / tsgolint alpha incompatibility with Bun's TS pipeline | Pinned versions come from infra-code's existing working state. `bun install` respects the same package.json constraints that pnpm did. If the Bun-driven `bun run build` behaves differently from `pnpm run build`, the migration is reverted locally and re-evaluated. |
-| Accidental Bun API leak into a published package | §6.1 + §6.2 guards. |
-| Starter `bun.lock` files go stale during migration because the `@infra-x/*` dep resolves differently | After each starter absorption, run `bun install` inside it and commit the refreshed `bun.lock`. |
-| base-bun's 24 commits of history are lost | Accepted (§7.2 Option A). Archive tag + archived GitHub repo cover historical access. |
-| Readers who find the old giget URL in docs they authored earlier 404 | Accepted — single-user consumer, announced change. |
+| Risk                                                                                                                                                       | Mitigation                                                                                                                                                                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun publish` or Bun workspace doesn't handle `@infra-x/code-quality`'s `workspace:*` dependency on `@infra-x/typescript-config` correctly at publish time | Keep `npm publish` via changesets (§9.3). Only `install` and `build` run through Bun.                                                                                                                                                                                   |
+| TypeScript 6.x / tsgolint alpha incompatibility with Bun's TS pipeline                                                                                     | Pinned versions come from infra-code's existing working state. `bun install` respects the same package.json constraints that pnpm did. If the Bun-driven `bun run build` behaves differently from `pnpm run build`, the migration is reverted locally and re-evaluated. |
+| Accidental Bun API leak into a published package                                                                                                           | §6.1 + §6.2 guards.                                                                                                                                                                                                                                                     |
+| Starter `bun.lock` files go stale during migration because the `@infra-x/*` dep resolves differently                                                       | After each starter absorption, run `bun install` inside it and commit the refreshed `bun.lock`.                                                                                                                                                                         |
+| base-bun's 24 commits of history are lost                                                                                                                  | Accepted (§7.2 Option A). Archive tag + archived GitHub repo cover historical access.                                                                                                                                                                                   |
+| Readers who find the old giget URL in docs they authored earlier 404                                                                                       | Accepted — single-user consumer, announced change.                                                                                                                                                                                                                      |
 
 ## 13. Success Criteria
 

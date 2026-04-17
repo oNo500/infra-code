@@ -1,11 +1,13 @@
 {
   "name": "infra-code",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "type": "module",
-  "workspaces": ["packages/*"],
   "scripts": {
-    "build": "bun --filter '@infra-x/*' run build",
-    "typecheck": "bun --filter '@infra-x/*' run typecheck",
+    "build": "bun --filter='*' run build",
+    "typecheck": "bun --filter='*' run typecheck",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --write .",

@@ -11,6 +11,7 @@
 **Reference spec:** `docs/superpowers/specs/2026-04-17-bun-migration-and-starters-absorption.md`
 
 **Preconditions already met:**
+
 - git tag `archive/eslint-config-v0.1.13` points to pre-migration `master` (commit `3f22e00`).
 - `.gitignore` already ignores `.worktrees/`.
 - Working branch: `feat/bun-migration`, inside worktree `/Users/xiu/code/infra-code/.worktrees/bun-migration`.
@@ -71,6 +72,7 @@ skills/setup-eslint-config/            (whole directory)
 **Why first:** These packages still declare `pnpm run build` scripts and pnpm-specific artifacts. Removing them before touching the root toolchain keeps later tasks simpler.
 
 **Files:**
+
 - Delete: `packages/eslint-config/`
 - Delete: `packages/eslint-config-test/`
 - Delete: `packages/create-eslint-config/`
@@ -79,10 +81,12 @@ skills/setup-eslint-config/            (whole directory)
 - [ ] **Step 1: Verify the archive tag exists**
 
 Run from worktree:
+
 ```bash
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 git rev-parse archive/eslint-config-v0.1.13
 ```
+
 Expected: prints `3f22e00f1d664fe23a2b106ec2bc5118afe4e1b7`. If not, STOP and escalate — the archive tag is the only recovery path.
 
 - [ ] **Step 2: Remove directories with `git rm -r`**
@@ -102,6 +106,7 @@ grep -rln "@infra-x/eslint-config\|@infra-x/create-eslint-config" . \
   --include='*.yml' --include='*.yaml' \
   --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docs || true
 ```
+
 Expected: no matches. If matches appear (e.g. in the root package.json's `devDependencies` or in a README), remove them in-place with `git rm`-style edits. Do NOT touch `docs/superpowers/specs/*` or `docs/superpowers/plans/*` — those intentionally reference the old packages as archive history.
 
 - [ ] **Step 4: Commit**
@@ -132,6 +137,7 @@ ls skills/              # expected: empty or just a .gitkeep
 ## Task 2 — Rewrite root `package.json`
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Step 1: Replace the root `package.json` with the Bun-workspace form**
@@ -164,6 +170,7 @@ Write this exact content to `/Users/xiu/code/infra-code/.worktrees/bun-migration
 ```
 
 Differences vs. current root `package.json`:
+
 - `name: "boilerplate"` → `"infra-code"`
 - add `"private": true`
 - add `"type": "module"`
@@ -195,6 +202,7 @@ git commit -m "refactor: convert root package.json to Bun workspaces
 ## Task 3 — Delete pnpm and Turborepo artifacts
 
 **Files:**
+
 - Delete: `pnpm-workspace.yaml`
 - Delete: `pnpm-lock.yaml`
 - Delete: `turbo.json`
@@ -212,6 +220,7 @@ git rm pnpm-workspace.yaml pnpm-lock.yaml turbo.json
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 ls pnpm-workspace.yaml pnpm-lock.yaml turbo.json 2>&1 | head
 ```
+
 Expected: all three report `No such file or directory`.
 
 - [ ] **Step 3: Commit**
@@ -231,6 +240,7 @@ Replaced by Bun workspaces (see previous commit) and direct
 **Why:** Each package's `prepublishOnly` still says `pnpm run build`. Under Bun, `pnpm` is absent, so `npm publish` (which runs `prepublishOnly`) would fail.
 
 **Files:**
+
 - Modify: `packages/code-quality/package.json`
 - Modify: `packages/typescript-config/package.json` (confirm — it has no scripts today, so no change needed; verify)
 
@@ -244,6 +254,7 @@ Do NOT touch any other line in the file.
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 cat packages/typescript-config/package.json | grep -A3 '"scripts"' || echo "no scripts block"
 ```
+
 Expected: either `no scripts block` or an empty scripts object. No change required in that case.
 
 - [ ] **Step 3: Commit**
@@ -270,6 +281,7 @@ bun install 2>&1 | tail -20
 Expected: completes successfully, creates `bun.lock` and `node_modules/`, may warn about peer deps but must not error.
 
 If `bun install` fails due to an unresolvable version constraint:
+
 - If caused by one of the version bumps in Task 2 (e.g. `oxlint-tsgolint@^0.21.0` doesn't exist yet) — revert that specific bump to the closest working version, commit the revert, rerun.
 - Any other failure: stop, report.
 
@@ -279,6 +291,7 @@ If `bun install` fails due to an unresolvable version constraint:
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 ls node_modules/@infra-x/
 ```
+
 Expected: `code-quality  typescript-config` — Bun has symlinked the local workspace packages. If the output shows real directories instead of symlinks (`ls -l node_modules/@infra-x/`), that means Bun resolved the published npm versions; rerun `bun install` and investigate.
 
 - [ ] **Step 3: Commit the new lockfile**
@@ -340,6 +353,7 @@ Expected: two lines, each reporting a positive number of exports (e.g. `lint exp
 - [ ] **Step 5: Commit the formatted output if any**
 
 No changes expected if format was already clean. Otherwise:
+
 ```bash
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 git add -A
@@ -355,6 +369,7 @@ git commit -m "style: reformat after Bun migration" || echo "nothing to commit"
 **Source:** `/Users/xiu/code/base-bun` at commit `affda03` (current master HEAD).
 
 **Files:**
+
 - Create: `starters/cli/` — copy of `base-bun/templates/cli/` minus `node_modules/` and `dist/`
 - Create: `starters/server/` — copy of `base-bun/templates/server/` minus `node_modules/` and `dist/`
 - Create: `starters/web/` — copy of `base-bun/templates/web/` minus `node_modules/` and `dist/`
@@ -366,6 +381,7 @@ cd /Users/xiu/code/base-bun
 git log --oneline -1
 git status -s
 ```
+
 Expected: HEAD commit `affda03`, working tree clean.
 
 If the working tree is dirty, stop and ask the human. If the HEAD is a different commit, verify it's a descendant of `affda03` via `git log --oneline affda03..HEAD`.
@@ -398,10 +414,12 @@ Apply to `starters/cli/README.md`, `starters/server/README.md`, `starters/web/RE
 Find any occurrence of `gh:oNo500/base-bun/templates/` and replace with `gh:oNo500/infra-code/starters/`.
 
 Quick sanity check:
+
 ```bash
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 grep -rn "base-bun/templates" starters/ || echo "no stale refs"
 ```
+
 Expected: `no stale refs`.
 
 If any starter README still refers to `base-bun/` (e.g. as a project name), leave it — the only change is the giget path.
@@ -478,6 +496,7 @@ Stack: Bun full-stack HTML entry; React 19 + Tailwind v4."
 ## Task 8 — Replace `.github/workflows/ci.yml` with `packages-ci.yml`
 
 **Files:**
+
 - Delete: `.github/workflows/ci.yml`
 - Create: `.github/workflows/packages-ci.yml`
 
@@ -532,6 +551,7 @@ jobs:
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 python3 -c "import yaml; yaml.safe_load(open('.github/workflows/packages-ci.yml'))" && echo "YAML OK"
 ```
+
 If python3 is unavailable, skip — GitHub will validate on push.
 
 - [ ] **Step 4: Commit**
@@ -551,6 +571,7 @@ published artifacts."
 ## Task 9 — Add `starters-ci.yml`
 
 **Files:**
+
 - Create: `.github/workflows/starters-ci.yml`
 
 - [ ] **Step 1: Create the matrix workflow**
@@ -620,6 +641,7 @@ validate-templates.yml from the base-bun repo."
 ## Task 10 — Update `publish.yml` for Bun + changesets
 
 **Files:**
+
 - Modify: `.github/workflows/publish.yml`
 
 - [ ] **Step 1: Rewrite the file**
@@ -662,6 +684,7 @@ jobs:
 ```
 
 Key differences from the current file:
+
 - `pnpm/action-setup@v5` → `oven-sh/setup-bun@v2`
 - `cache: 'pnpm'` removed from `setup-node` (Bun manages its own cache); `setup-node` kept because `changesets/action` shells out to `npm publish` for the actual registry upload
 - `pnpm install --frozen-lockfile` → `bun install --frozen-lockfile`
@@ -693,6 +716,7 @@ under the hood. setup-node is kept for auth and registry-url."
 ## Task 11 — Write the changeset entry
 
 **Files:**
+
 - Create: `.changeset/2026-04-17-bun-migration.md`
 
 - [ ] **Step 1: Create the changeset**
@@ -701,8 +725,8 @@ Write to `/Users/xiu/code/infra-code/.worktrees/bun-migration/.changeset/2026-04
 
 ```markdown
 ---
-"@infra-x/code-quality": patch
-"@infra-x/typescript-config": patch
+'@infra-x/code-quality': patch
+'@infra-x/typescript-config': patch
 ---
 
 Internal: migrate the repository from pnpm + Turborepo to Bun
@@ -723,6 +747,7 @@ git commit -m "chore: changeset for Bun migration (patch)"
 ## Task 12 — Rewrite root `README.md`
 
 **Files:**
+
 - Modify: `README.md`
 
 - [ ] **Step 1: Inspect the current README**
@@ -748,10 +773,10 @@ Personal infrastructure for TypeScript + Bun projects: shared lint/format/TS pre
 
 Published to npm.
 
-| Package | Purpose |
-|---|---|
-| [`@infra-x/code-quality`](./packages/code-quality) | Composable oxlint + oxfmt presets |
-| [`@infra-x/typescript-config`](./packages/typescript-config) | Shared `tsconfig.*.json` presets |
+| Package                                                      | Purpose                           |
+| ------------------------------------------------------------ | --------------------------------- |
+| [`@infra-x/code-quality`](./packages/code-quality)           | Composable oxlint + oxfmt presets |
+| [`@infra-x/typescript-config`](./packages/typescript-config) | Shared `tsconfig.*.json` presets  |
 
 ```bash
 npm install -D @infra-x/code-quality @infra-x/typescript-config
@@ -763,11 +788,11 @@ Both packages run on Node 20+ and Bun.
 
 Fetched via [`giget`](https://github.com/unjs/giget). Each starter is a self-contained Bun project.
 
-| Starter | For | Stack |
-|---|---|---|
-| [`cli`](./starters/cli) | Publishable CLI tools | Bun dev · Node publish · citty · tsdown |
-| [`server`](./starters/server) | HTTP services on Bun | Hono · zod · Drizzle · `bun:sqlite` |
-| [`web`](./starters/web) | Quick prototype UIs | Bun full-stack · React 19 · Tailwind v4 |
+| Starter                       | For                   | Stack                                   |
+| ----------------------------- | --------------------- | --------------------------------------- |
+| [`cli`](./starters/cli)       | Publishable CLI tools | Bun dev · Node publish · citty · tsdown |
+| [`server`](./starters/server) | HTTP services on Bun  | Hono · zod · Drizzle · `bun:sqlite`     |
+| [`web`](./starters/web)       | Quick prototype UIs   | Bun full-stack · React 19 · Tailwind v4 |
 
 ```bash
 bunx giget@latest gh:oNo500/infra-code/starters/cli my-cli
@@ -862,6 +887,7 @@ node --input-type=module -e "
   console.log('lint:', Object.keys(lint).length, 'format:', Object.keys(format).length)
 "
 ```
+
 Expected: both counts > 0.
 
 - [ ] **Step 4: All three starters**
@@ -904,6 +930,7 @@ Expected: clean tree and a linear set of commits from this migration. If any fil
 cd /Users/xiu/code/infra-code/.worktrees/bun-migration
 git show --stat archive/eslint-config-v0.1.13 -- packages/eslint-config 2>&1 | head -5
 ```
+
 Expected: shows the final state of `packages/eslint-config` files. If it doesn't, the tag is broken and the old state is unrecoverable — STOP and escalate.
 
 ---
