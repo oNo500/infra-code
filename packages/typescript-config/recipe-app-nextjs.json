@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recipe: Next.js App",
+  "extends": [
+    "./base.json",
+    "./runtime-universal.json",
+    "./build-bundler.json",
+    "./framework-react.json"
+  ]
+}

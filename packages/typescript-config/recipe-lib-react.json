@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recipe: React Library",
+  "extends": [
+    "./base.json",
+    "./runtime-browser.json",
+    "./build-bundler.json",
+    "./project-lib.json",
+    "./framework-react.json"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recipe: Bun + React App",
+  "extends": [
+    "./base.json",
+    "./runtime-bun.json",
+    "./build-bundler.json",
+    "./framework-react.json"
+  ]
+}
