@@ -49,12 +49,7 @@ bun run format
 
 - **Packages** live under `packages/*` and are part of the root Bun workspace. They must stay Node-compatible — source code imports `node:*` only; `tsconfig.json` uses `"types": ["node"]` to block `Bun.*` usage at compile time.
 - **Starters** live under `starters/*` and are **not** part of the workspace. Each has its own `bun.lock`. Run `cd starters/<name> && bun install` to work on one.
-- **Releases** use [changesets](https://github.com/changesets/changesets):
-  ```bash
-  bunx changeset          # create a changeset
-  bunx changeset version  # bump versions + update changelogs
-  # master push → publish.yml publishes to npm
-  ```
+- **Releases** use [changesets](https://github.com/changesets/changesets). Run `bunx changeset` to record a bump, commit the file, and push to `master`. CI opens a "Version Packages" PR; merging it publishes to npm. Don't run `bunx changeset version` locally — see [CONTRIBUTING.md](./CONTRIBUTING.md#releasing).
 
 ## History
 

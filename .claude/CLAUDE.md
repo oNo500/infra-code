@@ -4,47 +4,61 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
+Run from the repo root (operates on `packages/*` workspace):
+
 ```bash
-pnpm install        # install dependencies
-pnpm build          # build all packages (turbo)
-pnpm lint           # lint all packages (oxlint, root config)
-pnpm lint:fix       # auto-fix lint issues (oxlint)
-pnpm format         # format all files (oxfmt)
-pnpm format:check   # check formatting without writing
-pnpm typecheck      # type-check all packages (depends on build)
-pnpm changeset      # create a changeset for version bump
+bun install          # install workspace deps (packages/* only — see Architecture)
+bun run build        # build workspace packages (fans out via bun --filter='*')
+bun run typecheck    # type-check workspace packages
+bun run lint         # oxlint with root config (--disable-nested-config)
+bun run lint:fix     # oxlint --fix
+bun run format       # oxfmt --write .
+bun run format:check # oxfmt --check . (CI uses this)
+bunx changeset       # record an intent-to-bump; commit the generated .changeset/*.md
 ```
+
+> [!NOTE]
+> `typescript-config` has no `build`/`typecheck` script (it ships raw JSON); `bun --filter` simply skips packages without the target script.
+
+Root also exposes `"release": "bunx changeset publish"` — **this is for CI only**, never run it locally.
 
 ## Architecture
 
-Turborepo monorepo with pnpm workspaces:
+Bun workspaces monorepo (no Turborepo). Two areas with different semantics:
 
-- `packages/code-quality` — shared Oxlint + Oxfmt presets (recommended)
-- `packages/eslint-config` — ESLint config presets (legacy)
-- `packages/create-eslint-config` — CLI scaffolding tool
-- `packages/typescript-config` — shared TypeScript configs
-- `packages/eslint-config-test` — test fixtures for eslint-config
+- `packages/*` — **in** the root workspace (`workspaces: ["packages/*"]`), published to npm under `@infra-x/*`
+  - `packages/code-quality` — composable oxlint + oxfmt presets (built with `tsdown`)
+  - `packages/typescript-config` — shared `tsconfig.*.json` presets (no build step)
+- `starters/*` — **not** in the workspace. Each starter has its own `bun.lock` and is fetched standalone via `giget`
+  - `starters/cli` — publishable CLI tools (citty + tsdown)
+  - `starters/server` — Bun HTTP services (Hono + Drizzle + `bun:sqlite`)
+  - `starters/web` — Bun full-stack UI prototypes (React 19 + Tailwind v4)
+
+> [!IMPORTANT]
+> Root `bun install` does **not** touch `starters/*`. To work on a starter, `cd starters/<name> && bun install` and use that starter's own scripts (see its README).
 
 ## Tooling
 
-- Lint/format config lives at monorepo root (`oxlint.config.ts`, `oxfmt.config.ts`)
-- `code-quality` is the primary lint/format package; `eslint-config` is legacy
-- oxlint `typeAware: true` is set globally; each package's own `tsconfig.json` is auto-detected
-- `eslint-config` and `eslint-config-test` are excluded from oxlint
+- Root `oxlint.config.ts` / `oxfmt.config.ts` apply to `packages/*`. Each starter carries its own config files.
+- Packages must stay **Node-compatible**: source imports `node:*` only, and `tsconfig.json` uses `"types": ["node"]` to block `Bun.*` at compile time. Starters are free to use `Bun.*`.
+- oxlint runs with `--disable-nested-config` at the root; `typeAware: true` is set, so each package's `tsconfig.json` is auto-detected.
 
 ## Git Workflow
 
 - Default branch: `master` (PR target)
-- Use `pnpm changeset` for version bumps before merging
+- Create a changeset alongside code changes when a version bump is needed
 
 ### Release flow (changesets)
 
-1. Create a changeset file: `pnpm changeset` (or write `.changeset/<name>.md` manually)
-2. Commit the changeset file along with code changes and push to `master`
-3. `changesets/action` in CI detects the changeset and **automatically creates a "Version Packages" PR** (bumps version, updates CHANGELOG)
-4. Merge that PR to trigger the actual npm publish
+`publish.yml` uses `changesets/action@v1` with only a `publish:` command (no `version:`), which means the action runs in its default two-phase mode:
 
-> **Do NOT** run `pnpm changeset version` locally — let CI handle version bumps and publishing via the PR flow.
+1. Create a changeset: `bunx changeset` (or write `.changeset/<name>.md` manually)
+2. Commit the changeset file with your code changes and push to `master`
+3. `changesets/action` sees the pending changeset and opens (or updates) a **"Version Packages" PR** from branch `changeset-release/master` — this PR bumps versions and updates CHANGELOG
+4. Merge that PR → the next run has no pending changesets, so the action executes `bunx changeset publish --provenance --access public` to npm
+
+> [!IMPORTANT]
+> Do **not** run `bunx changeset version` or `bun run release` locally. Both are CI-owned steps; running them locally will produce commits that conflict with the "Version Packages" PR.
 
 ## Principles
 

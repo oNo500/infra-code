@@ -150,7 +150,10 @@ export default defineConfig({
 
 ### Type-aware linting
 
-The `typeAware()` preset enables 59 type-aware rules via [`oxlint-tsgolint`](https://www.npmjs.com/package/oxlint-tsgolint) and `typeCheck`.
+The `typeAware()` preset enables two options on oxlint:
+
+- **`typeAware`** — turns on ~59 lint rules that need type information, implemented via [`oxlint-tsgolint`](https://www.npmjs.com/package/oxlint-tsgolint) (e.g. `no-floating-promises`, `no-misused-promises`, `consistent-type-imports`)
+- **`typeCheck`** — pipes the TypeScript compiler's own diagnostics (`TS2322`, `TS6133`, `TS2307`, ...) through oxlint, so `oxlint` reports type errors alongside lint violations
 
 ```ts
 import { base, typeAware, unicorn } from '@infra-x/code-quality/lint'
@@ -165,6 +168,14 @@ export default defineConfig({
 > `typeAware` and `typeCheck` are [**root-config-only** options](https://oxc.rs/docs/guide/usage/linter/nested-config.html). Oxlint will report an error if either is set in a nested (per-package) config file. Always place `typeAware()` in the root config only.
 
 Each package's own `tsconfig.json` is auto-detected by oxlint — no extra configuration needed. See [type-aware linting](https://oxc.rs/docs/guide/usage/linter/type-aware.html) for details.
+
+#### Do I still need a separate `tsc --noEmit` step?
+
+Short answer: **yes, keep it.** With `typeCheck` enabled, `oxlint` already surfaces tsc diagnostics for the files it lints, so during local development you'll usually catch type errors from `lint` alone. But a dedicated `typecheck` script is still worth keeping because:
+
+- **Different file scope.** `tsc --noEmit` honors the tsconfig's `include` / `exclude`. `oxlint` walks the filesystem by its own rules and honors `ignorePatterns`. The two sets overlap but are not identical — a file covered by tsconfig but excluded from lint (or vice versa) will only be checked by one of them.
+- **Project-level diagnostics.** tsc catches errors that aren't attached to a single source file: `tsconfig.json` misconfiguration (`TS5xxx`), broken project `references`, `paths` alias typos. Per-file type-aware linting can't see these.
+- **Clearer CI failures.** Running `typecheck` and `lint` as separate steps makes it obvious whether a red build is a type error or a lint rule violation.
 
 ### Monorepo (nested configs)
 
