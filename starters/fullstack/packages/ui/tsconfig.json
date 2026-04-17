@@ -1,0 +1,11 @@
+{
+  "extends": "@infra-x/typescript-config/recipe-lib-react.json",
+  "compilerOptions": {
+    "paths": {
+      "@workspace/ui/*": ["./src/*"]
+    },
+    "isolatedDeclarations": false
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "oxlint.config.ts"]
+}

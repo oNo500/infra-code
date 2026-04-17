@@ -1,0 +1,23 @@
+{
+  "name": "@workspace/icons",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "generate": "svgr --no-prettier --out-dir src/icons -- src/svg",
+    "build": "tsdown"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "react": "^19.2.4"
+  },
+  "devDependencies": {
+    "@svgr/cli": "^8.1.0",
+    "@types/react": "^19.2.14",
+    "prettier": "^3.8.1",
+    "tsdown": "^0.21.4",
+    "typescript": "^6.0.0"
+  }
+}

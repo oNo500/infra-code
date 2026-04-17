@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "@infra-x/typescript-config/base.json",
+    "@infra-x/typescript-config/runtime-universal.json",
+    "@infra-x/typescript-config/build-bundler.json",
+    "@infra-x/typescript-config/framework-react.json",
+    "@infra-x/typescript-config/framework-vitest.json"
+  ],
+  "compilerOptions": {
+    "types": ["vitest/globals", "node"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@workspace/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["__tests__/**/*", "src/**/*.test.ts", "src/**/*.test.tsx"]
+}
