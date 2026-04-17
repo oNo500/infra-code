@@ -1,0 +1,43 @@
+{
+  "name": "boilerplate",
+  "type": "module",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "turbo run format",
+    "format:check": "turbo run format:check",
+    "test": "turbo run test --continue",
+    "typecheck": "turbo run typecheck",
+    "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@infra-x/code-quality": "^0.4.0",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^1.59.0",
+    "taze": "^19.10.0",
+    "turbo": "^2.8.20"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "^8.0.1"
+    },
+    "peerDependencyRules": {
+      "allowAny": [
+        "antd",
+        "openapi-fetch",
+        "storybook"
+      ]
+    },
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@scarf/scarf",
+      "bcrypt",
+      "better-sqlite3",
+      "@swc/core",
+      "esbuild"
+    ]
+  }
+}

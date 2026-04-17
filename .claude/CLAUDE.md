@@ -29,13 +29,14 @@ Bun workspaces monorepo (no Turborepo). Two areas with different semantics:
 - `packages/*` — **in** the root workspace (`workspaces: ["packages/*"]`), published to npm under `@infra-x/*`
   - `packages/code-quality` — composable oxlint + oxfmt presets (built with `tsdown`)
   - `packages/typescript-config` — shared `tsconfig.*.json` presets (no build step)
-- `starters/*` — **not** in the workspace. Each starter has its own `bun.lock` and is fetched standalone via `giget`
-  - `starters/cli` — publishable CLI tools (citty + tsdown)
+- `starters/*` — **not** in the workspace. Each starter carries its own lockfile and toolchain, and is fetched standalone via `giget`
+  - `starters/cli` — publishable CLI tools (bun + citty + tsdown)
   - `starters/server` — Bun HTTP services (Hono + Drizzle + `bun:sqlite`)
   - `starters/web` — Bun full-stack UI prototypes (React 19 + Tailwind v4)
+  - `starters/fullstack` — pnpm + Turborepo monorepo (Next.js 16 + Drizzle + Better Auth + shadcn/ui)
 
 > [!IMPORTANT]
-> Root `bun install` does **not** touch `starters/*`. To work on a starter, `cd starters/<name> && bun install` and use that starter's own scripts (see its README).
+> Root `bun install` does **not** touch `starters/*`. To work on a starter, `cd starters/<name>` and use its own package manager — `bun install` for bun-based starters, `pnpm install` for `fullstack`. See each starter's README.
 
 ## Tooling
 

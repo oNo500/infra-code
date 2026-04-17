@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+@source "../../../apps/**/*.{ts,tsx}";
+@source "../../../components/**/*.{ts,tsx}";
+@source "../**/*.{ts,tsx}";
+
+@import 'tw-animate-css';
+
+/* Shadcn theme */
+@import './shadcn-theme.css';
+
+/* Custom styles */
+@import './prose.css';
+@import './squircle.css';
+/* @import "./custom-utilities.css"; */
+
+/* View Transitions */
+@import './theme-transition.css';
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  max-width: 1480px;
+  @media (width >= 48rem) {
+    padding-inline: 2.25rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    scrollbar-gutter: stable;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Override ring-3 width from 3px to 1px globally - must be outside @layer to take precedence */
+[class*='ring-3'] {
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0px + var(--tw-ring-offset-width))
+    var(--tw-ring-color, currentcolor);
+}
