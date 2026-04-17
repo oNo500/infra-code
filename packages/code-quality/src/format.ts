@@ -13,8 +13,10 @@
 
 import { defu } from 'defu'
 
+import type { OxfmtConfig } from 'oxfmt'
+
 /** Base format preset. Pass overrides to customize. */
-export function format(overrides?: Record<string, unknown>) {
+export function format(overrides?: Record<string, unknown>): OxfmtConfig {
   return defu(overrides, {
     semi: false,
     singleQuote: true,
@@ -57,11 +59,11 @@ export function format(overrides?: Record<string, unknown>) {
  * export default defineConfig({ ...format(), ...tailwindFormat() })
  * ```
  */
-export function tailwindFormat(options: { stylesheet?: string } = {}) {
+export function tailwindFormat(options: { stylesheet?: string } = {}): OxfmtConfig {
   return {
     sortTailwindcss: {
       stylesheet: options.stylesheet ?? 'src/styles/globals.css',
-      functions: ['cn', 'clsx', 'cva', 'tw'],
+      functions: ['cn', 'clsx', 'cva', 'tw'] as string[],
     },
   }
 }
