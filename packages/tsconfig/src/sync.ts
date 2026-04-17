@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
+import { resolve } from 'node:path'
 
 import { renderToString } from './define'
 import type { RenderedConfig } from './types'
@@ -68,10 +68,3 @@ async function readIfExists(path: string): Promise<string | null> {
   }
 }
 
-// Ensure the directory exists before write — needed if user configures non-root layers
-// like `layers.web/tsconfig.json`. Not MVP but harmless helper.
-export async function ensureDir(path: string): Promise<void> {
-  const dir = dirname(path)
-  const { mkdir } = await import('node:fs/promises')
-  await mkdir(dir, { recursive: true })
-}

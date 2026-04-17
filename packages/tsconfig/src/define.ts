@@ -1,4 +1,5 @@
-import { concatArrays, mergeCompilerOptions, normalizeCompilerOptions } from './merge'
+import { buildLayerChain, pickExclude, pickInclude, resolvePrimary } from './layer-chain'
+import { mergeCompilerOptions, normalizeCompilerOptions } from './merge'
 import type {
   DefineTsconfigInput,
   LayerInput,
@@ -12,11 +13,6 @@ const GENERATED_HEADER = [
   '// Edit tsconfig.config.ts and run `tsconfig sync`.',
 ].join('\n')
 
-/**
- * Entry point. Takes a DSL input and returns a resolved config ready to be
- * written to disk. The returned object is pure data — callers (CLI or API
- * consumers) decide what to do with it.
- */
 export function defineTsconfig(input: DefineTsconfigInput): RenderedConfig {
   const layers = input.layers ?? {}
   const layerNames = Object.keys(layers)
@@ -47,8 +43,8 @@ function renderSingle(input: DefineTsconfigInput): RenderedFile {
   const compilerOptions = mergeCompilerOptions(profile?.compilerOptions, input.compilerOptions)
   const content: RenderedTsconfig = {
     compilerOptions: normalizeCompilerOptions(compilerOptions),
-    include: input.include ?? profile?.include ? [...(input.include ?? profile!.include!)] : undefined,
-    exclude: input.exclude ?? profile?.exclude ? [...(input.exclude ?? profile!.exclude!)] : undefined,
+    include: input.include ?? profile?.include,
+    exclude: input.exclude ?? profile?.exclude,
     references: input.references,
   }
   pruneUndefined(content)
@@ -61,88 +57,22 @@ function resolveLayer(
   layers: Record<string, LayerInput>,
 ): RenderedTsconfig {
   const layer = layers[name]!
-  const chain = buildLayerChain(name, layers, new Set())
+  const chain = buildLayerChain(name, layers)
 
-  // Start from profile baseline, then apply root-level user compilerOptions,
-  // then each layer in chain order.
   let compilerOptions = input.profile?.compilerOptions ?? {}
   compilerOptions = mergeCompilerOptions(compilerOptions, input.compilerOptions)
   for (const stepName of chain) {
     compilerOptions = mergeCompilerOptions(compilerOptions, layers[stepName]!.compilerOptions)
   }
 
-  const include = pickInclude(input, chain, layers, layer)
-  const exclude = pickExclude(input, chain, layers, layer)
-
   const content: RenderedTsconfig = {
     compilerOptions: normalizeCompilerOptions(compilerOptions),
-    include,
-    exclude,
+    include: pickInclude(input, chain, layers),
+    exclude: pickExclude(input, chain, layers),
     files: layer.files,
   }
   pruneUndefined(content)
   return content
-}
-
-function buildLayerChain(
-  name: string,
-  layers: Record<string, LayerInput>,
-  seen: Set<string>,
-): string[] {
-  if (seen.has(name)) {
-    throw new Error(`Circular layer extends: ${[...seen, name].join(' → ')}`)
-  }
-  seen.add(name)
-  const layer = layers[name]
-  if (!layer) {
-    throw new Error(`Layer '${name}' not found`)
-  }
-  const parent = layer.extends
-  if (!parent) return [name]
-  return [...buildLayerChain(parent, layers, seen), name]
-}
-
-function pickInclude(
-  input: DefineTsconfigInput,
-  chain: string[],
-  layers: Record<string, LayerInput>,
-  layer: LayerInput,
-): readonly string[] | undefined {
-  // Layer's own include wins if set; otherwise inherit profile/root fallback.
-  if (layer.include) return [...layer.include]
-  // Walk up chain for first include
-  for (let i = chain.length - 2; i >= 0; i--) {
-    const inc = layers[chain[i]!]?.include
-    if (inc) return [...inc]
-  }
-  if (input.include) return [...input.include]
-  return input.profile?.include ? [...input.profile.include] : undefined
-}
-
-function pickExclude(
-  input: DefineTsconfigInput,
-  chain: string[],
-  layers: Record<string, LayerInput>,
-  layer: LayerInput,
-): readonly string[] | undefined {
-  if (layer.exclude) return [...layer.exclude]
-  for (let i = chain.length - 2; i >= 0; i--) {
-    const exc = layers[chain[i]!]?.exclude
-    if (exc) return [...exc]
-  }
-  if (input.exclude) return [...input.exclude]
-  return input.profile?.exclude ? [...input.profile.exclude] : undefined
-}
-
-function resolvePrimary(primary: string | undefined, names: string[]): string {
-  if (primary) {
-    if (!names.includes(primary)) {
-      throw new Error(`primary layer '${primary}' not defined in layers`)
-    }
-    return primary
-  }
-  if (names.includes('app')) return 'app'
-  return names[0]!
 }
 
 function pruneUndefined(obj: object): void {
@@ -151,6 +81,3 @@ function pruneUndefined(obj: object): void {
     if (record[key] === undefined) delete record[key]
   }
 }
-
-// Keep concatArrays accessible for future use (e.g. tests).
-export { concatArrays }
