@@ -1,0 +1,38 @@
+{
+  "name": "base-bun-cli",
+  "version": "0.0.0",
+  "private": false,
+  "description": "Bun CLI template (dev on Bun, publish to Node)",
+  "bin": {
+    "mycli": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "tsdown",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "test": "bun test",
+    "prepublishOnly": "bun run build"
+  },
+  "dependencies": {
+    "citty": "^0.1.6"
+  },
+  "devDependencies": {
+    "@infra-x/code-quality": "^0.4.0",
+    "@infra-x/typescript-config": "^0.1.6",
+    "@types/bun": "latest",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^0.15.0",
+    "tsdown": "^0.21.9",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
