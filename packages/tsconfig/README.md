@@ -57,7 +57,7 @@ compilerOptions: {
 
 ## Commands
 
-### `tsconfig gen` — one command, three modes
+### `tsconfig gen` — one command, multiple modes
 
 `gen` resolves input in this priority: **flags → tsconfig.config.ts → interactive prompts**.
 
@@ -70,6 +70,10 @@ tsconfig gen
 
 # 3. No flags, no config, TTY — interactive prompts (profile / layers / paths)
 tsconfig gen
+
+# 4. One-shot: generate tsconfig.*.json only (skip tsconfig.config.ts)
+#    Useful for throwaway/one-time setups. Safe even if a DSL file already exists.
+tsconfig gen --once --profile nextjs --layers app,test
 
 # Refuses to silently overwrite an existing config + flags combo; pass --force if intentional
 tsconfig gen --profile vite-react --force

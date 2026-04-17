@@ -108,6 +108,35 @@ describe('runInit', () => {
       /Unknown profile/,
     )
   })
+
+  it('once mode skips tsconfig.config.ts', async () => {
+    const result = await runInit({
+      cwd: tmp,
+      profile: 'nextjs',
+      layers: ['app', 'test'],
+      once: true,
+    })
+    expect(result.configFile).toBeNull()
+    expect(result.generatedFiles).toContain('tsconfig.json')
+    expect(result.generatedFiles).toContain('tsconfig.test.json')
+
+    // Verify tsconfig.config.ts was NOT created.
+    const { existsSync } = await import('node:fs')
+    expect(existsSync(join(tmp, 'tsconfig.config.ts'))).toBe(false)
+  })
+
+  it('once mode works even when tsconfig.config.ts exists (does not touch it)', async () => {
+    const { writeFileSync, readFileSync } = await import('node:fs')
+    writeFileSync(join(tmp, 'tsconfig.config.ts'), '// my custom DSL')
+    await runInit({
+      cwd: tmp,
+      profile: 'nextjs',
+      layers: [],
+      once: true,
+    })
+    // DSL file untouched.
+    expect(readFileSync(join(tmp, 'tsconfig.config.ts'), 'utf8')).toBe('// my custom DSL')
+  })
 })
 
 function stripHeader(content: string): string {
