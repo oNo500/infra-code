@@ -1,38 +1,45 @@
 {
   "name": "@infra-x/typescript-config",
-  "version": "0.1.7",
+  "version": "1.0.0",
   "license": "MIT",
-  "scripts": {
-    "test": "bun test"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/oNo500/infra-code.git",
     "directory": "packages/typescript-config"
   },
   "files": [
-    "tsconfig.base.json",
-    "tsconfig.library.json",
-    "tsconfig.nestjs.json",
-    "tsconfig.nextjs.json",
-    "tsconfig.config.json",
-    "tsconfig.react-library.json",
-    "tsconfig.vite.json",
-    "tsconfig.vitest.json"
+    "base.json",
+    "runtime-*.json",
+    "build-*.json",
+    "project-*.json",
+    "framework-*.json",
+    "recipe-*.json"
   ],
   "exports": {
-    "./tsconfig.base.json": "./tsconfig.base.json",
-    "./tsconfig.library.json": "./tsconfig.library.json",
-    "./tsconfig.nestjs.json": "./tsconfig.nestjs.json",
-    "./tsconfig.nextjs.json": "./tsconfig.nextjs.json",
-    "./tsconfig.config.json": "./tsconfig.config.json",
-    "./tsconfig.react-library.json": "./tsconfig.react-library.json",
-    "./tsconfig.vite.json": "./tsconfig.vite.json",
-    "./tsconfig.vitest.json": "./tsconfig.vitest.json",
+    "./base.json": "./base.json",
+    "./runtime-node.json": "./runtime-node.json",
+    "./runtime-bun.json": "./runtime-bun.json",
+    "./runtime-browser.json": "./runtime-browser.json",
+    "./runtime-universal.json": "./runtime-universal.json",
+    "./build-bundler.json": "./build-bundler.json",
+    "./build-tsc-emit.json": "./build-tsc-emit.json",
+    "./project-lib.json": "./project-lib.json",
+    "./framework-react.json": "./framework-react.json",
+    "./framework-nestjs.json": "./framework-nestjs.json",
+    "./framework-vitest.json": "./framework-vitest.json",
+    "./recipe-app-bun.json": "./recipe-app-bun.json",
+    "./recipe-app-bun-react.json": "./recipe-app-bun-react.json",
+    "./recipe-app-nextjs.json": "./recipe-app-nextjs.json",
+    "./recipe-app-nestjs.json": "./recipe-app-nestjs.json",
+    "./recipe-lib-node.json": "./recipe-lib-node.json",
+    "./recipe-lib-react.json": "./recipe-lib-react.json",
     "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
   },
   "publishConfig": {
     "access": "public"
