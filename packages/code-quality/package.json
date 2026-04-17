@@ -36,7 +36,7 @@
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit",
     "release": "bumpp",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^7.1.28",
