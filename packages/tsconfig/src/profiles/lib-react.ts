@@ -6,6 +6,7 @@ import {
   projectLib,
   runtimeBrowser,
 } from './atoms'
+
 import type { Profile, ProfileResult } from '../types'
 
 /**

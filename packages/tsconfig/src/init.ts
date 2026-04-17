@@ -6,7 +6,12 @@ import { buildLayer } from './layer-presets'
 import { PROFILES, findProfile } from './profiles/registry'
 import { syncToDisk } from './sync'
 import { renderConfigTemplate } from './template'
-import type { LayerInput } from './types'
+
+import type { CompilerOptions, LayerInput } from './types'
+
+function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
+  return err instanceof Error && 'code' in err
+}
 
 export interface InitOptions {
   cwd: string
@@ -51,8 +56,10 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
         flag: opts.force ? 'w' : 'wx',
       })
     } catch (err) {
-      if ((err as NodeJS.ErrnoException).code === 'EEXIST') {
-        throw new Error('tsconfig.config.ts already exists. Use --force to overwrite.')
+      if (isErrnoException(err) && err.code === 'EEXIST') {
+        throw new Error('tsconfig.config.ts already exists. Use --force to overwrite.', {
+          cause: err,
+        })
       }
       throw err
     }
@@ -66,7 +73,9 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
 
   // Guard: skipJson + once = nothing to write.
   if (opts.skipJson && opts.once) {
-    throw new Error('Cannot combine once (no DSL) with skipJson (no JSON) — nothing would be written.')
+    throw new Error(
+      'Cannot combine once (no DSL) with skipJson (no JSON) — nothing would be written.',
+    )
   }
 
   if (opts.skipJson) {
@@ -76,9 +85,13 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
     }
   }
 
+  const compilerOptions: CompilerOptions | undefined = opts.paths
+    ? { paths: Object.fromEntries(Object.entries(opts.paths).map(([k, v]) => [k, [...v]])) }
+    : undefined
+
   const rendered = defineTsconfig({
     profile: descriptor.factory(),
-    compilerOptions: opts.paths ? { paths: opts.paths as Record<string, string[]> } : undefined,
+    compilerOptions,
     layers: opts.layers.length > 0 ? layersObj : undefined,
   })
 
@@ -92,7 +105,10 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
 /** Parse a paths string like "@/*=./src/*,@ui/*=../ui/src/*" into an object. */
 export function parsePathsArg(input: string): Record<string, readonly string[]> {
   const result: Record<string, readonly string[]> = {}
-  for (const pair of input.split(',').map((s) => s.trim()).filter(Boolean)) {
+  for (const pair of input
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)) {
     const eq = pair.indexOf('=')
     if (eq < 0) continue
     const key = pair.slice(0, eq).trim()

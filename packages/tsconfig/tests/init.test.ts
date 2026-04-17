@@ -1,8 +1,7 @@
-import { mkdtempSync, readFileSync } from 'node:fs'
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 
 import { parsePathsArg, runInit } from '../src/init'
 import { renderConfigTemplate } from '../src/template'
@@ -110,9 +109,7 @@ describe('runInit', () => {
 
   it('refuses to overwrite unless --force', async () => {
     await runInit({ cwd: tmp, profile: 'nextjs', layers: [] })
-    expect(runInit({ cwd: tmp, profile: 'nextjs', layers: [] })).rejects.toThrow(
-      /already exists/,
-    )
+    expect(runInit({ cwd: tmp, profile: 'nextjs', layers: [] })).rejects.toThrow(/already exists/)
   })
 
   it('overwrites with force=true', async () => {
@@ -123,9 +120,7 @@ describe('runInit', () => {
   })
 
   it('rejects unknown profile', () => {
-    expect(runInit({ cwd: tmp, profile: 'bogus', layers: [] })).rejects.toThrow(
-      /Unknown profile/,
-    )
+    expect(runInit({ cwd: tmp, profile: 'bogus', layers: [] })).rejects.toThrow(/Unknown profile/)
   })
 
   it('once mode skips tsconfig.config.ts', async () => {
@@ -140,12 +135,10 @@ describe('runInit', () => {
     expect(result.generatedFiles).toContain('tsconfig.test.json')
 
     // Verify tsconfig.config.ts was NOT created.
-    const { existsSync } = await import('node:fs')
     expect(existsSync(join(tmp, 'tsconfig.config.ts'))).toBe(false)
   })
 
   it('once mode works even when tsconfig.config.ts exists (does not touch it)', async () => {
-    const { writeFileSync, readFileSync } = await import('node:fs')
     writeFileSync(join(tmp, 'tsconfig.config.ts'), '// my custom DSL')
     await runInit({
       cwd: tmp,
@@ -167,7 +160,6 @@ describe('runInit', () => {
     expect(result.configFile).toBe('tsconfig.config.ts')
     expect(result.generatedFiles).toEqual([])
 
-    const { existsSync } = await import('node:fs')
     expect(existsSync(join(tmp, 'tsconfig.config.ts'))).toBe(true)
     expect(existsSync(join(tmp, 'tsconfig.json'))).toBe(false)
     expect(existsSync(join(tmp, 'tsconfig.test.json'))).toBe(false)

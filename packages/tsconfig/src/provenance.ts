@@ -42,7 +42,7 @@ export function applyProvenance(
     const existingSources = existing?.sources ?? []
 
     if (isArrayVerb(value)) {
-      const newValue = applyVerbToProvenance(existing, value as ArrayVerb, source)
+      const newValue = applyVerbToProvenance(existing, value, source)
       result[key] = {
         value: newValue.value,
         sources: [...existingSources, source],
@@ -67,7 +67,7 @@ export function applyProvenance(
 
     if (isPlainObject(value) && isPlainObject(existing?.value)) {
       result[key] = {
-        value: { ...(existing!.value as object), ...value },
+        value: { ...(existing.value as object), ...value },
         sources: [...existingSources, source],
       }
       continue
@@ -108,16 +108,10 @@ function applyVerbToProvenance(
     items = items.filter(({ item }) => !removeKeys.has(itemKey(item)))
   }
   if (verb.$prepend) {
-    items = dedupeItemSources([
-      ...verb.$prepend.map((item) => ({ item, source })),
-      ...items,
-    ])
+    items = dedupeItemSources([...verb.$prepend.map((item) => ({ item, source })), ...items])
   }
   if (verb.$append) {
-    items = dedupeItemSources([
-      ...items,
-      ...verb.$append.map((item) => ({ item, source })),
-    ])
+    items = dedupeItemSources([...items, ...verb.$append.map((item) => ({ item, source }))])
   }
   return { value: items.map((x) => x.item), itemSources: items }
 }
@@ -130,7 +124,7 @@ function isArrayVerb(v: unknown): v is ArrayVerb {
 }
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v) && (v as object).constructor === Object
+  return typeof v === 'object' && v !== null && !Array.isArray(v) && v.constructor === Object
 }
 
 function itemKey(item: unknown): string {
@@ -161,14 +155,9 @@ export function provenanceToCompilerOptions(prov: Provenance): CompilerOptions {
  * Compute the hypothetical value if a specific source were removed from a field.
  * Used by `explain --hypothetical`.
  */
-export function valueWithoutSource(
-  prov: FieldProvenance,
-  removeSourceName: string,
-): unknown {
+export function valueWithoutSource(prov: FieldProvenance, removeSourceName: string): unknown {
   if (prov.itemSources) {
-    return prov.itemSources
-      .filter((x) => x.source.name !== removeSourceName)
-      .map((x) => x.item)
+    return prov.itemSources.filter((x) => x.source.name !== removeSourceName).map((x) => x.item)
   }
   // For scalars/objects, last source wins. Strip it.
   const remaining = prov.sources.filter((s) => s.name !== removeSourceName)

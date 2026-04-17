@@ -9,6 +9,7 @@ import { LAYER_PRESETS } from './layer-presets'
 import { configExists, isRenderedConfig, loadTsconfigConfig } from './loader'
 import { PROFILES } from './profiles/registry'
 import { checkAgainstDisk, syncToDisk } from './sync'
+
 import type { DefineTsconfigInput, RenderedConfig } from './types'
 
 async function loadRendered(cwd: string): Promise<RenderedConfig> {
@@ -63,7 +64,7 @@ const gen = defineCommand({
     const cwd = args.cwd
     const exists = await configExists(cwd)
     const hasArgs = hasScaffoldArgs(args)
-    const isTty = Boolean(process.stdout.isTTY)
+    const isTty = process.stdout.isTTY ?? false
 
     if (args.once) {
       await scaffold({ cwd, args, isTty, force: false, once: true })
@@ -124,10 +125,11 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       p.cancel('Cancelled')
       process.exit(0)
     }
-    profileName = selected as string
+    profileName = selected
 
     const chosen = await p.multiselect({
-      message: 'Which tsconfig layers do you need? (space to toggle, enter to confirm; leave empty for single tsconfig.json)',
+      message:
+        'Which tsconfig layers do you need? (space to toggle, enter to confirm; leave empty for single tsconfig.json)',
       options: [
         ...Object.entries(LAYER_PRESETS).map(([value, preset]) => ({
           value,
@@ -142,7 +144,7 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       p.cancel('Cancelled')
       process.exit(0)
     }
-    const chosenList = chosen as string[]
+    const chosenList = chosen
     if (chosenList.includes('custom')) {
       const input = await p.text({
         message: 'Layer names (comma-separated)',
@@ -153,7 +155,10 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
         p.cancel('Cancelled')
         process.exit(0)
       }
-      layerNames = (input as string).split(',').map((s) => s.trim()).filter(Boolean)
+      layerNames = input
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
     } else {
       layerNames = chosenList
     }
@@ -167,7 +172,7 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       p.cancel('Cancelled')
       process.exit(0)
     }
-    const raw = (pathsInput as string).trim()
+    const raw = pathsInput.trim()
     if (raw) paths = parsePathsArg(raw)
 
     if (!once) {
@@ -215,7 +220,10 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       process.exit(1)
     }
     layerNames = args.layers
-      ? args.layers.split(',').map((s) => s.trim()).filter(Boolean)
+      ? args.layers
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
       : []
   }
 
@@ -225,7 +233,7 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
   try {
     const result = await runInit({
       cwd,
-      profile: profileName!,
+      profile: profileName,
       layers: layerNames,
       paths,
       force,
