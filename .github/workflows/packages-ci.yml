@@ -1,0 +1,31 @@
+name: Packages CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master, changeset-release/master]
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run format:check
+      - name: Node-smoke @infra-x/code-quality
+        working-directory: packages/code-quality
+        run: |
+          node --input-type=module -e "
+            const lint = await import('./dist/lint.mjs')
+            const format = await import('./dist/format.mjs')
+            if (Object.keys(lint).length === 0) { console.error('lint exports empty'); process.exit(1) }
+            if (Object.keys(format).length === 0) { console.error('format exports empty'); process.exit(1) }
+            console.log('lint:', Object.keys(lint).length, 'format:', Object.keys(format).length)
+          "
