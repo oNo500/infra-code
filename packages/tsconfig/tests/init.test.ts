@@ -41,8 +41,10 @@ describe('parsePathsArg', () => {
 describe('renderConfigTemplate', () => {
   it('renders minimal single-layer config', () => {
     const src = renderConfigTemplate({ profileName: 'nextjs', layers: [] })
-    expect(src).toContain(`import { defineTsconfig, nextjs } from '@infra-x/tsconfig'`)
+    expect(src).toContain(`import { nextjs } from '@infra-x/tsconfig'`)
+    expect(src).toContain(`import type { DefineTsconfigInput } from '@infra-x/tsconfig'`)
     expect(src).toContain('profile: nextjs(),')
+    expect(src).toContain('satisfies DefineTsconfigInput')
     expect(src).not.toContain('layers:')
   })
 
@@ -81,6 +83,7 @@ describe('runInit', () => {
     const configSrc = readFileSync(join(tmp, 'tsconfig.config.ts'), 'utf8')
     expect(configSrc).toContain(`from '@infra-x/tsconfig'`)
     expect(configSrc).toContain('nextjs()')
+    expect(configSrc).toContain('satisfies DefineTsconfigInput')
 
     const testJson = JSON.parse(stripHeader(readFileSync(join(tmp, 'tsconfig.test.json'), 'utf8')))
     expect(testJson.compilerOptions.types).toEqual(['node', 'vitest/globals'])

@@ -7,14 +7,19 @@ export interface TemplateInput {
 /**
  * Render a tsconfig.config.ts source file based on scaffolding choices.
  * Kept deliberately string-based — one time scaffolding, not a live template.
+ *
+ * Exports a plain DefineTsconfigInput (not a pre-resolved RenderedConfig) so
+ * that both `tsconfig gen` (which renders) and `tsconfig explain` (which needs
+ * the unresolved source) can consume it.
  */
 export function renderConfigTemplate(input: TemplateInput): string {
   const { profileName, layers, paths } = input
 
   const lines: string[] = []
-  lines.push(`import { defineTsconfig, ${profileName} } from '@infra-x/tsconfig'`)
+  lines.push(`import { ${profileName} } from '@infra-x/tsconfig'`)
+  lines.push(`import type { DefineTsconfigInput } from '@infra-x/tsconfig'`)
   lines.push('')
-  lines.push('export default defineTsconfig({')
+  lines.push('export default {')
   lines.push(`  profile: ${profileName}(),`)
 
   if (paths && Object.keys(paths).length > 0) {
@@ -45,6 +50,6 @@ export function renderConfigTemplate(input: TemplateInput): string {
     lines.push('  },')
   }
 
-  lines.push('})')
+  lines.push('} satisfies DefineTsconfigInput')
   return lines.join('\n') + '\n'
 }
