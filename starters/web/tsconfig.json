@@ -1,12 +1,11 @@
 {
-  "extends": [
-    "@infra-x/typescript-config/base.json",
-    "@infra-x/typescript-config/runtime-bun.json",
-    "@infra-x/typescript-config/build-bundler.json",
-    "@infra-x/typescript-config/framework-react.json"
-  ],
+  "extends": "@infra-x/typescript-config/tsconfig.react-library.json",
   "compilerOptions": {
-    "lib": ["esnext", "DOM", "DOM.Iterable"]
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["bun"],
+    "noEmit": true,
+    "isolatedDeclarations": false,
+    "declaration": false
   },
   "include": ["src/**/*", "tests/**/*", "server.ts", "build.ts"],
   "exclude": ["node_modules", "dist"]
