@@ -46,9 +46,28 @@
         "storybook",
       ],
     },
+    "packages/tsconfig": {
+      "name": "@infra-x/tsconfig",
+      "version": "0.0.0",
+      "bin": {
+        "tsconfig": "./dist/cli.mjs",
+      },
+      "dependencies": {
+        "c12": "^3.3.4",
+        "citty": "^0.2.2",
+        "defu": "^6.1.7",
+      },
+      "devDependencies": {
+        "@infra-x/typescript-config": "workspace:*",
+        "@types/bun": "latest",
+        "@types/node": "^25.0.0",
+        "tsdown": "^0.21.0",
+        "typescript": "^6.0.0",
+      },
+    },
     "packages/typescript-config": {
       "name": "@infra-x/typescript-config",
-      "version": "0.1.7",
+      "version": "2.0.0",
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -192,6 +211,8 @@
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
     "@infra-x/code-quality": ["@infra-x/code-quality@workspace:packages/code-quality"],
+
+    "@infra-x/tsconfig": ["@infra-x/tsconfig@workspace:packages/tsconfig"],
 
     "@infra-x/typescript-config": ["@infra-x/typescript-config@workspace:packages/typescript-config"],
 
@@ -462,6 +483,8 @@
     "check-error": ["check-error@2.1.3", "", {}, "sha512-PAJdDJusoxnwm1VwW07VWwUN1sl7smmC3OKggvndJFadxxDRyFJBX/ggnu/KE4kQAB7a3Dp8f/YXC1FlUprWmA=="],
 
     "chokidar": ["chokidar@5.0.0", "", { "dependencies": { "readdirp": "^5.0.0" } }, "sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw=="],
+
+    "citty": ["citty@0.2.2", "", {}, "sha512-+6vJA3L98yv+IdfKGZHBNiGW5KHn22e/JwID0Strsz8h4S/csAu/OuICwxrg44k5MRiZHWIo8XXuJgQTriRP4w=="],
 
     "class-validator": ["class-validator@0.15.1", "", { "dependencies": { "@types/validator": "^13.15.3", "libphonenumber-js": "^1.11.1", "validator": "^13.15.22" } }, "sha512-LqoS80HBBSCVhz/3KloUly0ovokxpdOLR++Al3J3+dHXWt9sTKlKd4eYtoxhxyUjoe5+UcIM+5k9MIxyBWnRTw=="],
 
