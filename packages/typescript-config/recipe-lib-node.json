@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recipe: Node Library",
+  "extends": [
+    "./base.json",
+    "./runtime-node.json",
+    "./build-bundler.json",
+    "./project-lib.json"
+  ]
+}
