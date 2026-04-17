@@ -1,5 +1,13 @@
 # @infra-x/code-quality
 
+## 0.4.1
+
+### Patch Changes
+
+- e0507b0: Internal: migrate the repository from pnpm + Turborepo to Bun
+  workspaces. No runtime behaviour or API changes. Published artifacts
+  remain Node 20+ ESM.
+
 ## 0.4.0
 
 ### Minor Changes
@@ -16,6 +24,7 @@
   Format preset: no semi, single quote, import sorting, package.json sorting, tailwindFormat()
 
   Features:
+
   - Type-aware linting via tsgolint (59 rules)
   - Oxfmt handles formatting + import sorting (replaces ESLint stylistic + import-x/order)
   - NestJS DI/Swagger validation (19 AST rules via jsPlugin)
