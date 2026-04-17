@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Runtime: Bun",
+  "compilerOptions": {
+    "types": ["bun"],
+    "lib": ["esnext"]
+  }
+}

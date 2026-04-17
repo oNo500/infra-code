@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Runtime: Universal (Node + Browser)",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["esnext", "DOM", "DOM.Iterable"]
+  }
+}
