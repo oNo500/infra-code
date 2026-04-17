@@ -1,5 +1,6 @@
 export interface TemplateInput {
-  profileName: string
+  /** Profile's camelCase function name, e.g. 'viteReact'. */
+  profileFnName: string
   layers: readonly string[]
   paths?: Record<string, readonly string[]>
 }
@@ -13,14 +14,14 @@ export interface TemplateInput {
  * the unresolved source) can consume it.
  */
 export function renderConfigTemplate(input: TemplateInput): string {
-  const { profileName, layers, paths } = input
+  const { profileFnName, layers, paths } = input
 
   const lines: string[] = []
-  lines.push(`import { ${profileName} } from '@infra-x/tsconfig'`)
+  lines.push(`import { ${profileFnName} } from '@infra-x/tsconfig'`)
   lines.push(`import type { DefineTsconfigInput } from '@infra-x/tsconfig'`)
   lines.push('')
   lines.push('export default {')
-  lines.push(`  profile: ${profileName}(),`)
+  lines.push(`  profile: ${profileFnName}(),`)
 
   if (paths && Object.keys(paths).length > 0) {
     lines.push('  compilerOptions: {')

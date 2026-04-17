@@ -45,7 +45,7 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
 
   if (!opts.once) {
     const templateSrc = renderConfigTemplate({
-      profileName: opts.profile,
+      profileFnName: descriptor.fnName,
       layers: opts.layers,
       paths: opts.paths,
     })

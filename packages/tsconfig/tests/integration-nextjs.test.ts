@@ -26,7 +26,7 @@ describe('integration: nextjs profile produces reasonable tsconfig', () => {
 
     expect(co.strict).toBe(true)
     expect(co.jsx).toBe('preserve')
-    expect(co.module).toBe('esnext')
+    expect(co.module).toBe('preserve')
     expect(co.moduleResolution).toBe('bundler')
     expect(co.types).toEqual(['node'])
     expect(co.lib).toEqual(['esnext', 'DOM', 'DOM.Iterable'])
