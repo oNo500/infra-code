@@ -77,7 +77,7 @@ function serializeValue(value: unknown, indent: string): string {
   if (typeof value === 'object') {
     const inner = indent + '  '
     const lines = ['{']
-    for (const [k, v] of Object.entries(value as object)) {
+    for (const [k, v] of Object.entries(value)) {
       lines.push(`${inner}${k}: ${serializeValue(v, inner)},`)
     }
     lines.push(`${indent}}`)

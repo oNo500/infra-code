@@ -1,7 +1,11 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { isDeepStrictEqual } from 'node:util'
+
+import { parse as parseJsonc } from 'jsonc-parser'
 
 import { renderToString } from './define'
+
 import type { RenderedConfig } from './types'
 
 export interface SyncResult {
@@ -14,9 +18,11 @@ export interface CheckResult {
   mismatches: Array<{
     filename: string
     reason: 'missing' | 'changed'
-    expected: string
-    actual: string | null
   }>
+}
+
+function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
+  return err instanceof Error && 'code' in err
 }
 
 /** Write all generated files to disk, relative to cwd. */
@@ -39,20 +45,26 @@ export async function syncToDisk(config: RenderedConfig, cwd: string): Promise<S
   return { written, unchanged }
 }
 
-/** Compare generated output to what's on disk. Returns ok=false if any mismatch. */
+/**
+ * Compare generated output to what's on disk — semantically, not byte-wise.
+ * Disk JSON is parsed as JSONC (tolerates comments and trailing commas), then
+ * deep-compared with the DSL output. This means formatter passes, key order
+ * changes, and whitespace variation don't count as drift — only actual
+ * compilerOptions / include / exclude / references differences do.
+ */
 export async function checkAgainstDisk(config: RenderedConfig, cwd: string): Promise<CheckResult> {
   const mismatches: CheckResult['mismatches'] = []
 
   for (const file of config.files) {
     const absPath = resolve(cwd, file.filename)
-    const expected = renderToString(file)
-    const actual = await readIfExists(absPath)
-    if (actual === null) {
-      mismatches.push({ filename: file.filename, reason: 'missing', expected, actual: null })
+    const actualRaw = await readIfExists(absPath)
+    if (actualRaw === null) {
+      mismatches.push({ filename: file.filename, reason: 'missing' })
       continue
     }
-    if (actual !== expected) {
-      mismatches.push({ filename: file.filename, reason: 'changed', expected, actual })
+    const actualParsed = parseJsonc(actualRaw) as unknown
+    if (!isDeepStrictEqual(actualParsed, file.content)) {
+      mismatches.push({ filename: file.filename, reason: 'changed' })
     }
   }
 
@@ -63,8 +75,7 @@ async function readIfExists(path: string): Promise<string | null> {
   try {
     return await readFile(path, 'utf8')
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null
+    if (isErrnoException(err) && err.code === 'ENOENT') return null
     throw err
   }
 }
-

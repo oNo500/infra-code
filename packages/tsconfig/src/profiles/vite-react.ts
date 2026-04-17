@@ -1,10 +1,5 @@
-import {
-  base,
-  buildBundler,
-  composeAtoms,
-  frameworkReact,
-  runtimeBrowser,
-} from './atoms'
+import { base, buildBundler, composeAtoms, frameworkReact, runtimeBrowser } from './atoms'
+
 import type { Profile, ProfileResult } from '../types'
 
 /**
@@ -13,12 +8,7 @@ import type { Profile, ProfileResult } from '../types'
  */
 export const viteReact: Profile = (): ProfileResult => ({
   label: 'vite-react',
-  compilerOptions: composeAtoms(
-    base(),
-    runtimeBrowser(),
-    buildBundler(),
-    frameworkReact(),
-  ),
+  compilerOptions: composeAtoms(base(), runtimeBrowser(), buildBundler(), frameworkReact()),
   include: ['src/**/*'],
   exclude: ['node_modules', 'dist'],
 })

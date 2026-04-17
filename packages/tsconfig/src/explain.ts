@@ -1,5 +1,6 @@
 import { buildLayerChain, pickExclude, pickInclude, resolvePrimary } from './layer-chain'
 import { applyProvenance, valueWithoutSource } from './provenance'
+
 import type { Provenance, Source } from './provenance'
 import type { DefineTsconfigInput, LayerInput } from './types'
 
@@ -26,9 +27,7 @@ export function explainTsconfig(input: DefineTsconfigInput): ExplainedConfig {
 
   const primaryName = resolvePrimary(input.primary, layerNames)
   return {
-    layers: layerNames.map((name) =>
-      explainLayer(name, input, layers, name === primaryName),
-    ),
+    layers: layerNames.map((name) => explainLayer(name, input, layers, name === primaryName)),
   }
 }
 
@@ -82,7 +81,6 @@ function explainLayer(
   }
 }
 
-
 export interface RenderExplainOptions {
   layer?: string
   field?: string
@@ -94,10 +92,7 @@ export interface RenderExplainOptions {
  * Render an ExplainedConfig into a human-readable (or JSON) string.
  * This is the dump used by `tsconfig explain` CLI.
  */
-export function renderExplain(
-  explained: ExplainedConfig,
-  opts: RenderExplainOptions = {},
-): string {
+export function renderExplain(explained: ExplainedConfig, opts: RenderExplainOptions = {}): string {
   const format = opts.format ?? 'text'
   const layers = opts.layer
     ? explained.layers.filter((l) => l.layerName === opts.layer || l.filename === opts.layer)
@@ -176,7 +171,11 @@ function renderLayerText(layer: ExplainedLayer, opts: RenderExplainOptions): str
 
 function renderField(
   key: string,
-  entry: { value: unknown; sources: Source[]; itemSources?: Array<{ item: unknown; source: Source }> },
+  entry: {
+    value: unknown
+    sources: Source[]
+    itemSources?: Array<{ item: unknown; source: Source }>
+  },
   opts: RenderExplainOptions,
 ): string[] {
   const lines: string[] = []
@@ -205,10 +204,8 @@ function renderField(
 
 function formatValue(v: unknown): string {
   if (v === undefined) return '(unset)'
+  if (v === null) return 'null'
   if (typeof v === 'string') return JSON.stringify(v)
-  if (Array.isArray(v) || (typeof v === 'object' && v !== null)) {
-    return JSON.stringify(v)
-  }
-  return String(v)
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v)
+  return JSON.stringify(v)
 }
-

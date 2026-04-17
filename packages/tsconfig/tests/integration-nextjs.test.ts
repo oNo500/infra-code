@@ -47,12 +47,7 @@ describe('integration: nextjs profile produces reasonable tsconfig', () => {
       layers: {
         app: {
           include: ['next-env.d.ts', '**/*.ts', '**/*.tsx', '.next/types/**/*.ts'],
-          exclude: [
-            'node_modules',
-            '__tests__',
-            'src/**/*.test.ts',
-            'src/**/*.test.tsx',
-          ],
+          exclude: ['node_modules', '__tests__', 'src/**/*.test.ts', 'src/**/*.test.tsx'],
         },
         test: {
           extends: 'app',
@@ -64,10 +59,7 @@ describe('integration: nextjs profile produces reasonable tsconfig', () => {
       },
     })
 
-    expect(result.files.map((f) => f.filename)).toEqual([
-      'tsconfig.json',
-      'tsconfig.test.json',
-    ])
+    expect(result.files.map((f) => f.filename)).toEqual(['tsconfig.json', 'tsconfig.test.json'])
 
     // The original pain: types must be merged not replaced.
     const test = result.files.find((f) => f.filename === 'tsconfig.test.json')!

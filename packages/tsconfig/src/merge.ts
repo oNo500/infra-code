@@ -22,12 +22,14 @@ export function mergeCompilerOptions(
     if (overValue === undefined) continue
 
     if (isArrayVerb(overValue)) {
-      result[key] = applyVerb(baseValue as readonly unknown[] | undefined, overValue)
+      const baseArray = Array.isArray(baseValue) ? (baseValue as readonly unknown[]) : undefined
+      result[key] = applyVerb(baseArray, overValue)
       continue
     }
 
     if (Array.isArray(overValue)) {
-      result[key] = dedupe([...(asArray(baseValue) ?? []), ...overValue])
+      const baseArray = Array.isArray(baseValue) ? (baseValue as readonly unknown[]) : []
+      result[key] = dedupe([...baseArray, ...overValue])
       continue
     }
 
@@ -55,16 +57,13 @@ export function normalizeCompilerOptions(opts: CompilerOptions): CompilerOptions
   return result
 }
 
-function applyVerb<T>(
-  base: readonly T[] | undefined,
-  verb: ArrayVerb<T>,
-): readonly T[] {
+function applyVerb<T>(base: readonly T[] | undefined, verb: ArrayVerb<T>): readonly T[] {
   if (verb.$set !== undefined) return dedupe([...verb.$set])
 
   let result: T[] = base ? [...base] : []
 
   if (verb.$remove) {
-    const removeSet = new Set(verb.$remove as readonly T[])
+    const removeSet = new Set(verb.$remove)
     result = result.filter((item) => !removeSet.has(item))
   }
   if (verb.$prepend) {
@@ -84,12 +83,7 @@ function isArrayVerb(v: unknown): v is ArrayVerb<unknown> {
 }
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v) && (v as object).constructor === Object
-}
-
-function asArray<T>(v: unknown): readonly T[] | undefined {
-  if (Array.isArray(v)) return v as readonly T[]
-  return undefined
+  return typeof v === 'object' && v !== null && !Array.isArray(v) && v.constructor === Object
 }
 
 function dedupe<T>(arr: readonly T[]): T[] {
