@@ -1,0 +1,12 @@
+{
+  "extends": "@infra-x/typescript-config/tsconfig.react-library.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["bun"],
+    "noEmit": true,
+    "isolatedDeclarations": false,
+    "declaration": false
+  },
+  "include": ["src/**/*", "tests/**/*", "server.ts", "build.ts"],
+  "exclude": ["node_modules", "dist"]
+}

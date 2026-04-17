@@ -1,0 +1,35 @@
+{
+  "name": "base-bun-web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Bun full-stack prototype template (React 19 + Tailwind v4)",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot server.ts",
+    "build": "bun run build.ts",
+    "preview": "bunx serve dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^15.0.0",
+    "@infra-x/code-quality": "^0.4.0",
+    "@infra-x/typescript-config": "^0.1.6",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/bun": "latest",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "bun-plugin-tailwind": "^0.1.2",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^0.15.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0"
+  }
+}
