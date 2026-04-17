@@ -1,5 +1,5 @@
 ---
-"@infra-x/typescript-config": major
+'@infra-x/typescript-config': major
 ---
 
 Redesign preset structure. Replaces persona-oriented presets (`tsconfig.library.json`,
