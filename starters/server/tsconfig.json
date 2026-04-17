@@ -1,11 +1,5 @@
 {
-  "extends": "@infra-x/typescript-config/tsconfig.library.json",
-  "compilerOptions": {
-    "types": ["bun"],
-    "noEmit": true,
-    "isolatedDeclarations": false,
-    "declaration": false
-  },
+  "extends": "@infra-x/typescript-config/recipe-app-bun.json",
   "include": ["src/**/*", "tests/**/*", "drizzle.config.ts"],
   "exclude": ["node_modules"]
 }
