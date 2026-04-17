@@ -52,6 +52,11 @@ const gen = defineCommand({
       description: 'Overwrite existing tsconfig.config.ts when scaffolding',
       default: false,
     },
+    once: {
+      type: 'boolean',
+      description: 'One-shot: generate tsconfig.*.json only, skip tsconfig.config.ts',
+      default: false,
+    },
   },
   async run({ args }) {
     const cwd = args.cwd
@@ -59,10 +64,17 @@ const gen = defineCommand({
     const hasArgs = hasScaffoldArgs(args)
     const isTty = Boolean(process.stdout.isTTY)
 
+    // --once: generate JSON only, don't touch tsconfig.config.ts.
+    // Safe to run even when config exists — it doesn't overwrite the DSL.
+    if (args.once) {
+      await scaffold({ cwd, args, isTty, force: false, once: true })
+      return
+    }
+
     // Guard: user passed scaffold args but config already exists — refuse silent override.
     if (exists && hasArgs && !args.force) {
       console.error(
-        'tsconfig.config.ts already exists. Refusing to overwrite — edit it directly, or pass --force.',
+        'tsconfig.config.ts already exists. Refusing to overwrite — edit it directly, or pass --force. Use --once to generate JSON only without touching the DSL.',
       )
       process.exit(1)
     }
@@ -77,7 +89,7 @@ const gen = defineCommand({
     }
 
     // Case 2: scaffold. Either no config exists, or --force was passed.
-    await scaffold({ cwd, args, isTty, force: args.force || (exists && hasArgs) })
+    await scaffold({ cwd, args, isTty, force: args.force || (exists && hasArgs), once: false })
   },
 })
 
@@ -86,9 +98,10 @@ interface ScaffoldOpts {
   args: { profile?: string; layers?: string; paths?: string }
   isTty: boolean
   force: boolean
+  once: boolean
 }
 
-async function scaffold({ cwd, args, isTty, force }: ScaffoldOpts): Promise<void> {
+async function scaffold({ cwd, args, isTty, force, once }: ScaffoldOpts): Promise<void> {
   let profileName = args.profile
   let layerNames: string[]
   let paths: Record<string, readonly string[]> | undefined
@@ -180,14 +193,16 @@ async function scaffold({ cwd, args, isTty, force }: ScaffoldOpts): Promise<void
       layers: layerNames,
       paths,
       force,
+      once,
     })
     spinner?.stop('Done')
     if (interactive) {
-      p.outro(
-        `Created ${result.configFile} and ${result.generatedFiles.length} tsconfig file(s)`,
-      )
+      const msg = result.configFile
+        ? `Created ${result.configFile} and ${result.generatedFiles.length} tsconfig file(s)`
+        : `Created ${result.generatedFiles.length} tsconfig file(s) (one-shot, no DSL)`
+      p.outro(msg)
     } else {
-      console.log(`write  ${result.configFile}`)
+      if (result.configFile) console.log(`write  ${result.configFile}`)
       for (const f of result.generatedFiles) console.log(`write  ${f}`)
     }
   } catch (err) {
