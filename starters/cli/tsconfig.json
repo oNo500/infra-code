@@ -1,11 +1,5 @@
 {
-  "extends": "@infra-x/typescript-config/tsconfig.library.json",
-  "compilerOptions": {
-    "types": ["bun", "node"],
-    "outDir": "dist",
-    "isolatedDeclarations": false,
-    "declaration": false
-  },
+  "extends": "@infra-x/typescript-config/recipe-app-bun.json",
   "include": ["src/**/*", "tests/**/*"],
   "exclude": ["dist", "node_modules"]
 }
