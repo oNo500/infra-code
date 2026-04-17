@@ -15,6 +15,8 @@ export interface InitOptions {
   force?: boolean
   /** When true, generate tsconfig.*.json but skip writing tsconfig.config.ts. */
   once?: boolean
+  /** When true, skip writing tsconfig.*.json (write DSL only). */
+  skipJson?: boolean
 }
 
 export interface InitResult {
@@ -73,6 +75,18 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
       }
     } else {
       layersObj[name] = {}
+    }
+  }
+
+  // Guard: skipJson + once = nothing to write.
+  if (opts.skipJson && opts.once) {
+    throw new Error('Cannot combine once (no DSL) with skipJson (no JSON) — nothing would be written.')
+  }
+
+  if (opts.skipJson) {
+    return {
+      configFile: 'tsconfig.config.ts',
+      generatedFiles: [],
     }
   }
 

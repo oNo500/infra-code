@@ -156,6 +156,28 @@ describe('runInit', () => {
     // DSL file untouched.
     expect(readFileSync(join(tmp, 'tsconfig.config.ts'), 'utf8')).toBe('// my custom DSL')
   })
+
+  it('skipJson writes DSL only, no tsconfig.*.json', async () => {
+    const result = await runInit({
+      cwd: tmp,
+      profile: 'nextjs',
+      layers: ['app', 'test'],
+      skipJson: true,
+    })
+    expect(result.configFile).toBe('tsconfig.config.ts')
+    expect(result.generatedFiles).toEqual([])
+
+    const { existsSync } = await import('node:fs')
+    expect(existsSync(join(tmp, 'tsconfig.config.ts'))).toBe(true)
+    expect(existsSync(join(tmp, 'tsconfig.json'))).toBe(false)
+    expect(existsSync(join(tmp, 'tsconfig.test.json'))).toBe(false)
+  })
+
+  it('rejects once + skipJson combo (nothing to write)', () => {
+    expect(
+      runInit({ cwd: tmp, profile: 'nextjs', layers: [], once: true, skipJson: true }),
+    ).rejects.toThrow(/nothing would be written/)
+  })
 })
 
 function stripHeader(content: string): string {
