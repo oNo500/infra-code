@@ -1,9 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recipe: Bun App",
-  "extends": [
-    "./base.json",
-    "./runtime-bun.json",
-    "./build-bundler.json"
-  ]
+  "extends": ["./base.json", "./runtime-bun.json", "./build-bundler.json"]
 }

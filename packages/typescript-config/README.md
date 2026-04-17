@@ -44,12 +44,12 @@ Pick one recipe that matches your project.
 
 Every atom belongs to one of four dimensions:
 
-| Dimension | Owns | Atoms |
-|---|---|---|
-| **Runtime** | `types`, `lib` | `runtime-node`, `runtime-bun`, `runtime-browser`, `runtime-universal` |
-| **Build** | `module`, `moduleResolution`, `noEmit`, `outDir` | `build-bundler`, `build-tsc-emit` |
-| **Project** | `declaration`, `isolatedDeclarations`, `allowJs`, `noPropertyAccessFromIndexSignature` | `project-lib` |
-| **Framework** | `jsx`, decorator flags, narrow strictness waivers | `framework-react`, `framework-nestjs`, `framework-vitest` |
+| Dimension     | Owns                                                                                   | Atoms                                                                 |
+| ------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Runtime**   | `types`, `lib`                                                                         | `runtime-node`, `runtime-bun`, `runtime-browser`, `runtime-universal` |
+| **Build**     | `module`, `moduleResolution`, `noEmit`, `outDir`                                       | `build-bundler`, `build-tsc-emit`                                     |
+| **Project**   | `declaration`, `isolatedDeclarations`, `allowJs`, `noPropertyAccessFromIndexSignature` | `project-lib`                                                         |
+| **Framework** | `jsx`, decorator flags, narrow strictness waivers                                      | `framework-react`, `framework-nestjs`, `framework-vitest`             |
 
 Plus `base.json` — universal strictness and module-detection flags.
 
@@ -69,24 +69,24 @@ Example — Vitest tsconfig for a Node test suite:
     "@infra-x/typescript-config/base.json",
     "@infra-x/typescript-config/runtime-node.json",
     "@infra-x/typescript-config/build-bundler.json",
-    "@infra-x/typescript-config/framework-vitest.json"
+    "@infra-x/typescript-config/framework-vitest.json",
   ],
-  "include": ["tests/**/*"]
+  "include": ["tests/**/*"],
 }
 ```
 
 ## Migration from 0.x
 
-| 0.x path | 1.0 equivalent |
-|---|---|
-| `tsconfig.base.json` | `base.json` (slightly trimmed; see dimension split) |
-| `tsconfig.library.json` | `recipe-lib-node.json` |
-| `tsconfig.react-library.json` | `recipe-lib-react.json` |
-| `tsconfig.vite.json` | `recipe-app-bun-react.json`, or hand-compose `base + runtime-browser + build-bundler + framework-react` |
-| `tsconfig.nextjs.json` | `recipe-app-nextjs.json` + consumer `plugins: [{ name: "next" }]` |
-| `tsconfig.nestjs.json` | `recipe-app-nestjs.json` |
-| `tsconfig.vitest.json` | Hand-compose `base + runtime-* + build-bundler + framework-vitest` |
-| `tsconfig.config.json` | Hand-compose `base + runtime-node + build-bundler` |
+| 0.x path                      | 1.0 equivalent                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `tsconfig.base.json`          | `base.json` (slightly trimmed; see dimension split)                                                     |
+| `tsconfig.library.json`       | `recipe-lib-node.json`                                                                                  |
+| `tsconfig.react-library.json` | `recipe-lib-react.json`                                                                                 |
+| `tsconfig.vite.json`          | `recipe-app-bun-react.json`, or hand-compose `base + runtime-browser + build-bundler + framework-react` |
+| `tsconfig.nextjs.json`        | `recipe-app-nextjs.json` + consumer `plugins: [{ name: "next" }]`                                       |
+| `tsconfig.nestjs.json`        | `recipe-app-nestjs.json`                                                                                |
+| `tsconfig.vitest.json`        | Hand-compose `base + runtime-* + build-bundler + framework-vitest`                                      |
+| `tsconfig.config.json`        | Hand-compose `base + runtime-node + build-bundler`                                                      |
 
 ## Design invariants
 

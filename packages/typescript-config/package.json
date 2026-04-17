@@ -35,13 +35,13 @@
     "./recipe-lib-react.json": "./recipe-lib-react.json",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
