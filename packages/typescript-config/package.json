@@ -2,6 +2,12 @@
   "name": "@infra-x/typescript-config",
   "version": "0.1.7",
   "license": "MIT",
+  "scripts": {
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/oNo500/infra-code.git",
