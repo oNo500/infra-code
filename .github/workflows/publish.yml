@@ -16,16 +16,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
-      - uses: pnpm/action-setup@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - run: bun install --frozen-lockfile
+      - run: bun run build
       - uses: changesets/action@v1
         with:
-          publish: pnpm changeset publish --provenance --access public
+          publish: bunx changeset publish --provenance --access public
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

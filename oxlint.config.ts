@@ -3,7 +3,7 @@ import { defineConfig } from 'oxlint'
 
 export default defineConfig({
   extends: [base(), unicorn(), depend()],
-  ignorePatterns: ['packages/eslint-config/**', 'packages/eslint-config-test/**'],
+  ignorePatterns: ['starters/**'],
   options: {
     typeAware: true,
   },
