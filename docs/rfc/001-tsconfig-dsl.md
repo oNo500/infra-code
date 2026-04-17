@@ -75,10 +75,10 @@ Running `tsconfig gen` produces `tsconfig.json`.
 
 When a user-supplied `compilerOptions.X` field meets a profile's default:
 
-| Field type | Default behavior | Example |
-|-----------|------------------|---------|
-| Scalar (`strict`, `target`) | User value **replaces** profile | User `strict: false` wins |
-| Object (`paths`) | User value **deep-merges** with profile | User keys add/replace |
+| Field type                        | Default behavior                           | Example                              |
+| --------------------------------- | ------------------------------------------ | ------------------------------------ |
+| Scalar (`strict`, `target`)       | User value **replaces** profile            | User `strict: false` wins            |
+| Object (`paths`)                  | User value **deep-merges** with profile    | User keys add/replace                |
 | Array (`types`, `lib`, `plugins`) | User value **appends to** profile, deduped | User types added after profile types |
 
 ### Explicit merge verbs (for precise control)
@@ -111,14 +111,14 @@ Profiles are **functions** returning a profile object, not strings. This:
 
 MVP profile list (covers all current starters):
 
-| Profile | Target | Default atoms composed |
-|---------|--------|------------------------|
-| `nextjs()` | Next.js App Router apps | base + runtime-universal + build-bundler + framework-react + next-hints |
-| `viteReact()` | Vite + React prototypes | base + runtime-browser + build-bundler + framework-react |
-| `libNode()` | Node.js libraries (published to npm) | base + runtime-node + build-tsc-emit + project-lib |
-| `libReact()` | React component libraries | base + runtime-browser + build-bundler + project-lib + framework-react |
-| `appBun()` | Bun HTTP services / CLIs | base + runtime-bun + build-bundler |
-| `appNestjs()` | NestJS apps | base + runtime-node + build-tsc-emit + framework-nestjs |
+| Profile       | Target                               | Default atoms composed                                                  |
+| ------------- | ------------------------------------ | ----------------------------------------------------------------------- |
+| `nextjs()`    | Next.js App Router apps              | base + runtime-universal + build-bundler + framework-react + next-hints |
+| `viteReact()` | Vite + React prototypes              | base + runtime-browser + build-bundler + framework-react                |
+| `libNode()`   | Node.js libraries (published to npm) | base + runtime-node + build-tsc-emit + project-lib                      |
+| `libReact()`  | React component libraries            | base + runtime-browser + build-bundler + project-lib + framework-react  |
+| `appBun()`    | Bun HTTP services / CLIs             | base + runtime-bun + build-bundler                                      |
+| `appNestjs()` | NestJS apps                          | base + runtime-node + build-tsc-emit + framework-nestjs                 |
 
 Future profiles (not MVP): `edge()`, `cloudflareWorker()`, `deno()`, `appExpo()`.
 
@@ -161,10 +161,7 @@ If a user genuinely needs TS project references (cross-package workspace topolog
 ```ts
 defineTsconfig({
   profile: nextjs(),
-  references: [
-    { path: '../../packages/ui' },
-    { path: '../../packages/icons' },
-  ],
+  references: [{ path: '../../packages/ui' }, { path: '../../packages/icons' }],
 })
 ```
 
@@ -242,6 +239,7 @@ Leverage established libraries:
 - **`defu`** — deep merge utility (dependency of c12).
 
 Custom logic required on top:
+
 - Array field merge with `$set`/`$remove`/`$prepend` verb support
 - Profile composition (profile functions return layered configs)
 - Layer resolution and output splitting (primary + sub-tsconfigs)

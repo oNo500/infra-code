@@ -1,10 +1,5 @@
-import {
-  base,
-  buildBundler,
-  composeAtoms,
-  frameworkReact,
-  runtimeUniversal,
-} from './atoms'
+import { base, buildBundler, composeAtoms, frameworkReact, runtimeUniversal } from './atoms'
+
 import type { Profile, ProfileResult } from '../types'
 
 /**

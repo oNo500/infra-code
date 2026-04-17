@@ -56,8 +56,8 @@ describe('defineTsconfig', () => {
         test: { include: ['**/*.test.ts'] },
       },
     })
-    expect(result.files.map((f) => f.filename).sort()).toEqual(
-      ['tsconfig.json', 'tsconfig.test.json'].sort(),
+    expect(result.files.map((f) => f.filename).toSorted()).toEqual(
+      ['tsconfig.json', 'tsconfig.test.json'].toSorted(),
     )
   })
 

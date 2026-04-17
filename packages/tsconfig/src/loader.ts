@@ -24,8 +24,10 @@ export async function configExists(cwd: string): Promise<boolean> {
  * Load `tsconfig.config.ts` (or .js/.mjs) from a directory using c12.
  * c12 handles TS → JS transformation via jiti under the hood.
  */
-export async function loadTsconfigConfig(cwd: string): Promise<DefineTsconfigInput | RenderedConfig> {
-  const { config } = await loadConfig<DefineTsconfigInput | RenderedConfig>({
+export async function loadTsconfigConfig(
+  cwd: string,
+): Promise<DefineTsconfigInput | RenderedConfig> {
+  const { config } = await loadConfig({
     cwd,
     name: 'tsconfig',
     configFile: 'tsconfig.config',
@@ -41,8 +43,6 @@ export async function loadTsconfigConfig(cwd: string): Promise<DefineTsconfigInp
  * Type guard: a RenderedConfig is the output of defineTsconfig (has .files).
  * A DefineTsconfigInput is raw user input (no .files).
  */
-export function isRenderedConfig(
-  v: DefineTsconfigInput | RenderedConfig,
-): v is RenderedConfig {
-  return Array.isArray((v as RenderedConfig).files)
+export function isRenderedConfig(v: DefineTsconfigInput | RenderedConfig): v is RenderedConfig {
+  return 'files' in v && Array.isArray(v.files)
 }

@@ -1,5 +1,6 @@
 import { buildLayerChain, pickExclude, pickInclude, resolvePrimary } from './layer-chain'
 import { mergeCompilerOptions, normalizeCompilerOptions } from './merge'
+
 import type {
   DefineTsconfigInput,
   LayerInput,
@@ -76,6 +77,9 @@ function resolveLayer(
 }
 
 function pruneUndefined(obj: object): void {
+  // Unsafe cast is intentional: RenderedTsconfig doesn't carry an index
+  // signature, but we only touch our own known optional fields here.
+  // eslint-disable-next-line typescript-eslint/no-unsafe-type-assertion
   const record = obj as Record<string, unknown>
   for (const key of Object.keys(record)) {
     if (record[key] === undefined) delete record[key]

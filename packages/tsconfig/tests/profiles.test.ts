@@ -22,7 +22,7 @@ describe('all profiles', () => {
       it('has a runtime lib', () => {
         const co = result.compilerOptions
         expect(Array.isArray(co.lib)).toBe(true)
-        expect((co.lib as string[]).length).toBeGreaterThan(0)
+        expect(co.lib).not.toEqual([])
       })
 
       it('has include/exclude defaults', () => {
