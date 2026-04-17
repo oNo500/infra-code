@@ -59,7 +59,6 @@ bun run format
 ## History
 
 - The `@infra-x/eslint-config`, `@infra-x/eslint-config-test`, and `@infra-x/create-eslint-config` packages were retired in favour of `@infra-x/code-quality`. Their last working source is archived at git tag `archive/eslint-config-v0.1.13`; published versions remain available on npm.
-- The starters were previously hosted at [`oNo500/base-bun`](https://github.com/oNo500/base-bun) under `templates/*`. That repository was absorbed into this one on 2026-04-17.
 
 ## License
 

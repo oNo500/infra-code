@@ -92,3 +92,6 @@ storybook-static
 
 # Git worktrees
 .worktrees/
+
+# Superpowers local docs (plans/specs)
+docs/superpowers/
