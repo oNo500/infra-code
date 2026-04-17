@@ -89,3 +89,6 @@ storybook-static
 # ai
 .agents
 !.claude
+
+# Git worktrees
+.worktrees/
