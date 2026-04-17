@@ -1,0 +1,9 @@
+{
+  "extends": "@infra-x/typescript-config/recipe-lib-node.json",
+  "compilerOptions": {
+    "isolatedDeclarations": false,
+    "types": ["node", "bun"]
+  },
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["dist", "node_modules"]
+}
