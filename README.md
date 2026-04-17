@@ -4,10 +4,8 @@ Personal dev infrastructure monorepo — shared lint, format, and TypeScript con
 
 ## Packages
 
-- [`@infra-x/code-quality`](./packages/code-quality) — Shared [Oxlint](https://oxc.rs/) + [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) presets (recommended)
+- [`@infra-x/code-quality`](./packages/code-quality) — Shared [Oxlint](https://oxc.rs/) + [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) presets
 - [`@infra-x/typescript-config`](./packages/typescript-config) — Shared TypeScript config presets
-- [`@infra-x/eslint-config`](./packages/eslint-config) — Composable ESLint config (legacy, for existing projects)
-- [`@infra-x/create-eslint-config`](./packages/create-eslint-config) — CLI tool for scaffolding ESLint config in a monorepo
 
 ## Usage
 
@@ -49,7 +47,3 @@ Extend one of the provided presets in your `tsconfig.json`:
 
 > [!TIP]
 > In projects with multiple `tsconfig` files using `references`, use `tsc -b --noEmit` instead of `tsc --noEmit`.
-
-### ESLint (Legacy)
-
-For existing projects still on ESLint, see [`@infra-x/eslint-config` README](./packages/eslint-config/README.md).
