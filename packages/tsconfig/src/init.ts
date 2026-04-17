@@ -2,6 +2,7 @@ import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { defineTsconfig } from './define'
+import { buildLayer } from './layer-presets'
 import { PROFILES, findProfile } from './profiles/registry'
 import { syncToDisk } from './sync'
 import { renderConfigTemplate } from './template'
@@ -38,44 +39,29 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
 
   const configPath = resolve(opts.cwd, 'tsconfig.config.ts')
 
-  if (!opts.once && !opts.force) {
-    const exists = await fileExists(configPath)
-    if (exists) {
-      throw new Error('tsconfig.config.ts already exists. Use --force to overwrite.')
-    }
-  }
-
   if (!opts.once) {
     const templateSrc = renderConfigTemplate({
       profileFnName: descriptor.fnName,
       layers: opts.layers,
       paths: opts.paths,
     })
-    await writeFile(configPath, templateSrc, 'utf8')
+    try {
+      await writeFile(configPath, templateSrc, {
+        encoding: 'utf8',
+        flag: opts.force ? 'w' : 'wx',
+      })
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'EEXIST') {
+        throw new Error('tsconfig.config.ts already exists. Use --force to overwrite.')
+      }
+      throw err
+    }
   }
 
   const layersObj: Record<string, LayerInput> = {}
   const base = opts.layers[0]
   for (const name of opts.layers) {
-    if (name === 'test' && name !== base && base) {
-      layersObj[name] = {
-        extends: base,
-        compilerOptions: { types: ['vitest/globals'] },
-        include: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],
-      }
-    } else if (name === 'build' && name !== base && base) {
-      layersObj[name] = {
-        extends: base,
-        exclude: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],
-      }
-    } else if (name === 'ci' && name !== base && base) {
-      layersObj[name] = {
-        extends: base,
-        compilerOptions: { declarationMap: true, sourceMap: true },
-      }
-    } else {
-      layersObj[name] = {}
-    }
+    layersObj[name] = buildLayer(name, base)
   }
 
   // Guard: skipJson + once = nothing to write.
@@ -100,16 +86,6 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
   return {
     configFile: opts.once ? null : 'tsconfig.config.ts',
     generatedFiles: sync.written,
-  }
-}
-
-async function fileExists(path: string): Promise<boolean> {
-  const { access } = await import('node:fs/promises')
-  try {
-    await access(path)
-    return true
-  } catch {
-    return false
   }
 }
 

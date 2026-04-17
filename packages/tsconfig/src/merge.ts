@@ -104,13 +104,4 @@ function dedupe<T>(arr: readonly T[]): T[] {
   return out
 }
 
-/** Exported helper used by layer resolution to append two include/exclude arrays. */
-export function concatArrays<T>(
-  a: readonly T[] | undefined,
-  b: readonly T[] | undefined,
-): readonly T[] | undefined {
-  if (!a && !b) return undefined
-  return dedupe([...(a ?? []), ...(b ?? [])])
-}
-
 export type { ArrayField }
