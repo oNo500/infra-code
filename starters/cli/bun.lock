@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "base-bun-cli",
@@ -9,7 +8,7 @@
       },
       "devDependencies": {
         "@infra-x/code-quality": "^0.4.0",
-        "@infra-x/typescript-config": "^0.1.6",
+        "@infra-x/typescript-config": "^2.0.0",
         "@types/bun": "latest",
         "oxfmt": "^0.45.0",
         "oxlint": "^0.18.0",
@@ -127,7 +126,7 @@
 
     "@infra-x/code-quality": ["@infra-x/code-quality@0.4.0", "", { "dependencies": { "@darraghor/eslint-plugin-nestjs-typed": "^7.1.28", "defu": "^6.1.7", "eslint-plugin-better-tailwindcss": "^4.3.1", "eslint-plugin-boundaries": "^6.0.0", "eslint-plugin-depend": "^1.5.0", "eslint-plugin-drizzle": "^0.2.3", "eslint-plugin-react-refresh": "^0.5.2", "eslint-plugin-storybook": "^10.2.14", "oxlint-tsgolint": "^0.20.0", "std-env": "^4.0.0" }, "peerDependencies": { "class-validator": "*", "oxfmt": ">=0.44.0", "oxlint": ">=1.59.0", "storybook": ">=10.0.0" }, "optionalPeers": ["class-validator", "storybook"] }, "sha512-nHPRV5kjpMmf+ar/I9SU9SklI7lieFe4PdgefayjPnkjJo4eGHMO5Y4a2l+HsVXmYmcPJiPH+H+hTBldjwx8pw=="],
 
-    "@infra-x/typescript-config": ["@infra-x/typescript-config@0.1.6", "", {}, "sha512-YJiGiiQIOr9ZpECE7ICIp3b9Y2ov7VWy0fHOwqK6Y+YMSDQIdLKTUvmpz7/6YiBsWeUAi5FJ5sJv601BULShwQ=="],
+    "@infra-x/typescript-config": ["@infra-x/typescript-config@2.0.0", "", {}, "sha512-ckRv3jXjdSGlWZvX3mYJGnU234uRyDPJ4R1tLfMdOG2SH1EvU64FcOW/qWzBq1LGM6pjardE+ovcC8Hgajl9eA=="],
 
     "@jridgewell/gen-mapping": ["@jridgewell/gen-mapping@0.3.13", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA=="],
 
