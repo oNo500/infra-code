@@ -101,7 +101,9 @@ interface ScaffoldOpts {
   once: boolean
 }
 
-async function scaffold({ cwd, args, isTty, force, once }: ScaffoldOpts): Promise<void> {
+async function scaffold(opts: ScaffoldOpts): Promise<void> {
+  const { cwd, args, isTty, force } = opts
+  let once = opts.once
   let profileName = args.profile
   let layerNames: string[]
   let paths: Record<string, readonly string[]> | undefined
@@ -170,6 +172,31 @@ async function scaffold({ cwd, args, isTty, force, once }: ScaffoldOpts): Promis
     }
     const raw = (pathsInput as string).trim()
     if (raw) paths = parsePathsArg(raw)
+
+    // Only ask about mode if --once wasn't already passed on the command line.
+    if (!once) {
+      const mode = await p.select({
+        message: 'Maintenance mode?',
+        options: [
+          {
+            value: 'managed',
+            label: 'Managed',
+            hint: 'Write tsconfig.config.ts (DSL). Re-run later to upgrade.',
+          },
+          {
+            value: 'once',
+            label: 'One-shot',
+            hint: 'Only tsconfig.*.json. Edit them manually afterwards.',
+          },
+        ],
+        initialValue: 'managed',
+      })
+      if (p.isCancel(mode)) {
+        p.cancel('Cancelled')
+        process.exit(0)
+      }
+      if (mode === 'once') once = true
+    }
   } else {
     // Non-interactive path.
     if (!profileName) {
