@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Project: Lib",
+  "compilerOptions": {
+    "declaration": true,
+    "isolatedDeclarations": true,
+    "allowJs": false,
+    "noPropertyAccessFromIndexSignature": true
+  }
+}
