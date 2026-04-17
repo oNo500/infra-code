@@ -6,6 +6,11 @@ export { parsePathsArg, runInit } from './init'
 export { PROFILES, findProfile } from './profiles/registry'
 export { renderConfigTemplate } from './template'
 export { nextjs } from './profiles/nextjs'
+export { viteReact } from './profiles/vite-react'
+export { libNode } from './profiles/lib-node'
+export { libReact } from './profiles/lib-react'
+export { appBun } from './profiles/app-bun'
+export { appNestjs } from './profiles/app-nestjs'
 export type {
   ArrayField,
   ArrayVerb,

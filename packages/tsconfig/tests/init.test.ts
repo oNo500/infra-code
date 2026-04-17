@@ -40,7 +40,7 @@ describe('parsePathsArg', () => {
 
 describe('renderConfigTemplate', () => {
   it('renders minimal single-layer config', () => {
-    const src = renderConfigTemplate({ profileName: 'nextjs', layers: [] })
+    const src = renderConfigTemplate({ profileFnName: 'nextjs', layers: [] })
     expect(src).toContain(`import { nextjs } from '@infra-x/tsconfig'`)
     expect(src).toContain(`import type { DefineTsconfigInput } from '@infra-x/tsconfig'`)
     expect(src).toContain('profile: nextjs(),')
@@ -49,7 +49,7 @@ describe('renderConfigTemplate', () => {
   })
 
   it('renders layers block with test extending app', () => {
-    const src = renderConfigTemplate({ profileName: 'nextjs', layers: ['app', 'test'] })
+    const src = renderConfigTemplate({ profileFnName: 'nextjs', layers: ['app', 'test'] })
     expect(src).toContain('layers:')
     expect(src).toContain('app: {}')
     expect(src).toContain(`extends: 'app'`)
@@ -58,7 +58,7 @@ describe('renderConfigTemplate', () => {
 
   it('renders paths block', () => {
     const src = renderConfigTemplate({
-      profileName: 'nextjs',
+      profileFnName: 'nextjs',
       layers: [],
       paths: { '@/*': ['./src/*'] },
     })

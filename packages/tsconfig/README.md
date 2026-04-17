@@ -7,6 +7,17 @@ DSL-based TypeScript config generator. Successor to `@infra-x/typescript-config`
 
 See [RFC 001](../../docs/rfc/001-tsconfig-dsl.md) for full design.
 
+## Profiles
+
+| Profile | Target | Runtime | Key defaults |
+|---------|--------|---------|--------------|
+| `nextjs()` | Next.js 16 App Router | Universal (Node + DOM) | `jsx: preserve`, `module: preserve`, Next plugin injected, `allowImportingTsExtensions` |
+| `viteReact()` | Vite + React SPA | Browser | `jsx: react-jsx`, no node types, DOM libs |
+| `libNode()` | Node library (npm) | Node | `declaration: true`, `isolatedDeclarations: true` |
+| `libReact()` | React component library | Browser | `declaration: true`, `jsx: react-jsx`, DOM libs |
+| `appBun()` | Bun HTTP service / CLI | Bun | `types: ['bun']`, bundler build |
+| `appNestjs()` | NestJS application | Node | decorator metadata, `strictPropertyInitialization: false` |
+
 ## Why
 
 `@infra-x/typescript-config` relied on TS native `extends`, which is field-level replacement. Array fields (`types`, `lib`, `plugins`) silently overwrite across layers — stacking `runtime-universal` (`types: ['node']`) and `framework-vitest` (`types: ['vitest/globals']`) drops `node`.
@@ -104,7 +115,6 @@ See [ROADMAP.md](./ROADMAP.md) for planned features (interactive TUI, more profi
 - ✅ Merge verbs (`$set` / `$remove` / `$prepend` / `$append`)
 - ✅ CLI: `tsconfig gen` (unified scaffold + regen), `tsconfig sync --check`, `tsconfig explain`
 - ✅ Interactive + non-interactive (auto-detects TTY)
-- ✅ `nextjs()` profile
-- ⬜ More profiles (`viteReact`, `libNode`, `libReact`, `appBun`, `appNestjs`)
+- ✅ Profiles: `nextjs()`, `viteReact()`, `libNode()`, `libReact()`, `appBun()`, `appNestjs()`
 - ⬜ Interactive TUI for `explain` (see ROADMAP)
 - ⬜ Watch mode

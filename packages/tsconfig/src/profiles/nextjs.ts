@@ -1,36 +1,31 @@
+import {
+  base,
+  buildBundler,
+  composeAtoms,
+  frameworkReact,
+  runtimeUniversal,
+} from './atoms'
 import type { Profile, ProfileResult } from '../types'
 
 /**
  * Next.js 16 App Router profile.
- * Composes: base + runtime-universal + build-bundler + framework-react + Next plugin hint.
+ * Composes: base + runtime-universal + build-bundler + framework-react,
+ * plus Next-specific overrides (jsx: preserve, next plugin, allowImportingTsExtensions).
  */
 export const nextjs: Profile = (): ProfileResult => ({
   label: 'nextjs',
-  compilerOptions: {
-    // base (universal strictness)
-    strict: true,
-    target: 'esnext',
-    esModuleInterop: true,
-    skipLibCheck: true,
-    forceConsistentCasingInFileNames: true,
-    resolveJsonModule: true,
-    noUncheckedIndexedAccess: true,
-    // runtime-universal (Node types + DOM libs)
-    types: ['node'],
-    lib: ['esnext', 'DOM', 'DOM.Iterable'],
-    // build-bundler
-    module: 'esnext',
-    moduleResolution: 'bundler',
-    noEmit: true,
-    allowImportingTsExtensions: true,
-    // framework-react
-    jsx: 'preserve',
-    // next plugin (user can prepend/append their own)
-    plugins: [{ name: 'next' }],
-    // Next.js-specific defaults commonly expected
-    isolatedModules: true,
-    incremental: true,
-  },
+  compilerOptions: composeAtoms(
+    base(),
+    runtimeUniversal(),
+    buildBundler(),
+    frameworkReact(),
+    // Next.js-specific: Next transforms JSX itself; use preserve.
+    {
+      jsx: 'preserve',
+      plugins: [{ name: 'next' }],
+      allowImportingTsExtensions: true,
+    },
+  ),
   include: ['next-env.d.ts', '**/*.ts', '**/*.tsx', '.next/types/**/*.ts'],
   exclude: ['node_modules'],
 })
