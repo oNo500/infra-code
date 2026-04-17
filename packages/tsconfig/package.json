@@ -31,6 +31,7 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
+    "@clack/prompts": "^1.2.0",
     "c12": "^3.3.4",
     "citty": "^0.2.2",
     "defu": "^6.1.7"

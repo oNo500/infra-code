@@ -57,10 +57,34 @@ compilerOptions: {
 
 ## Commands
 
-```bash
-tsconfig gen                        # write tsconfig files
-tsconfig sync --check               # CI: fail if disk differs from DSL
+### `tsconfig gen` — one command, three modes
 
+`gen` resolves input in this priority: **flags → tsconfig.config.ts → interactive prompts**.
+
+```bash
+# 1. Flags only — first-time scaffolding, zero config, CI-friendly
+tsconfig gen --profile nextjs --layers app,test --paths '@/*=./src/*'
+
+# 2. No flags, config exists — regenerate from tsconfig.config.ts
+tsconfig gen
+
+# 3. No flags, no config, TTY — interactive prompts (profile / layers / paths)
+tsconfig gen
+
+# Refuses to silently overwrite an existing config + flags combo; pass --force if intentional
+tsconfig gen --profile vite-react --force
+```
+
+### `tsconfig sync` — CI drift detection
+
+```bash
+tsconfig sync           # regenerate from tsconfig.config.ts (same as `gen` with no flags)
+tsconfig sync --check   # CI: exit 1 if disk differs from DSL output
+```
+
+### `tsconfig explain` — field-source attribution
+
+```bash
 tsconfig explain                    # show all fields with sources
 tsconfig explain app                # only the app layer
 tsconfig explain app --field types  # only one field
@@ -74,7 +98,8 @@ See [ROADMAP.md](./ROADMAP.md) for planned features (interactive TUI, more profi
 
 - ✅ `defineTsconfig` + layer resolution
 - ✅ Merge verbs (`$set` / `$remove` / `$prepend` / `$append`)
-- ✅ CLI: `tsconfig gen`, `tsconfig sync --check`, `tsconfig explain`
+- ✅ CLI: `tsconfig gen` (unified scaffold + regen), `tsconfig sync --check`, `tsconfig explain`
+- ✅ Interactive + non-interactive (auto-detects TTY)
 - ✅ `nextjs()` profile
 - ⬜ More profiles (`viteReact`, `libNode`, `libReact`, `appBun`, `appNestjs`)
 - ⬜ Interactive TUI for `explain` (see ROADMAP)

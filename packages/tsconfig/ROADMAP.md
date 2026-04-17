@@ -7,7 +7,7 @@
 - Merge verbs: `$set`, `$remove`, `$prepend`, `$append`
 - Provenance tracking for `explain`
 - CLI:
-  - `tsconfig gen` — write tsconfig files
+  - `tsconfig gen` — unified command; scaffolds `tsconfig.config.ts` on first run (interactive via @clack/prompts, or from flags), regenerates from existing config on subsequent runs
   - `tsconfig sync --check` — CI drift detection
   - `tsconfig explain [layer]` — field-source attribution with `--field`, `--format json`, `--hypothetical`
 - Profile: `nextjs()`
