@@ -65,6 +65,25 @@ describe('renderConfigTemplate', () => {
     expect(src).toContain('paths:')
     expect(src).toContain(`'@/*': ["./src/*"]`)
   })
+
+  it('generates build layer that excludes test files', () => {
+    const src = renderConfigTemplate({
+      profileFnName: 'nextjs',
+      layers: ['app', 'test', 'build'],
+    })
+    expect(src).toContain('build: {')
+    expect(src).toContain(`exclude: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**']`)
+  })
+
+  it('generates ci layer with sourceMap + declarationMap', () => {
+    const src = renderConfigTemplate({
+      profileFnName: 'nextjs',
+      layers: ['app', 'ci'],
+    })
+    expect(src).toContain('ci: {')
+    expect(src).toContain('declarationMap: true')
+    expect(src).toContain('sourceMap: true')
+  })
 })
 
 describe('runInit', () => {

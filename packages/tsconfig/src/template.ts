@@ -34,15 +34,29 @@ export function renderConfigTemplate(input: TemplateInput): string {
   }
 
   if (layers.length > 0) {
+    const base = layers[0]!
     lines.push('  layers: {')
     for (const name of layers) {
-      if (name === 'test') {
+      if (name === 'test' && name !== base) {
         lines.push('    test: {')
-        lines.push(`      extends: '${layers[0]!}',`)
+        lines.push(`      extends: '${base}',`)
         lines.push(`      compilerOptions: {`)
         lines.push(`        types: ['vitest/globals'],`)
         lines.push(`      },`)
         lines.push(`      include: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],`)
+        lines.push('    },')
+      } else if (name === 'build' && name !== base) {
+        lines.push('    build: {')
+        lines.push(`      extends: '${base}',`)
+        lines.push(`      exclude: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],`)
+        lines.push('    },')
+      } else if (name === 'ci' && name !== base) {
+        lines.push('    ci: {')
+        lines.push(`      extends: '${base}',`)
+        lines.push(`      compilerOptions: {`)
+        lines.push(`        declarationMap: true,`)
+        lines.push(`        sourceMap: true,`)
+        lines.push(`      },`)
         lines.push('    },')
       } else {
         lines.push(`    ${name}: {},`)

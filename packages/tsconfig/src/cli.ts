@@ -128,33 +128,35 @@ async function scaffold({ cwd, args, isTty, force, once }: ScaffoldOpts): Promis
     }
     profileName = selected as string
 
-    const layerChoice = await p.select({
-      message: 'Do you need multiple tsconfig files (app / test / build)?',
+    const chosen = await p.multiselect({
+      message: 'Which tsconfig layers do you need? (space to toggle, enter to confirm; leave empty for single tsconfig.json)',
       options: [
-        { value: 'none', label: 'No — single tsconfig.json' },
-        { value: 'app-test', label: 'Yes — app + test' },
-        { value: 'custom', label: 'Custom layers' },
+        { value: 'app', label: 'app', hint: 'development + IDE' },
+        { value: 'test', label: 'test', hint: 'adds vitest/globals types' },
+        { value: 'build', label: 'build', hint: 'excludes test files' },
+        { value: 'ci', label: 'ci', hint: 'adds declarationMap' },
+        { value: 'custom', label: 'custom…', hint: 'enter your own names' },
       ],
+      required: false,
     })
-    if (p.isCancel(layerChoice)) {
+    if (p.isCancel(chosen)) {
       p.cancel('Cancelled')
       process.exit(0)
     }
-    if (layerChoice === 'none') {
-      layerNames = []
-    } else if (layerChoice === 'app-test') {
-      layerNames = ['app', 'test']
-    } else {
+    const chosenList = chosen as string[]
+    if (chosenList.includes('custom')) {
       const input = await p.text({
         message: 'Layer names (comma-separated)',
         placeholder: 'app,test',
-        defaultValue: 'app,test',
+        defaultValue: chosenList.filter((x) => x !== 'custom').join(',') || 'app,test',
       })
       if (p.isCancel(input)) {
         p.cancel('Cancelled')
         process.exit(0)
       }
       layerNames = (input as string).split(',').map((s) => s.trim()).filter(Boolean)
+    } else {
+      layerNames = chosenList
     }
 
     const pathsInput = await p.text({
