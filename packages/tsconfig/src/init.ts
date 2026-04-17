@@ -13,10 +13,13 @@ export interface InitOptions {
   layers: readonly string[]
   paths?: Record<string, readonly string[]>
   force?: boolean
+  /** When true, generate tsconfig.*.json but skip writing tsconfig.config.ts. */
+  once?: boolean
 }
 
 export interface InitResult {
-  configFile: string
+  /** The DSL file written, or null if `once` mode skipped it. */
+  configFile: string | null
   generatedFiles: string[]
 }
 
@@ -33,19 +36,21 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
 
   const configPath = resolve(opts.cwd, 'tsconfig.config.ts')
 
-  if (!opts.force) {
+  if (!opts.once && !opts.force) {
     const exists = await fileExists(configPath)
     if (exists) {
       throw new Error('tsconfig.config.ts already exists. Use --force to overwrite.')
     }
   }
 
-  const templateSrc = renderConfigTemplate({
-    profileName: opts.profile,
-    layers: opts.layers,
-    paths: opts.paths,
-  })
-  await writeFile(configPath, templateSrc, 'utf8')
+  if (!opts.once) {
+    const templateSrc = renderConfigTemplate({
+      profileName: opts.profile,
+      layers: opts.layers,
+      paths: opts.paths,
+    })
+    await writeFile(configPath, templateSrc, 'utf8')
+  }
 
   const layersObj: Record<string, LayerInput> = {}
   for (const name of opts.layers) {
@@ -68,7 +73,7 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
 
   const sync = await syncToDisk(rendered, opts.cwd)
   return {
-    configFile: 'tsconfig.config.ts',
+    configFile: opts.once ? null : 'tsconfig.config.ts',
     generatedFiles: sync.written,
   }
 }
