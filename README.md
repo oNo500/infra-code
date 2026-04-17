@@ -1,49 +1,66 @@
 # infra-code
 
-Personal dev infrastructure monorepo — shared lint, format, and TypeScript configs.
+Personal infrastructure for TypeScript + Bun projects: shared lint/format/TS presets (published to npm under `@infra-x/*`) and Bun project starters.
 
 ## Packages
 
-- [`@infra-x/code-quality`](./packages/code-quality) — Shared [Oxlint](https://oxc.rs/) + [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) presets
-- [`@infra-x/typescript-config`](./packages/typescript-config) — Shared TypeScript config presets
+Published to npm.
 
-## Usage
-
-### Lint & Format (Oxlint + Oxfmt)
+| Package                                                      | Purpose                           |
+| ------------------------------------------------------------ | --------------------------------- |
+| [`@infra-x/code-quality`](./packages/code-quality)           | Composable oxlint + oxfmt presets |
+| [`@infra-x/typescript-config`](./packages/typescript-config) | Shared `tsconfig.*.json` presets  |
 
 ```bash
-pnpm add -D @infra-x/code-quality
+npm install -D @infra-x/code-quality @infra-x/typescript-config
 ```
 
-```ts
-// oxlint.config.ts
-import { base, unicorn, depend, react, vitest } from '@infra-x/code-quality/lint'
-import { defineConfig } from 'oxlint'
+Both packages run on Node 20+ and Bun.
 
-export default defineConfig({
-  extends: [base(), unicorn(), depend(), react(), vitest()],
-})
+## Starters
+
+Fetched via [`giget`](https://github.com/unjs/giget). Each starter is a self-contained Bun project.
+
+| Starter                       | For                   | Stack                                   |
+| ----------------------------- | --------------------- | --------------------------------------- |
+| [`cli`](./starters/cli)       | Publishable CLI tools | Bun dev · Node publish · citty · tsdown |
+| [`server`](./starters/server) | HTTP services on Bun  | Hono · zod · Drizzle · `bun:sqlite`     |
+| [`web`](./starters/web)       | Quick prototype UIs   | Bun full-stack · React 19 · Tailwind v4 |
+
+```bash
+bunx giget@latest gh:oNo500/infra-code/starters/cli my-cli
+bunx giget@latest gh:oNo500/infra-code/starters/server my-api
+bunx giget@latest gh:oNo500/infra-code/starters/web my-ui
 ```
 
-```ts
-// oxfmt.config.ts
-import { format } from '@infra-x/code-quality/format'
-import { defineConfig } from 'oxfmt'
+See each starter's own README for specific scripts and constraints.
 
-export default defineConfig({ ...format() })
+## Development
+
+This repository is Bun-driven end to end.
+
+```bash
+bun install                           # install packages/* deps at the root
+bun run build                         # bun --filter='*' run build
+bun run typecheck
+bun run lint
+bun run format
 ```
 
-See [`@infra-x/code-quality` README](./packages/code-quality/README.md) for all presets and options.
+- **Packages** live under `packages/*` and are part of the root Bun workspace. They must stay Node-compatible — source code imports `node:*` only; `tsconfig.json` uses `"types": ["node"]` to block `Bun.*` usage at compile time.
+- **Starters** live under `starters/*` and are **not** part of the workspace. Each has its own `bun.lock`. Run `cd starters/<name> && bun install` to work on one.
+- **Releases** use [changesets](https://github.com/changesets/changesets):
+  ```bash
+  bunx changeset          # create a changeset
+  bunx changeset version  # bump versions + update changelogs
+  # master push → publish.yml publishes to npm
+  ```
 
-### TypeScript
+## History
 
-Extend one of the provided presets in your `tsconfig.json`:
+- The `@infra-x/eslint-config`, `@infra-x/eslint-config-test`, and `@infra-x/create-eslint-config` packages were retired in favour of `@infra-x/code-quality`. Their last working source is archived at git tag `archive/eslint-config-v0.1.13`; published versions remain available on npm.
+- The starters were previously hosted at [`oNo500/base-bun`](https://github.com/oNo500/base-bun) under `templates/*`. That repository was absorbed into this one on 2026-04-17.
 
-```json
-{
-  "extends": "@infra-x/typescript-config/tsconfig.vite.json"
-}
-```
+## License
 
-> [!TIP]
-> In projects with multiple `tsconfig` files using `references`, use `tsc -b --noEmit` instead of `tsc --noEmit`.
+MIT — see [`LICENSE`](./LICENSE).
