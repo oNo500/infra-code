@@ -53,12 +53,23 @@ export async function runInit(opts: InitOptions): Promise<InitResult> {
   }
 
   const layersObj: Record<string, LayerInput> = {}
+  const base = opts.layers[0]
   for (const name of opts.layers) {
-    if (name === 'test') {
+    if (name === 'test' && name !== base && base) {
       layersObj[name] = {
-        extends: opts.layers[0]!,
+        extends: base,
         compilerOptions: { types: ['vitest/globals'] },
         include: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],
+      }
+    } else if (name === 'build' && name !== base && base) {
+      layersObj[name] = {
+        extends: base,
+        exclude: ['**/*.test.ts', '**/*.test.tsx', '__tests__/**'],
+      }
+    } else if (name === 'ci' && name !== base && base) {
+      layersObj[name] = {
+        extends: base,
+        compilerOptions: { declarationMap: true, sourceMap: true },
       }
     } else {
       layersObj[name] = {}
