@@ -21,11 +21,11 @@ Both packages run on Node 20+ and Bun.
 
 Fetched via [`giget`](https://github.com/unjs/giget). Each starter is self-contained with its own lockfile and toolchain.
 
-| Starter                             | For                       | Stack                                              |
-| ----------------------------------- | ------------------------- | -------------------------------------------------- |
-| [`cli`](./starters/cli)             | Publishable CLI tools     | Bun dev · Node publish · citty · tsdown            |
-| [`server`](./starters/server)       | HTTP services             | Bun · Hono · zod · Drizzle · `bun:sqlite`          |
-| [`web`](./starters/web)             | Quick prototype UIs       | Bun full-stack · React 19 · Tailwind v4            |
+| Starter                             | For                       | Stack                                                             |
+| ----------------------------------- | ------------------------- | ----------------------------------------------------------------- |
+| [`cli`](./starters/cli)             | Publishable CLI tools     | Bun dev · Node publish · citty · tsdown                           |
+| [`server`](./starters/server)       | HTTP services             | Bun · Hono · zod · Drizzle · `bun:sqlite`                         |
+| [`web`](./starters/web)             | Quick prototype UIs       | Bun full-stack · React 19 · Tailwind v4                           |
 | [`fullstack`](./starters/fullstack) | Production-grade monorepo | pnpm · Turborepo · Next.js 16 · Drizzle · Better Auth · shadcn/ui |
 
 ```bash
