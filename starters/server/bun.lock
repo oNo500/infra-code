@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "base-bun-server",
@@ -11,7 +10,7 @@
       },
       "devDependencies": {
         "@infra-x/code-quality": "^0.4.0",
-        "@infra-x/typescript-config": "^0.1.6",
+        "@infra-x/typescript-config": "^2.0.0",
         "@types/bun": "latest",
         "drizzle-kit": "^0.31.0",
         "oxfmt": "^0.45.0",
@@ -121,7 +120,7 @@
 
     "@infra-x/code-quality": ["@infra-x/code-quality@0.4.0", "", { "dependencies": { "@darraghor/eslint-plugin-nestjs-typed": "^7.1.28", "defu": "^6.1.7", "eslint-plugin-better-tailwindcss": "^4.3.1", "eslint-plugin-boundaries": "^6.0.0", "eslint-plugin-depend": "^1.5.0", "eslint-plugin-drizzle": "^0.2.3", "eslint-plugin-react-refresh": "^0.5.2", "eslint-plugin-storybook": "^10.2.14", "oxlint-tsgolint": "^0.20.0", "std-env": "^4.0.0" }, "peerDependencies": { "class-validator": "*", "oxfmt": ">=0.44.0", "oxlint": ">=1.59.0", "storybook": ">=10.0.0" }, "optionalPeers": ["class-validator", "storybook"] }, "sha512-nHPRV5kjpMmf+ar/I9SU9SklI7lieFe4PdgefayjPnkjJo4eGHMO5Y4a2l+HsVXmYmcPJiPH+H+hTBldjwx8pw=="],
 
-    "@infra-x/typescript-config": ["@infra-x/typescript-config@0.1.6", "", {}, "sha512-YJiGiiQIOr9ZpECE7ICIp3b9Y2ov7VWy0fHOwqK6Y+YMSDQIdLKTUvmpz7/6YiBsWeUAi5FJ5sJv601BULShwQ=="],
+    "@infra-x/typescript-config": ["@infra-x/typescript-config@2.0.0", "", {}, "sha512-ckRv3jXjdSGlWZvX3mYJGnU234uRyDPJ4R1tLfMdOG2SH1EvU64FcOW/qWzBq1LGM6pjardE+ovcC8Hgajl9eA=="],
 
     "@oxfmt/binding-android-arm-eabi": ["@oxfmt/binding-android-arm-eabi@0.45.0", "", { "os": "android", "cpu": "arm" }, "sha512-A/UMxFob1fefCuMeGxQBulGfFE38g2Gm23ynr3u6b+b7fY7/ajGbNsa3ikMIkGMLJW/TRoQaMoP1kME7S+815w=="],
 
