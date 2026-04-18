@@ -73,6 +73,25 @@ describe('defineTsconfig', () => {
     ).toThrow(/Circular/)
   })
 
+  it('auto-excludes tsconfig.config.* without user effort', () => {
+    const result = defineTsconfig({
+      profile: nextjs(),
+      exclude: ['node_modules'],
+    })
+    expect(result.files[0]!.content.exclude).toContain('tsconfig.config.ts')
+    expect(result.files[0]!.content.exclude).toContain('node_modules')
+  })
+
+  it('does not duplicate tsconfig.config.ts if user already excluded it', () => {
+    const result = defineTsconfig({
+      profile: nextjs(),
+      exclude: ['node_modules', 'tsconfig.config.ts'],
+    })
+    const excludes = result.files[0]!.content.exclude
+    const tsCount = excludes?.filter((x) => x === 'tsconfig.config.ts').length ?? 0
+    expect(tsCount).toBe(1)
+  })
+
   it('allows layers without a profile', () => {
     const result = defineTsconfig({
       compilerOptions: { strict: true },
