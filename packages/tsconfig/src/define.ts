@@ -14,6 +14,19 @@ const GENERATED_HEADER = [
   '// Edit tsconfig.config.ts and run `tsconfig sync`.',
 ].join('\n')
 
+/**
+ * Always exclude the DSL source file and its build artifacts from tsc.
+ * tsconfig.config.ts imports `@infra-x/tsconfig` runtime types and would
+ * trip `isolatedDeclarations` otherwise; its build output lives in dist/.
+ */
+const ALWAYS_EXCLUDE = ['tsconfig.config.ts', 'tsconfig.config.mts', 'tsconfig.config.mjs']
+
+function withAutoExcludes(exclude: readonly string[] | undefined): readonly string[] {
+  const base = exclude ?? []
+  const missing = ALWAYS_EXCLUDE.filter((x) => !base.includes(x))
+  return missing.length === 0 ? base : [...base, ...missing]
+}
+
 export function defineTsconfig(input: DefineTsconfigInput): RenderedConfig {
   const layers = input.layers ?? {}
   const layerNames = Object.keys(layers)
@@ -45,7 +58,7 @@ function renderSingle(input: DefineTsconfigInput): RenderedFile {
   const content: RenderedTsconfig = {
     compilerOptions: normalizeCompilerOptions(compilerOptions),
     include: input.include ?? profile?.include,
-    exclude: input.exclude ?? profile?.exclude,
+    exclude: withAutoExcludes(input.exclude ?? profile?.exclude),
     references: input.references,
   }
   pruneUndefined(content)
@@ -69,7 +82,7 @@ function resolveLayer(
   const content: RenderedTsconfig = {
     compilerOptions: normalizeCompilerOptions(compilerOptions),
     include: pickInclude(input, chain, layers),
-    exclude: pickExclude(input, chain, layers),
+    exclude: withAutoExcludes(pickExclude(input, chain, layers)),
     files: layer.files,
   }
   pruneUndefined(content)
