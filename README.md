@@ -6,16 +6,17 @@ Personal infrastructure for TypeScript projects: shared lint/format/TS presets (
 
 Published to npm.
 
-| Package                                                      | Purpose                           |
-| ------------------------------------------------------------ | --------------------------------- |
-| [`@infra-x/code-quality`](./packages/code-quality)           | Composable oxlint + oxfmt presets |
-| [`@infra-x/typescript-config`](./packages/typescript-config) | Shared `tsconfig.*.json` presets  |
+| Package                                                      | Purpose                                                                             |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| [`@infra-x/code-quality`](./packages/code-quality)           | Composable oxlint + oxfmt presets                                                   |
+| [`@infra-x/tsconfig`](./packages/tsconfig)                   | DSL-based `tsconfig.json` generator (replaces `typescript-config`)                  |
+| [`@infra-x/typescript-config`](./packages/typescript-config) | Legacy recipes — **superseded by `@infra-x/tsconfig`**, kept for existing consumers |
 
 ```bash
-npm install -D @infra-x/code-quality @infra-x/typescript-config
+npm install -D @infra-x/code-quality @infra-x/tsconfig
 ```
 
-Both packages run on Node 20+ and Bun.
+All packages run on Node 20+ and Bun.
 
 ## Starters
 

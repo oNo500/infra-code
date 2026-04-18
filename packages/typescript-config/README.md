@@ -1,5 +1,8 @@
 # @infra-x/typescript-config
 
+> [!WARNING]
+> **Superseded by [`@infra-x/tsconfig`](../tsconfig).** The native `extends` approach has structural limits (array fields like `types` / `lib` / `plugins` silently overwrite across layers). The replacement package generates `tsconfig.json` from a DSL with proper deep-merge semantics. New projects should start there. This package remains available on npm for existing consumers; no new features are planned.
+
 Composable TypeScript preset library. Two layers:
 
 - **Atoms** — small, single-responsibility configs across four dimensions

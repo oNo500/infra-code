@@ -1,0 +1,46 @@
+{
+  "name": "@infra-x/tsconfig",
+  "version": "0.0.0",
+  "description": "DSL-based TypeScript config generator. Replaces @infra-x/typescript-config.",
+  "license": "MIT",
+  "author": "infra-x",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oNo500/infra-code.git",
+    "directory": "packages/tsconfig"
+  },
+  "bin": {
+    "tsconfig": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "prepublishOnly": "bun run build"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.2.0",
+    "c12": "^3.3.4",
+    "citty": "^0.2.2",
+    "defu": "^6.1.7",
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^25.0.0",
+    "tsdown": "^0.21.0",
+    "typescript": "^6.0.0"
+  }
+}
