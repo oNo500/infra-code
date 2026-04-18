@@ -30,5 +30,11 @@
     "noPropertyAccessFromIndexSignature": true
   },
   "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["dist", "node_modules"]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "tsconfig.config.ts",
+    "tsconfig.config.mts",
+    "tsconfig.config.mjs"
+  ]
 }
