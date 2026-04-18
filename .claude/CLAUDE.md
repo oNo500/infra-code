@@ -28,7 +28,8 @@ Bun workspaces monorepo (no Turborepo). Two areas with different semantics:
 
 - `packages/*` — **in** the root workspace (`workspaces: ["packages/*"]`), published to npm under `@infra-x/*`
   - `packages/code-quality` — composable oxlint + oxfmt presets (built with `tsdown`)
-  - `packages/typescript-config` — shared `tsconfig.*.json` presets (no build step)
+  - `packages/tsconfig` — DSL-based `tsconfig.json` generator with CLI (built with `tsdown`)
+  - `packages/typescript-config` — legacy presets, **superseded by `@infra-x/tsconfig`** (no build step, kept for existing consumers)
 - `starters/*` — **not** in the workspace. Each starter carries its own lockfile and toolchain, and is fetched standalone via `giget`
   - `starters/cli` — publishable CLI tools (bun + citty + tsdown)
   - `starters/server` — Bun HTTP services (Hono + Drizzle + `bun:sqlite`)

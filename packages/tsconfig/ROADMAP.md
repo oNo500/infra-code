@@ -1,6 +1,6 @@
 # @infra-x/tsconfig — Roadmap
 
-## Current (0.0.0, walking skeleton)
+## Current (0.0.0)
 
 - `defineTsconfig` core + layer resolution + circular detection
 - Merge engine: scalar override, object deep merge, array append + dedupe
@@ -8,14 +8,15 @@
 - Provenance tracking for `explain`
 - CLI:
   - `tsconfig gen` — unified command; scaffolds `tsconfig.config.ts` on first run (interactive via @clack/prompts, or from flags), regenerates from existing config on subsequent runs
-  - `tsconfig sync --check` — CI drift detection
+  - `tsconfig sync --check` — **semantic** drift detection (JSONC-tolerant, formatter-safe)
   - `tsconfig explain [layer]` — field-source attribution with `--field`, `--format json`, `--hypothetical`
 - Profiles: `nextjs()`, `viteReact()`, `libNode()`, `libReact()`, `appBun()`, `appNestjs()`
 - `--once` mode for one-shot JSON-only generation
+- Self-hosted: the package generates its own `tsconfig.json`
 
 ## Next (0.1.0, minimal-viable package)
 
-- Migrate `starters/cli` to the new package as proof of concept
+- Migrate `packages/code-quality` and `starters/cli` / `starters/server` / `starters/web` to dogfood the DSL
 - CHANGELOG tracking via changesets
 - Potentially: parameterized profiles (`nextjs({ version: 16, turbopack: true })`)
 
