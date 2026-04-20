@@ -52,7 +52,7 @@ function applyArrayField<T>(base: readonly T[], field: ArrayField<T>): readonly 
   if (Array.isArray(field)) return dedupe([...base, ...(field as readonly T[])])
   const ctrl = field as ArrayControl<T>
   if (ctrl.merge === 'none') return []
-  if (ctrl.merge === 'replace') return dedupe([...(ctrl.value ?? [])])
+  if (ctrl.merge === 'replace') return ctrl.value ?? []
   return dedupe([...base, ...(ctrl.value ?? [])])
 }
 

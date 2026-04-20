@@ -32,7 +32,7 @@ export interface ArrayControl<T> {
   value?: readonly T[]
 }
 
-// 简写：数组 = append，'none' = 清空
+// Shorthand: array = append, 'none' = clear
 export type ArrayField<T> = readonly T[] | 'none' | ArrayControl<T>
 
 export interface LayerInput {

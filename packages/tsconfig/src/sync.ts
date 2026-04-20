@@ -34,10 +34,12 @@ export async function syncToDisk(config: RenderedConfig, cwd: string): Promise<S
     }),
   )
 
-  return {
-    written: results.filter((r) => r.kind === 'written').map((r) => r.filename),
-    unchanged: results.filter((r) => r.kind === 'unchanged').map((r) => r.filename),
+  const written: string[] = []
+  const unchanged: string[] = []
+  for (const r of results) {
+    ;(r.kind === 'written' ? written : unchanged).push(r.filename)
   }
+  return { written, unchanged }
 }
 
 /**
