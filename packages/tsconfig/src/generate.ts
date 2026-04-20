@@ -56,21 +56,27 @@ export async function planGenerate(opts: GenOptions): Promise<FilePlan[]> {
 export { applyWrites }
 export type { FilePlan, WriteResult } from './write'
 
+const RUNTIME_ATOMS: Record<Runtime, () => CompilerOptions> = {
+  node: runtimeNode,
+  bun: runtimeBun,
+  browser: runtimeBrowser,
+  edge: runtimeEdge,
+}
+
+const FRAMEWORK_ATOMS: Record<Exclude<Framework, 'none'>, () => CompilerOptions> = {
+  react: frameworkReact,
+  nextjs: frameworkNextjs,
+  nestjs: frameworkNestjs,
+}
+
 function buildRenderInput(opts: GenOptions): RenderInput {
   const atoms: CompilerOptions[] = [base()]
 
-  for (const rt of opts.runtimes) {
-    if (rt === 'node') atoms.push(runtimeNode())
-    else if (rt === 'bun') atoms.push(runtimeBun())
-    else if (rt === 'browser') atoms.push(runtimeBrowser())
-    else if (rt === 'edge') atoms.push(runtimeEdge())
-  }
+  for (const rt of opts.runtimes) atoms.push(RUNTIME_ATOMS[rt]())
 
   atoms.push(opts.module === 'bundler' ? buildBundler() : buildTscEmit())
 
-  if (opts.framework === 'react') atoms.push(frameworkReact())
-  else if (opts.framework === 'nextjs') atoms.push(frameworkNextjs())
-  else if (opts.framework === 'nestjs') atoms.push(frameworkNestjs())
+  if (opts.framework && opts.framework !== 'none') atoms.push(FRAMEWORK_ATOMS[opts.framework]())
   if (opts.testing === 'vitest') atoms.push(testingVitest())
   if (opts.erasable) atoms.push(strictErasable())
 

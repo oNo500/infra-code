@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { fileToString, GENERATED_HEADER } from './render'
-import { isErrnoException } from './utils'
+import { isErrnoException, isPlainObject } from './utils'
 
 import type { RenderedConfig } from './types'
 
@@ -26,19 +26,14 @@ export async function planWrites(config: RenderedConfig, cwd: string): Promise<F
   return Promise.all(
     config.files.map(async (file): Promise<FilePlan> => {
       const absPath = resolve(cwd, file.filename)
-      const content = fileToString(file)
       const actual = await readIfExists(absPath)
 
-      if (actual === null) return { kind: 'new', filename: file.filename, absPath, content }
+      if (actual === null) return { kind: 'new', filename: file.filename, absPath, content: fileToString(file) }
 
       const currentObj = parseJson(actual)
-      const generatedObj = parseJson(content)
+      if (currentObj === null) return { kind: 'new', filename: file.filename, absPath, content: fileToString(file) }
 
-      if (currentObj === null || generatedObj === null) {
-        // fallback: treat as new if parse fails
-        return { kind: 'new', filename: file.filename, absPath, content }
-      }
-
+      const generatedObj = file.content as unknown as Record<string, unknown>
       const changes = diffObjects(currentObj, generatedObj)
       if (changes.length === 0) return { kind: 'unchanged', filename: file.filename }
 
@@ -48,7 +43,7 @@ export async function planWrites(config: RenderedConfig, cwd: string): Promise<F
 }
 
 export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, accepted: Set<string>): string {
-  const result = deepClone(plan.current)
+  const result = structuredClone(plan.current)
   for (const change of plan.changes) {
     if (!accepted.has(change.key)) continue
     const parts = change.key.split('.')
@@ -67,37 +62,25 @@ export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, a
   return `${GENERATED_HEADER}\n${JSON.stringify(result, null, 2)}\n`
 }
 
-function deepClone(obj: Record<string, unknown>): Record<string, unknown> {
-  return JSON.parse(JSON.stringify(obj)) as Record<string, unknown>
-}
-
 // Fields owned by the project — never overwrite unless the user explicitly selects them.
 // 'added' changes to paths are allowed (tool is introducing aliases for the first time).
-export const PRESERVE_KEYS = ['include', 'exclude', 'references'] as const
-export const PRESERVE_IF_EXISTING_KEYS = ['compilerOptions.paths'] as const
+export const PRESERVE_KEYS: readonly string[] = ['include', 'exclude', 'references']
+export const PRESERVE_IF_EXISTING_KEYS: readonly string[] = ['compilerOptions.paths']
+
+function isPreserved(c: FieldChange): boolean {
+  if (PRESERVE_KEYS.includes(c.key)) return true
+  if (PRESERVE_IF_EXISTING_KEYS.includes(c.key) && c.kind !== 'added') return true
+  return false
+}
 
 // Used by non-interactive writeFiles: accept everything except project-owned structural fields.
 export function autoAccepted(changes: FieldChange[]): Set<string> {
-  return new Set(
-    changes
-      .filter((c) => {
-        if ((PRESERVE_KEYS as readonly string[]).includes(c.key)) return false
-        if ((PRESERVE_IF_EXISTING_KEYS as readonly string[]).includes(c.key) && c.kind !== 'added') return false
-        return true
-      })
-      .map((c) => c.key),
-  )
+  return new Set(changes.filter((c) => !isPreserved(c)).map((c) => c.key))
 }
 
 // Used by interactive CLI: added fields default to unselected (user decides).
 export function defaultSelected(changes: FieldChange[]): string[] {
-  return changes
-    .filter((c) => {
-      if ((PRESERVE_KEYS as readonly string[]).includes(c.key)) return false
-      if ((PRESERVE_IF_EXISTING_KEYS as readonly string[]).includes(c.key) && c.kind !== 'added') return false
-      return c.kind !== 'added'
-    })
-    .map((c) => c.key)
+  return changes.filter((c) => !isPreserved(c) && c.kind !== 'added').map((c) => c.key)
 }
 
 export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set(), merges: Map<string, string> = new Map()): Promise<WriteResult> {
@@ -142,7 +125,7 @@ function diffObjects(current: Record<string, unknown>, generated: Record<string,
       changes.push({ kind: 'added', key: path, newValue: generated[key] })
     } else if (!inGenerated) {
       changes.push({ kind: 'removed', key: path, oldValue: current[key] })
-    } else if (isPlainObj(current[key]) && isPlainObj(generated[key])) {
+    } else if (isPlainObject(current[key]) && isPlainObject(generated[key])) {
       changes.push(...diffObjects(
         current[key] as Record<string, unknown>,
         generated[key] as Record<string, unknown>,
@@ -153,10 +136,6 @@ function diffObjects(current: Record<string, unknown>, generated: Record<string,
     }
   }
   return changes
-}
-
-function isPlainObj(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
 function parseJson(text: string): Record<string, unknown> | null {
