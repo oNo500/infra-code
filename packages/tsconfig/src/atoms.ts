@@ -84,6 +84,10 @@ export const testingVitest = (): CompilerOptions => ({
   types: ['vitest/globals'],
 })
 
+export const strictErasable = (): CompilerOptions => ({
+  erasableSyntaxOnly: true,
+})
+
 /**
  * Merge atoms sequentially. Scalar/object overwrite is last-wins.
  * Array fields are concat+dedup so later atoms add to earlier ones

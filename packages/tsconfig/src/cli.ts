@@ -36,6 +36,7 @@ function buildEquivalentCommand(opts: GenOptions): string {
   parts.push(`--module ${opts.module}`)
   if (opts.framework && opts.framework !== 'none') parts.push(`--framework ${opts.framework}`)
   if (opts.testing) parts.push(`--testing ${opts.testing}`)
+  if (opts.erasable) parts.push('--erasable')
   if (opts.lib) parts.push('--lib')
   if (opts.views) {
     for (const v of opts.views) {
@@ -61,6 +62,7 @@ const main = defineCommand({
     framework: { type: 'string', description: 'Framework: none, react, nextjs, nestjs' },
     testing: { type: 'string', description: 'Testing: vitest' },
     lib: { type: 'boolean', description: 'Enable library mode (declaration output)' },
+    erasable: { type: 'boolean', description: 'Enforce erasable syntax only (ban enum/namespace)' },
     view: { type: 'string', description: 'View spec: name:types:include (repeat flag for multiple views)', multiple: true },
     references: { type: 'string', description: 'Cross-package references: ../shared,../ui' },
     paths: { type: 'string', description: 'Path aliases: @/*=./src/*' },
@@ -116,12 +118,13 @@ const main = defineCommand({
         initialValue: defaultModule,
       }))
 
-      type Extra = 'lib' | Testing
+      type Extra = 'lib' | 'erasable' | Testing
       const extras = orExit(await p.multiselect<Extra>({
         message: 'Extras?',
         options: [
           { value: 'lib', label: 'Library mode', hint: 'declaration + isolatedDeclarations' },
           { value: 'vitest', label: 'Vitest', hint: 'vitest/globals types' },
+          { value: 'erasable', label: 'Erasable syntax only', hint: 'ban enum/namespace, Node 22+ strip-friendly' },
         ],
         required: false,
       }))
@@ -158,6 +161,7 @@ const main = defineCommand({
         module: moduleMode,
         lib: extras.includes('lib'),
         testing: extras.includes('vitest') ? 'vitest' : undefined,
+        erasable: extras.includes('erasable'),
         views: views.length > 0 ? views : undefined,
         paths,
       }
@@ -183,6 +187,7 @@ const main = defineCommand({
         cwd,
         framework: args.framework && args.framework !== 'none' ? (args.framework as Framework) : undefined,
         testing: args.testing ? (args.testing as Testing) : undefined,
+        erasable: args.erasable,
         runtimes,
         module: moduleMode,
         lib: args.lib,

@@ -7,6 +7,7 @@ import {
   frameworkNextjs,
   frameworkReact,
   projectLib,
+  strictErasable,
   testingVitest,
   runtimeBrowser,
   runtimeBun,
@@ -38,6 +39,7 @@ export interface GenOptions {
   framework?: Framework
   testing?: Testing
   lib?: boolean
+  erasable?: boolean
   views?: ViewSpec[]
   references?: string[]
   paths?: Record<string, readonly string[]>
@@ -70,6 +72,7 @@ function buildRenderInput(opts: GenOptions): RenderInput {
   else if (opts.framework === 'nextjs') atoms.push(frameworkNextjs())
   else if (opts.framework === 'nestjs') atoms.push(frameworkNestjs())
   if (opts.testing === 'vitest') atoms.push(testingVitest())
+  if (opts.erasable) atoms.push(strictErasable())
 
   if (opts.lib) atoms.push(projectLib())
 
