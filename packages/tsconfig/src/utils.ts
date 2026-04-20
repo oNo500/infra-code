@@ -21,3 +21,7 @@ export function dedupe<T>(arr: readonly T[]): T[] {
 export function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
   return err instanceof Error && 'code' in err
 }
+
+export function splitNames(s: string): string[] {
+  return s.split(',').map((x) => x.trim()).filter(Boolean)
+}

@@ -14,6 +14,7 @@ import {
   runtimeNode,
 } from './profiles/atoms'
 import { syncToDisk } from './sync'
+import { splitNames } from './utils'
 
 import type { CompilerOptions, LayerInput } from './types'
 
@@ -45,7 +46,6 @@ export interface GenResult {
 export async function generate(opts: GenOptions): Promise<GenResult> {
   const atoms: CompilerOptions[] = [base()]
 
-  // runtime atoms
   for (const rt of opts.runtimes) {
     if (rt === 'node') atoms.push(runtimeNode())
     else if (rt === 'bun') atoms.push(runtimeBun())
@@ -53,37 +53,28 @@ export async function generate(opts: GenOptions): Promise<GenResult> {
     else if (rt === 'edge') atoms.push(runtimeEdge())
   }
 
-  // module/build atoms
-  if (opts.module === 'bundler') {
-    atoms.push(buildBundler())
-  } else {
-    atoms.push(buildTscEmit())
-  }
+  atoms.push(opts.module === 'bundler' ? buildBundler() : buildTscEmit())
 
-  // framework atoms
   if (opts.framework === 'react') atoms.push(frameworkReact())
   else if (opts.framework === 'nextjs') atoms.push(frameworkNextjs())
   else if (opts.framework === 'nestjs') atoms.push(frameworkNestjs())
 
-  // lib mode
   if (opts.lib) atoms.push(projectLib())
 
   const baseOptions = composeAtoms(...atoms)
 
-  // inject user paths
-  if (opts.paths && Object.keys(opts.paths).length > 0) {
+  if (opts.paths) {
     baseOptions.paths = Object.fromEntries(
       Object.entries(opts.paths).map(([k, v]) => [k, [...v]]),
     )
   }
 
-  // build views (extra tsconfig files)
-  const layers: Record<string, LayerInput> = {}
+  let layers: Record<string, LayerInput> | undefined
   if (opts.views && opts.views.length > 0) {
     if (opts.views.some((v) => v.name === 'app')) {
       throw new Error("View name 'app' is reserved. Choose a different name.")
     }
-    layers['app'] = {}
+    layers = { app: {} }
     for (const view of opts.views) {
       layers[view.name] = {
         extends: 'app',
@@ -97,7 +88,7 @@ export async function generate(opts: GenOptions): Promise<GenResult> {
 
   const rendered = defineTsconfig({
     profile: { compilerOptions: baseOptions },
-    layers: Object.keys(layers).length > 0 ? layers : undefined,
+    layers,
     references: refs,
   })
 
@@ -108,7 +99,7 @@ export async function generate(opts: GenOptions): Promise<GenResult> {
 /** Parse a paths string like "@/*=./src/*,@ui/*=../ui/src/*" into an object. */
 export function parsePathsArg(input: string): Record<string, readonly string[]> {
   const result: Record<string, readonly string[]> = {}
-  for (const pair of input.split(',').map((s) => s.trim()).filter(Boolean)) {
+  for (const pair of splitNames(input)) {
     const eq = pair.indexOf('=')
     if (eq < 0) continue
     const key = pair.slice(0, eq).trim()

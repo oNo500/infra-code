@@ -3,25 +3,22 @@ import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
 import { generate, parsePathsArg } from './init'
+import { splitNames } from './utils'
 
 import type { Framework, GenOptions, ModuleMode, Runtime, ViewInput } from './init'
 
-function splitNames(s: string): string[] {
-  return s.split(',').map((x) => x.trim()).filter(Boolean)
-}
-
-/**
- * Parse a view spec string: "name:types:include"
- * types and include are optional, comma-separated within each segment.
- * Example: "test:vitest/globals:**\/*.test.ts"
- */
 function parseViewSpec(spec: string): ViewInput {
   const [name = '', typesStr = '', includeStr = ''] = spec.split(':')
   return {
     name: name.trim(),
-    types: typesStr ? typesStr.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
-    include: includeStr ? includeStr.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+    types: typesStr ? splitNames(typesStr) : undefined,
+    include: includeStr ? splitNames(includeStr) : undefined,
   }
+}
+
+function orExit<T>(v: T | symbol): T {
+  if (p.isCancel(v)) { p.cancel('Cancelled'); process.exit(0) }
+  return v as T
 }
 
 function buildEquivalentCommand(opts: GenOptions): string {
@@ -71,7 +68,7 @@ const gen = defineCommand({
     if (interactive) {
       p.intro('tsconfig generator')
 
-      const framework = await p.select<Framework>({
+      const framework = orExit(await p.select<Framework>({
         message: 'Framework?',
         options: [
           { value: 'none', label: 'None', hint: 'plain TypeScript' },
@@ -79,8 +76,7 @@ const gen = defineCommand({
           { value: 'nextjs', label: 'Next.js', hint: 'App Router, RSC' },
           { value: 'nestjs', label: 'NestJS', hint: 'decorators + DI' },
         ],
-      })
-      if (p.isCancel(framework)) { p.cancel('Cancelled'); process.exit(0) }
+      }))
 
       const defaultRuntimes: Runtime[] =
         framework === 'nextjs' ? ['node', 'browser'] :
@@ -88,7 +84,7 @@ const gen = defineCommand({
         framework === 'react' ? ['browser'] :
         ['node']
 
-      const runtimes = await p.multiselect<Runtime>({
+      const runtimes = orExit(await p.multiselect<Runtime>({
         message: 'Runtime(s)?',
         options: [
           { value: 'node', label: 'Node.js' },
@@ -98,54 +94,48 @@ const gen = defineCommand({
         ],
         initialValues: defaultRuntimes,
         required: true,
-      })
-      if (p.isCancel(runtimes)) { p.cancel('Cancelled'); process.exit(0) }
+      }))
 
       const defaultModule: ModuleMode =
         framework === 'nestjs' ? 'nodenext' : 'bundler'
 
-      const moduleMode = await p.select<ModuleMode>({
+      const moduleMode = orExit(await p.select<ModuleMode>({
         message: 'Module system?',
         options: [
           { value: 'bundler', label: 'Bundler', hint: 'Vite, Next.js, tsdown — no emit' },
           { value: 'nodenext', label: 'NodeNext', hint: 'tsc emit, strict ESM/CJS' },
         ],
         initialValue: defaultModule,
-      })
-      if (p.isCancel(moduleMode)) { p.cancel('Cancelled'); process.exit(0) }
+      }))
 
-      const libMode = await p.confirm({
+      const libMode = orExit(await p.confirm({
         message: 'Library mode? (enables declaration + isolatedDeclarations)',
         initialValue: false,
-      })
-      if (p.isCancel(libMode)) { p.cancel('Cancelled'); process.exit(0) }
+      }))
 
-      const addViews = await p.confirm({
+      const addViews = orExit(await p.confirm({
         message: 'Add extra tsconfig views? (e.g. test, build)',
         initialValue: false,
-      })
-      if (p.isCancel(addViews)) { p.cancel('Cancelled'); process.exit(0) }
+      }))
 
       const views: ViewInput[] = []
       if (addViews) {
-        const viewInput = await p.text({
+        const viewInput = orExit(await p.text({
           message: 'View specs (space-separated, format: name:types:include)',
           placeholder: 'test:vitest/globals:**/*.test.ts',
-        })
-        if (p.isCancel(viewInput)) { p.cancel('Cancelled'); process.exit(0) }
+        }))
         if (viewInput.trim()) {
-          for (const spec of viewInput.trim().split(' ').map((s) => s.trim()).filter(Boolean)) {
+          for (const spec of viewInput.trim().split(' ').filter(Boolean)) {
             views.push(parseViewSpec(spec))
           }
         }
       }
 
-      const pathsInput = await p.text({
+      const pathsInput = orExit(await p.text({
         message: 'Path aliases (leave empty to skip)',
         placeholder: '@/*=./src/*',
         defaultValue: '',
-      })
-      if (p.isCancel(pathsInput)) { p.cancel('Cancelled'); process.exit(0) }
+      }))
       const paths = pathsInput.trim() ? parsePathsArg(pathsInput.trim()) : undefined
 
       opts = {
