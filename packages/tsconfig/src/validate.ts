@@ -11,14 +11,21 @@ interface ValidationWarning {
   suggestion?: string
 }
 
+interface TypescriptModule {
+  optionDeclarations: CommandLineOption[]
+}
+
+function isTypescriptModule(v: unknown): v is TypescriptModule {
+  return typeof v === 'object' && v !== null && 'optionDeclarations' in v && Array.isArray((v as TypescriptModule).optionDeclarations)
+}
+
 let declarations: CommandLineOption[] | null | undefined = undefined
 
 function loadDeclarations(): CommandLineOption[] | null {
   if (declarations !== undefined) return declarations
   try {
-    // eslint-disable-next-line typescript-eslint/no-require-imports
-    const ts = require('typescript') as { optionDeclarations: CommandLineOption[] }
-    declarations = ts.optionDeclarations ?? null
+    const ts: unknown = require('typescript')
+    declarations = isTypescriptModule(ts) ? ts.optionDeclarations : null
   } catch {
     declarations = null
   }

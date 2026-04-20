@@ -49,6 +49,7 @@ export async function planGenerate(opts: GenOptions): Promise<FilePlan[]> {
 }
 
 export { applyWrites }
+export type { FilePlan, WriteResult } from './write'
 
 function buildRenderInput(opts: GenOptions): RenderInput {
   const atoms: CompilerOptions[] = [base()]
