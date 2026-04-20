@@ -6,6 +6,7 @@ import {
   frameworkNestjs,
   frameworkNextjs,
   frameworkReact,
+  frameworkVitest,
   projectLib,
   runtimeBrowser,
   runtimeBun,
@@ -19,7 +20,7 @@ import { splitNames } from './utils'
 import type { CompilerOptions, RenderInput, ViewInput as RenderViewInput } from './types'
 import type { FilePlan, WriteResult } from './write'
 
-export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs'
+export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs' | 'vitest'
 export type Runtime = 'node' | 'bun' | 'browser' | 'edge'
 export type ModuleMode = 'bundler' | 'nodenext'
 
@@ -66,6 +67,7 @@ function buildRenderInput(opts: GenOptions): RenderInput {
   if (opts.framework === 'react') atoms.push(frameworkReact())
   else if (opts.framework === 'nextjs') atoms.push(frameworkNextjs())
   else if (opts.framework === 'nestjs') atoms.push(frameworkNestjs())
+  else if (opts.framework === 'vitest') atoms.push(frameworkVitest())
 
   if (opts.lib) atoms.push(projectLib())
 

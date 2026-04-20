@@ -80,6 +80,10 @@ export const frameworkNestjs = (): CompilerOptions => ({
   strictPropertyInitialization: false,
 })
 
+export const frameworkVitest = (): CompilerOptions => ({
+  types: ['vitest/globals'],
+})
+
 /**
  * Merge atoms sequentially. Scalar/object overwrite is last-wins.
  * Array fields are concat+dedup so later atoms add to earlier ones

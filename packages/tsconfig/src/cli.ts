@@ -81,6 +81,7 @@ const main = defineCommand({
           { value: 'react', label: 'React', hint: 'Vite, CRA, etc.' },
           { value: 'nextjs', label: 'Next.js', hint: 'App Router, RSC' },
           { value: 'nestjs', label: 'NestJS', hint: 'decorators + DI' },
+          { value: 'vitest', label: 'Vitest', hint: 'vitest/globals types' },
         ],
       }))
 
