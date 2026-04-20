@@ -21,7 +21,8 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "citty": "^0.2.0"
+    "citty": "^0.2.0",
+    "shadcn": "^4.3.1"
   },
   "devDependencies": {
     "@infra-x/code-quality": "^0.4.0",
