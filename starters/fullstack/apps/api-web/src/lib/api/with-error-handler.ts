@@ -1,7 +1,10 @@
 import 'server-only'
 import { ZodError } from 'zod'
 
-type Handler<TContext = unknown> = (request: Request, context: TContext) => Promise<Response> | Response
+type Handler<TContext = unknown> = (
+  request: Request,
+  context: TContext,
+) => Promise<Response> | Response
 
 function isDatabaseError(error: unknown): error is { code: string; message: string } {
   return (

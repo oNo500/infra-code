@@ -3,12 +3,8 @@
 {
   "compilerOptions": {
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@workspace/ui/*": [
-        "../../packages/ui/src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@workspace/ui/*": ["../../packages/ui/src/*"]
     },
     "target": "esnext",
     "esModuleInterop": true,
@@ -27,15 +23,8 @@
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
-    "types": [
-      "node",
-      "vitest/globals"
-    ],
-    "lib": [
-      "esnext",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "types": ["node", "vitest/globals"],
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
     "module": "preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -55,8 +44,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": [
-    "node_modules",
-    "oxlint.config.ts"
-  ]
+  "exclude": ["node_modules", "oxlint.config.ts"]
 }
