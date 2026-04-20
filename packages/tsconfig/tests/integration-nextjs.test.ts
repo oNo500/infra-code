@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'bun:test'
 
 import { defineTsconfig } from '../src/define'
-import { nextjs } from '../src/profiles/nextjs'
+import { base, buildBundler, composeAtoms, frameworkNextjs, runtimeBrowser, runtimeNode } from '../src/profiles/atoms'
+
+const nextjsCompilerOptions = composeAtoms(base(), runtimeNode(), runtimeBrowser(), buildBundler(), frameworkNextjs())
 
 /**
  * Walking skeleton: reproduce the tsconfig that starters/fullstack/apps/web/
@@ -10,7 +12,7 @@ import { nextjs } from '../src/profiles/nextjs'
 describe('integration: nextjs profile produces reasonable tsconfig', () => {
   it('single-file Next.js app', () => {
     const result = defineTsconfig({
-      profile: nextjs(),
+      profile: { compilerOptions: nextjsCompilerOptions },
       compilerOptions: {
         paths: {
           '@/*': ['./src/*'],
@@ -25,12 +27,11 @@ describe('integration: nextjs profile produces reasonable tsconfig', () => {
     const co = tsconfig.compilerOptions
 
     expect(co.strict).toBe(true)
-    expect(co.jsx).toBe('preserve')
+    expect(co.jsx).toBe('react-jsx')
     expect(co.module).toBe('preserve')
     expect(co.moduleResolution).toBe('bundler')
     expect(co.types).toEqual(['node'])
     expect(co.lib).toEqual(['esnext', 'DOM', 'DOM.Iterable'])
-    expect(co.plugins).toEqual([{ name: 'next' }])
     expect(co.paths).toEqual({
       '@/*': ['./src/*'],
       '@workspace/ui/*': ['../../packages/ui/src/*'],
@@ -40,7 +41,7 @@ describe('integration: nextjs profile produces reasonable tsconfig', () => {
 
   it('app + test layers produce two tsconfigs', () => {
     const result = defineTsconfig({
-      profile: nextjs(),
+      profile: { compilerOptions: nextjsCompilerOptions },
       compilerOptions: {
         paths: { '@/*': ['./src/*'] },
       },

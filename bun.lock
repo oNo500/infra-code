@@ -54,10 +54,7 @@
       },
       "dependencies": {
         "@clack/prompts": "^1.2.0",
-        "c12": "^3.3.4",
         "citty": "^0.2.2",
-        "defu": "^6.1.7",
-        "jsonc-parser": "^3.3.1",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -65,6 +62,12 @@
         "tsdown": "^0.21.0",
         "typescript": "^6.0.0",
       },
+      "peerDependencies": {
+        "typescript": ">=5.0",
+      },
+      "optionalPeers": [
+        "typescript",
+      ],
     },
     "packages/typescript-config": {
       "name": "@infra-x/typescript-config",

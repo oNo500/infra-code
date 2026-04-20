@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'bun:test'
 
 import { defineTsconfig } from '../src/define'
-import { nextjs } from '../src/profiles/nextjs'
+import { base, buildBundler, composeAtoms, frameworkNextjs, runtimeBrowser, runtimeNode } from '../src/profiles/atoms'
+
+const nextjsCompilerOptions = composeAtoms(base(), runtimeNode(), runtimeBrowser(), buildBundler(), frameworkNextjs())
 
 describe('defineTsconfig', () => {
   it('produces a single tsconfig.json when no layers', () => {
     const result = defineTsconfig({
-      profile: nextjs(),
+      profile: { compilerOptions: nextjsCompilerOptions },
       compilerOptions: { paths: { '@/*': ['./src/*'] } },
     })
     expect(result.files).toHaveLength(1)
@@ -19,7 +21,7 @@ describe('defineTsconfig', () => {
 
   it('produces one file per layer, with primary as tsconfig.json', () => {
     const result = defineTsconfig({
-      profile: nextjs(),
+      profile: { compilerOptions: nextjsCompilerOptions },
       layers: {
         app: { include: ['src/**/*'] },
         test: {
@@ -34,7 +36,7 @@ describe('defineTsconfig', () => {
 
   it('layer types is appended to profile types (the original pain point)', () => {
     const result = defineTsconfig({
-      profile: nextjs(),
+      profile: { compilerOptions: nextjsCompilerOptions },
       layers: {
         app: {},
         test: {
@@ -49,7 +51,7 @@ describe('defineTsconfig', () => {
 
   it('honors explicit primary layer', () => {
     const result = defineTsconfig({
-      profile: nextjs(),
+      profile: { compilerOptions: nextjsCompilerOptions },
       primary: 'build',
       layers: {
         build: { include: ['src/**/*'] },
@@ -64,32 +66,13 @@ describe('defineTsconfig', () => {
   it('detects circular layer extends', () => {
     expect(() =>
       defineTsconfig({
-        profile: nextjs(),
+        profile: { compilerOptions: nextjsCompilerOptions },
         layers: {
           a: { extends: 'b' },
           b: { extends: 'a' },
         },
       }),
     ).toThrow(/Circular/)
-  })
-
-  it('auto-excludes tsconfig.config.* without user effort', () => {
-    const result = defineTsconfig({
-      profile: nextjs(),
-      exclude: ['node_modules'],
-    })
-    expect(result.files[0]!.content.exclude).toContain('tsconfig.config.ts')
-    expect(result.files[0]!.content.exclude).toContain('node_modules')
-  })
-
-  it('does not duplicate tsconfig.config.ts if user already excluded it', () => {
-    const result = defineTsconfig({
-      profile: nextjs(),
-      exclude: ['node_modules', 'tsconfig.config.ts'],
-    })
-    const excludes = result.files[0]!.content.exclude
-    const tsCount = excludes?.filter((x) => x === 'tsconfig.config.ts').length ?? 0
-    expect(tsCount).toBe(1)
   })
 
   it('allows layers without a profile', () => {

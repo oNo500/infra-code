@@ -1,10 +1,7 @@
-import type { ArrayField, ArrayVerb, CompilerOptions } from './types'
+import { dedupe, isPlainObject } from './utils'
 
-/**
- * Merge two CompilerOptions layers. `base` is the lower layer (profile default),
- * `over` is the higher layer (user input). User input wins for scalars, merges
- * for objects, and appends to arrays by default (overridable via verbs).
- */
+import type { ArrayControl, ArrayField, CompilerOptions } from './types'
+
 export function mergeCompilerOptions(
   base: CompilerOptions | undefined,
   over: CompilerOptions | undefined,
@@ -21,15 +18,9 @@ export function mergeCompilerOptions(
 
     if (overValue === undefined) continue
 
-    if (isArrayVerb(overValue)) {
-      const baseArray = Array.isArray(baseValue) ? (baseValue as readonly unknown[]) : undefined
-      result[key] = applyVerb(baseArray, overValue)
-      continue
-    }
-
-    if (Array.isArray(overValue)) {
+    if (isArrayField(overValue)) {
       const baseArray = Array.isArray(baseValue) ? (baseValue as readonly unknown[]) : []
-      result[key] = dedupe([...baseArray, ...overValue])
+      result[key] = applyArrayField(baseArray, overValue)
       continue
     }
 
@@ -44,12 +35,11 @@ export function mergeCompilerOptions(
   return result
 }
 
-/** Strip any ArrayVerb wrappers so the output is a clean JSON object. */
 export function normalizeCompilerOptions(opts: CompilerOptions): CompilerOptions {
   const result: CompilerOptions = {}
   for (const [key, value] of Object.entries(opts)) {
-    if (isArrayVerb(value)) {
-      result[key] = applyVerb(undefined, value)
+    if (isArrayField(value)) {
+      result[key] = applyArrayField([], value)
     } else {
       result[key] = value
     }
@@ -57,45 +47,19 @@ export function normalizeCompilerOptions(opts: CompilerOptions): CompilerOptions
   return result
 }
 
-function applyVerb<T>(base: readonly T[] | undefined, verb: ArrayVerb<T>): readonly T[] {
-  if (verb.$set !== undefined) return dedupe([...verb.$set])
-
-  let result: T[] = base ? [...base] : []
-
-  if (verb.$remove) {
-    const removeSet = new Set(verb.$remove)
-    result = result.filter((item) => !removeSet.has(item))
-  }
-  if (verb.$prepend) {
-    result = dedupe([...verb.$prepend, ...result])
-  }
-  if (verb.$append) {
-    result = dedupe([...result, ...verb.$append])
-  }
-  return result
+function applyArrayField<T>(base: readonly T[], field: ArrayField<T>): readonly T[] {
+  if (field === 'none') return []
+  if (Array.isArray(field)) return dedupe([...base, ...(field as readonly T[])])
+  const ctrl = field as ArrayControl<T>
+  if (ctrl.merge === 'none') return []
+  if (ctrl.merge === 'replace') return ctrl.value ?? []
+  return dedupe([...base, ...(ctrl.value ?? [])])
 }
 
-function isArrayVerb(v: unknown): v is ArrayVerb<unknown> {
-  if (!isPlainObject(v)) return false
-  const keys = Object.keys(v)
-  if (keys.length === 0) return false
-  return keys.every((k) => k === '$set' || k === '$remove' || k === '$prepend' || k === '$append')
-}
-
-function isPlainObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v) && v.constructor === Object
-}
-
-function dedupe<T>(arr: readonly T[]): T[] {
-  const seen = new Set<string>()
-  const out: T[] = []
-  for (const item of arr) {
-    const key = typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item)
-    if (seen.has(key)) continue
-    seen.add(key)
-    out.push(item)
-  }
-  return out
+function isArrayField(v: unknown): v is ArrayField<unknown> {
+  if (v === 'none') return true
+  if (Array.isArray(v)) return true
+  return isPlainObject(v) && 'merge' in v
 }
 
 export type { ArrayField }

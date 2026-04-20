@@ -2,336 +2,206 @@
 import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
-import { defineTsconfig } from './define'
-import { explainTsconfig, renderExplain } from './explain'
-import { parsePathsArg, runInit } from './init'
-import { LAYER_PRESETS } from './layer-presets'
-import { configExists, isRenderedConfig, loadTsconfigConfig } from './loader'
-import { PROFILES } from './profiles/registry'
-import { checkAgainstDisk, syncToDisk } from './sync'
+import { generate, parsePathsArg } from './init'
+import { splitNames } from './utils'
 
-import type { DefineTsconfigInput, RenderedConfig } from './types'
+import type { Framework, GenOptions, ModuleMode, Runtime, ViewInput } from './init'
 
-async function loadRendered(cwd: string): Promise<RenderedConfig> {
-  const loaded = await loadTsconfigConfig(cwd)
-  return isRenderedConfig(loaded) ? loaded : defineTsconfig(loaded)
-}
-
-async function loadInput(cwd: string): Promise<DefineTsconfigInput> {
-  const loaded = await loadTsconfigConfig(cwd)
-  if (isRenderedConfig(loaded)) {
-    throw new Error(
-      'tsconfig.config.ts exported a rendered config, not a DefineTsconfigInput. ' +
-        'Cannot explain without source DSL.',
-    )
+function parseViewSpec(spec: string): ViewInput {
+  const [name = '', typesStr = '', includeStr = ''] = spec.split(':')
+  return {
+    name: name.trim(),
+    types: typesStr ? splitNames(typesStr) : undefined,
+    include: includeStr ? splitNames(includeStr) : undefined,
   }
-  return loaded
 }
 
-function hasScaffoldArgs(args: { profile?: string; layers?: string; paths?: string }): boolean {
-  return Boolean(args.profile || args.layers || args.paths)
+function orExit<T>(v: T | symbol): T {
+  if (p.isCancel(v)) { p.cancel('Cancelled'); process.exit(0) }
+  return v as T
+}
+
+function buildEquivalentCommand(opts: GenOptions): string {
+  const parts = ['tsconfig gen']
+  parts.push(`--runtime ${opts.runtimes.join(',')}`)
+  parts.push(`--module ${opts.module}`)
+  if (opts.framework && opts.framework !== 'none') parts.push(`--framework ${opts.framework}`)
+  if (opts.lib) parts.push('--lib')
+  if (opts.views) {
+    for (const v of opts.views) {
+      const types = v.types?.join(',') ?? ''
+      const include = v.include?.join(',') ?? ''
+      parts.push(`--view ${v.name}:${types}:${include}`)
+    }
+  }
+  if (opts.references) parts.push(`--references ${opts.references.join(',')}`)
+  if (opts.paths) {
+    const aliases = Object.entries(opts.paths).map(([k, v]) => `${k}=${v[0]}`).join(',')
+    parts.push(`--paths ${aliases}`)
+  }
+  return parts.join(' ')
 }
 
 const gen = defineCommand({
   meta: {
     name: 'gen',
-    description:
-      'Generate tsconfig files. Reads tsconfig.config.ts if present; otherwise scaffolds one from flags or interactive prompts.',
+    description: 'Generate tsconfig.json files interactively or from flags.',
   },
   args: {
     cwd: { type: 'string', description: 'Working directory', default: '.' },
-    profile: { type: 'string', description: 'Profile name (e.g. nextjs) — scaffold mode' },
-    layers: {
-      type: 'string',
-      description: 'Comma-separated layer names (e.g. app,test) — scaffold mode',
-    },
-    paths: {
-      type: 'string',
-      description: 'Paths aliases: "@/*=./src/*,@ui/*=../ui/src/*" — scaffold mode',
-    },
-    force: {
-      type: 'boolean',
-      description: 'Overwrite existing tsconfig.config.ts when scaffolding',
-      default: false,
-    },
-    once: {
-      type: 'boolean',
-      description: 'One-shot: generate tsconfig.*.json only, skip tsconfig.config.ts',
-      default: false,
-    },
+    runtime: { type: 'string', description: 'Comma-separated runtimes: node,bun,browser,edge' },
+    module: { type: 'string', description: 'Module mode: bundler or nodenext' },
+    framework: { type: 'string', description: 'Framework: none, react, nextjs, nestjs' },
+    lib: { type: 'boolean', description: 'Enable library mode (declaration output)' },
+    view: { type: 'string', description: 'View spec: name:types:include (repeat flag for multiple views)', multiple: true },
+    references: { type: 'string', description: 'Cross-package references: ../shared,../ui' },
+    paths: { type: 'string', description: 'Path aliases: @/*=./src/*' },
   },
   async run({ args }) {
     const cwd = args.cwd
-    const exists = await configExists(cwd)
-    const hasArgs = hasScaffoldArgs(args)
     const isTty = process.stdout.isTTY ?? false
+    const hasArgs = Boolean(args.runtime || args.module || args.framework)
+    const interactive = isTty && !hasArgs
 
-    if (args.once) {
-      await scaffold({ cwd, args, isTty, force: false, once: true })
-      return
-    }
+    let opts: GenOptions
 
-    if (exists && hasArgs && !args.force) {
-      console.error(
-        'tsconfig.config.ts already exists. Refusing to overwrite — edit it directly, or pass --force. Use --once to generate JSON only without touching the DSL.',
-      )
-      process.exit(1)
-    }
-
-    if (exists && !hasArgs) {
-      const rendered = await loadRendered(cwd)
-      const result = await syncToDisk(rendered, cwd)
-      for (const f of result.written) console.log(`write  ${f}`)
-      for (const f of result.unchanged) console.log(`ok     ${f}`)
-      return
-    }
-
-    await scaffold({ cwd, args, isTty, force: args.force || (exists && hasArgs), once: false })
-  },
-})
-
-interface ScaffoldOpts {
-  cwd: string
-  args: { profile?: string; layers?: string; paths?: string }
-  isTty: boolean
-  force: boolean
-  once: boolean
-}
-
-async function scaffold(opts: ScaffoldOpts): Promise<void> {
-  const { cwd, args, isTty, force } = opts
-  let once = opts.once
-  let skipJson = false
-  let profileName = args.profile
-  let layerNames: string[]
-  let paths: Record<string, readonly string[]> | undefined
-
-  if (args.paths) paths = parsePathsArg(args.paths)
-
-  const interactive = isTty && !hasScaffoldArgs(args)
-
-  if (interactive) {
-    p.intro('tsconfig')
-
-    const selected = await p.select({
-      message: 'Which profile?',
-      options: PROFILES.map((d) => ({
-        value: d.name,
-        label: d.label,
-        hint: d.description,
-      })),
-    })
-    if (p.isCancel(selected)) {
-      p.cancel('Cancelled')
-      process.exit(0)
-    }
-    profileName = selected
-
-    const chosen = await p.multiselect({
-      message:
-        'Which tsconfig layers do you need? (space to toggle, enter to confirm; leave empty for single tsconfig.json)',
-      options: [
-        ...Object.entries(LAYER_PRESETS).map(([value, preset]) => ({
-          value,
-          label: preset.label,
-          hint: preset.hint,
-        })),
-        { value: 'custom', label: 'custom…', hint: 'enter your own names' },
-      ],
-      required: false,
-    })
-    if (p.isCancel(chosen)) {
-      p.cancel('Cancelled')
-      process.exit(0)
-    }
-    const chosenList = chosen
-    if (chosenList.includes('custom')) {
-      const input = await p.text({
-        message: 'Layer names (comma-separated)',
-        placeholder: 'app,test',
-        defaultValue: chosenList.filter((x) => x !== 'custom').join(',') || 'app,test',
-      })
-      if (p.isCancel(input)) {
-        p.cancel('Cancelled')
-        process.exit(0)
-      }
-      layerNames = input
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    } else {
-      layerNames = chosenList
-    }
-
-    const pathsInput = await p.text({
-      message: 'Paths aliases (leave empty to skip)',
-      placeholder: '@/*=./src/*',
-      defaultValue: '',
-    })
-    if (p.isCancel(pathsInput)) {
-      p.cancel('Cancelled')
-      process.exit(0)
-    }
-    const raw = pathsInput.trim()
-    if (raw) paths = parsePathsArg(raw)
-
-    if (!once) {
-      const mode = await p.select({
-        message: 'Maintenance mode?',
-        options: [
-          {
-            value: 'managed',
-            label: 'Managed',
-            hint: 'Write tsconfig.config.ts (DSL). Re-run later to upgrade.',
-          },
-          {
-            value: 'once',
-            label: 'One-shot',
-            hint: 'Only tsconfig.*.json. Edit them manually afterwards.',
-          },
-        ],
-        initialValue: 'managed',
-      })
-      if (p.isCancel(mode)) {
-        p.cancel('Cancelled')
-        process.exit(0)
-      }
-      if (mode === 'once') once = true
-    }
-
-    if (!once) {
-      const emitNow = await p.confirm({
-        message: 'Also generate tsconfig.*.json now?',
-        initialValue: true,
-      })
-      if (p.isCancel(emitNow)) {
-        p.cancel('Cancelled')
-        process.exit(0)
-      }
-      if (!emitNow) skipJson = true
-    }
-  } else {
-    if (!profileName) {
-      console.error(
-        'No tsconfig.config.ts found and --profile not provided.\n' +
-          '  Run in a TTY for interactive prompts, or pass --profile <name>.\n' +
-          `  Available profiles: ${PROFILES.map((pr) => pr.name).join(', ')}`,
-      )
-      process.exit(1)
-    }
-    layerNames = args.layers
-      ? args.layers
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : []
-  }
-
-  const spinner = interactive ? p.spinner() : null
-  spinner?.start('Generating tsconfig files')
-
-  try {
-    const result = await runInit({
-      cwd,
-      profile: profileName,
-      layers: layerNames,
-      paths,
-      force,
-      once,
-      skipJson,
-    })
-    spinner?.stop('Done')
     if (interactive) {
-      let msg: string
-      if (skipJson && result.configFile) {
-        msg = `Created ${result.configFile}. Run \`tsconfig gen\` when ready to emit JSON.`
-      } else if (!result.configFile) {
-        msg = `Created ${result.generatedFiles.length} tsconfig file(s) (one-shot, no DSL)`
-      } else {
-        msg = `Created ${result.configFile} and ${result.generatedFiles.length} tsconfig file(s)`
+      p.intro('tsconfig generator')
+
+      const framework = orExit(await p.select<Framework>({
+        message: 'Framework?',
+        options: [
+          { value: 'none', label: 'None', hint: 'plain TypeScript' },
+          { value: 'react', label: 'React', hint: 'Vite, CRA, etc.' },
+          { value: 'nextjs', label: 'Next.js', hint: 'App Router, RSC' },
+          { value: 'nestjs', label: 'NestJS', hint: 'decorators + DI' },
+        ],
+      }))
+
+      const defaultRuntimes: Runtime[] =
+        framework === 'nextjs' ? ['node', 'browser'] :
+        framework === 'nestjs' ? ['node'] :
+        framework === 'react' ? ['browser'] :
+        ['node']
+
+      const runtimes = orExit(await p.multiselect<Runtime>({
+        message: 'Runtime(s)?',
+        options: [
+          { value: 'node', label: 'Node.js' },
+          { value: 'bun', label: 'Bun' },
+          { value: 'browser', label: 'Browser' },
+          { value: 'edge', label: 'Edge (Cloudflare Workers, etc.)' },
+        ],
+        initialValues: defaultRuntimes,
+        required: true,
+      }))
+
+      const defaultModule: ModuleMode =
+        framework === 'nestjs' ? 'nodenext' : 'bundler'
+
+      const moduleMode = orExit(await p.select<ModuleMode>({
+        message: 'Module system?',
+        options: [
+          { value: 'bundler', label: 'Bundler', hint: 'Vite, Next.js, tsdown — no emit' },
+          { value: 'nodenext', label: 'NodeNext', hint: 'tsc emit, strict ESM/CJS' },
+        ],
+        initialValue: defaultModule,
+      }))
+
+      const libMode = orExit(await p.confirm({
+        message: 'Library mode? (enables declaration + isolatedDeclarations)',
+        initialValue: false,
+      }))
+
+      const addViews = orExit(await p.confirm({
+        message: 'Add extra tsconfig views? (e.g. test, build)',
+        initialValue: false,
+      }))
+
+      const views: ViewInput[] = []
+      if (addViews) {
+        const viewInput = orExit(await p.text({
+          message: 'View specs (space-separated, format: name:types:include)',
+          placeholder: 'test:vitest/globals:**/*.test.ts',
+        }))
+        if (viewInput.trim()) {
+          for (const spec of viewInput.trim().split(' ').filter(Boolean)) {
+            views.push(parseViewSpec(spec))
+          }
+        }
       }
-      p.outro(msg)
+
+      const pathsInput = orExit(await p.text({
+        message: 'Path aliases (leave empty to skip)',
+        placeholder: '@/*=./src/*',
+        defaultValue: '',
+      }))
+      const paths = pathsInput.trim() ? parsePathsArg(pathsInput.trim()) : undefined
+
+      opts = {
+        cwd,
+        framework: framework === 'none' ? undefined : framework,
+        runtimes,
+        module: moduleMode,
+        lib: libMode,
+        views: views.length > 0 ? views : undefined,
+        paths,
+      }
     } else {
-      if (result.configFile) console.log(`write  ${result.configFile}`)
-      for (const f of result.generatedFiles) console.log(`write  ${f}`)
+      // flag mode
+      if (!args.runtime) {
+        console.error('--runtime is required in non-interactive mode (e.g. --runtime node)')
+        process.exit(1)
+      }
+      if (!args.module) {
+        console.error('--module is required in non-interactive mode (e.g. --module bundler)')
+        process.exit(1)
+      }
+
+      const runtimes = splitNames(args.runtime) as Runtime[]
+      const moduleMode = args.module as ModuleMode
+      const viewArgs = args.view ? (Array.isArray(args.view) ? args.view : [args.view]) : []
+      const views: ViewInput[] = viewArgs.map(parseViewSpec)
+      const references = args.references ? splitNames(args.references) : undefined
+      const paths = args.paths ? parsePathsArg(args.paths) : undefined
+
+      opts = {
+        cwd,
+        framework: args.framework && args.framework !== 'none' ? (args.framework as Framework) : undefined,
+        runtimes,
+        module: moduleMode,
+        lib: args.lib,
+        views: views.length > 0 ? views : undefined,
+        references,
+        paths,
+      }
     }
-  } catch (err) {
-    spinner?.stop('Failed')
-    const message = err instanceof Error ? err.message : String(err)
-    if (interactive) p.log.error(message)
-    else console.error(message)
-    process.exit(1)
-  }
-}
 
-const sync = defineCommand({
-  meta: {
-    name: 'sync',
-    description: 'Check or regenerate tsconfig files against tsconfig.config.ts',
-  },
-  args: {
-    cwd: { type: 'string', description: 'Working directory', default: '.' },
-    check: {
-      type: 'boolean',
-      description: 'CI mode: fail if disk differs from DSL output',
-      default: false,
-    },
-  },
-  async run({ args }) {
-    const cwd = args.cwd
-    const rendered = await loadRendered(cwd)
+    const spinner = interactive ? p.spinner() : null
+    spinner?.start('Generating tsconfig files')
 
-    if (args.check) {
-      const result = await checkAgainstDisk(rendered, cwd)
-      if (result.ok) {
-        console.log('tsconfig files are in sync with DSL')
-        return
+    try {
+      const result = await generate(opts)
+      spinner?.stop('Done')
+      if (interactive) {
+        p.log.info(`Equivalent command:\n  ${buildEquivalentCommand(opts)}`)
+        p.outro(`Generated ${result.written.length} file(s): ${result.written.join(', ')}`)
+      } else {
+        for (const f of result.written) console.log(`write  ${f}`)
       }
-      console.error('tsconfig files are out of sync with DSL:')
-      for (const m of result.mismatches) {
-        console.error(`  ${m.reason === 'missing' ? 'missing' : 'changed'}  ${m.filename}`)
-      }
-      console.error('\nRun `tsconfig gen` to regenerate.')
+    } catch (err) {
+      spinner?.stop('Failed')
+      const message = err instanceof Error ? err.message : String(err)
+      if (interactive) p.log.error(message)
+      else console.error(message)
       process.exit(1)
     }
-
-    const result = await syncToDisk(rendered, cwd)
-    for (const f of result.written) console.log(`write  ${f}`)
-    for (const f of result.unchanged) console.log(`ok     ${f}`)
-  },
-})
-
-const explain = defineCommand({
-  meta: { name: 'explain', description: 'Show the source of each compilerOptions field' },
-  args: {
-    cwd: { type: 'string', description: 'Working directory', default: '.' },
-    layer: { type: 'positional', description: 'Layer name (e.g. app, test)', required: false },
-    field: { type: 'string', description: 'Show only this compilerOptions field' },
-    format: { type: 'string', description: 'Output format: text | json', default: 'text' },
-    hypothetical: {
-      type: 'boolean',
-      description: 'Show what each field would be if a source were removed',
-      default: false,
-    },
-  },
-  async run({ args }) {
-    const cwd = args.cwd
-    const input = await loadInput(cwd)
-    const explained = explainTsconfig(input)
-    const format = args.format === 'json' ? 'json' : 'text'
-    const output = renderExplain(explained, {
-      layer: args.layer,
-      field: args.field,
-      format,
-      hypothetical: args.hypothetical,
-    })
-    console.log(output)
   },
 })
 
 const main = defineCommand({
-  meta: { name: 'tsconfig', version: '0.0.0', description: 'DSL-based tsconfig generator' },
-  subCommands: { gen, sync, explain },
+  meta: { name: 'tsconfig', version: '0.0.0', description: 'tsconfig.json generator' },
+  subCommands: { gen },
 })
 
 void runMain(main)

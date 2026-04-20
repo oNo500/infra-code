@@ -1,114 +1,105 @@
-import { writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
-
 import { defineTsconfig } from './define'
-import { buildLayer } from './layer-presets'
-import { PROFILES, findProfile } from './profiles/registry'
+import {
+  base,
+  buildBundler,
+  buildTscEmit,
+  composeAtoms,
+  frameworkNestjs,
+  frameworkNextjs,
+  frameworkReact,
+  projectLib,
+  runtimeBrowser,
+  runtimeBun,
+  runtimeEdge,
+  runtimeNode,
+} from './profiles/atoms'
 import { syncToDisk } from './sync'
-import { renderConfigTemplate } from './template'
+import { splitNames } from './utils'
 
 import type { CompilerOptions, LayerInput } from './types'
 
-function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
-  return err instanceof Error && 'code' in err
+export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs'
+export type Runtime = 'node' | 'bun' | 'browser' | 'edge'
+export type ModuleMode = 'bundler' | 'nodenext'
+
+export interface ViewInput {
+  name: string
+  types?: string[]
+  include?: string[]
 }
 
-export interface InitOptions {
+export interface GenOptions {
   cwd: string
-  profile: string
-  layers: readonly string[]
+  runtimes: Runtime[]
+  module: ModuleMode
+  framework?: Framework
+  lib?: boolean
+  views?: ViewInput[]
+  references?: string[]
   paths?: Record<string, readonly string[]>
-  force?: boolean
-  /** When true, generate tsconfig.*.json but skip writing tsconfig.config.ts. */
-  once?: boolean
-  /** When true, skip writing tsconfig.*.json (write DSL only). */
-  skipJson?: boolean
 }
 
-export interface InitResult {
-  /** The DSL file written, or null if `once` mode skipped it. */
-  configFile: string | null
-  generatedFiles: string[]
+export interface GenResult {
+  written: string[]
 }
 
-/**
- * Scaffold tsconfig.config.ts + initial tsconfig.*.json files.
- * Pure function — no prompts, no console output. The CLI layer owns UX.
- */
-export async function runInit(opts: InitOptions): Promise<InitResult> {
-  const descriptor = findProfile(opts.profile)
-  if (!descriptor) {
-    const available = PROFILES.map((p) => p.name).join(', ')
-    throw new Error(`Unknown profile '${opts.profile}'. Available: ${available}`)
+export async function generate(opts: GenOptions): Promise<GenResult> {
+  const atoms: CompilerOptions[] = [base()]
+
+  for (const rt of opts.runtimes) {
+    if (rt === 'node') atoms.push(runtimeNode())
+    else if (rt === 'bun') atoms.push(runtimeBun())
+    else if (rt === 'browser') atoms.push(runtimeBrowser())
+    else if (rt === 'edge') atoms.push(runtimeEdge())
   }
 
-  const configPath = resolve(opts.cwd, 'tsconfig.config.ts')
+  atoms.push(opts.module === 'bundler' ? buildBundler() : buildTscEmit())
 
-  if (!opts.once) {
-    const templateSrc = renderConfigTemplate({
-      profileFnName: descriptor.fnName,
-      layers: opts.layers,
-      paths: opts.paths,
-    })
-    try {
-      await writeFile(configPath, templateSrc, {
-        encoding: 'utf8',
-        flag: opts.force ? 'w' : 'wx',
-      })
-    } catch (err) {
-      if (isErrnoException(err) && err.code === 'EEXIST') {
-        throw new Error('tsconfig.config.ts already exists. Use --force to overwrite.', {
-          cause: err,
-        })
-      }
-      throw err
-    }
-  }
+  if (opts.framework === 'react') atoms.push(frameworkReact())
+  else if (opts.framework === 'nextjs') atoms.push(frameworkNextjs())
+  else if (opts.framework === 'nestjs') atoms.push(frameworkNestjs())
 
-  const layersObj: Record<string, LayerInput> = {}
-  const base = opts.layers[0]
-  for (const name of opts.layers) {
-    layersObj[name] = buildLayer(name, base)
-  }
+  if (opts.lib) atoms.push(projectLib())
 
-  // Guard: skipJson + once = nothing to write.
-  if (opts.skipJson && opts.once) {
-    throw new Error(
-      'Cannot combine once (no DSL) with skipJson (no JSON) — nothing would be written.',
+  const baseOptions = composeAtoms(...atoms)
+
+  if (opts.paths) {
+    baseOptions.paths = Object.fromEntries(
+      Object.entries(opts.paths).map(([k, v]) => [k, [...v]]),
     )
   }
 
-  if (opts.skipJson) {
-    return {
-      configFile: 'tsconfig.config.ts',
-      generatedFiles: [],
+  let layers: Record<string, LayerInput> | undefined
+  if (opts.views && opts.views.length > 0) {
+    if (opts.views.some((v) => v.name === 'app')) {
+      throw new Error("View name 'app' is reserved. Choose a different name.")
+    }
+    layers = { app: {} }
+    for (const view of opts.views) {
+      layers[view.name] = {
+        extends: 'app',
+        compilerOptions: view.types ? { types: view.types } : undefined,
+        include: view.include,
+      }
     }
   }
 
-  const compilerOptions: CompilerOptions | undefined = opts.paths
-    ? { paths: Object.fromEntries(Object.entries(opts.paths).map(([k, v]) => [k, [...v]])) }
-    : undefined
+  const refs = opts.references?.map((p) => ({ path: p }))
 
   const rendered = defineTsconfig({
-    profile: descriptor.factory(),
-    compilerOptions,
-    layers: opts.layers.length > 0 ? layersObj : undefined,
+    profile: { compilerOptions: baseOptions },
+    layers,
+    references: refs,
   })
 
-  const sync = await syncToDisk(rendered, opts.cwd)
-  return {
-    configFile: opts.once ? null : 'tsconfig.config.ts',
-    generatedFiles: sync.written,
-  }
+  const result = await syncToDisk(rendered, opts.cwd)
+  return { written: result.written }
 }
 
 /** Parse a paths string like "@/*=./src/*,@ui/*=../ui/src/*" into an object. */
 export function parsePathsArg(input: string): Record<string, readonly string[]> {
   const result: Record<string, readonly string[]> = {}
-  for (const pair of input
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean)) {
+  for (const pair of splitNames(input)) {
     const eq = pair.indexOf('=')
     if (eq < 0) continue
     const key = pair.slice(0, eq).trim()

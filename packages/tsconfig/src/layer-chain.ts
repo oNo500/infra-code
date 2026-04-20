@@ -1,11 +1,10 @@
 import type { DefineTsconfigInput, LayerInput } from './types'
 
-/** Walk a layer's extends chain, detecting circular references. */
-export function buildLayerChain(
-  name: string,
-  layers: Record<string, LayerInput>,
-  seen: Set<string> = new Set(),
-): string[] {
+export function buildLayerChain(name: string, layers: Record<string, LayerInput>): string[] {
+  return walk(name, layers, new Set())
+}
+
+function walk(name: string, layers: Record<string, LayerInput>, seen: Set<string>): string[] {
   if (seen.has(name)) {
     throw new Error(`Circular layer extends: ${[...seen, name].join(' → ')}`)
   }
@@ -13,10 +12,9 @@ export function buildLayerChain(
   const layer = layers[name]
   if (!layer) throw new Error(`Layer '${name}' not found`)
   if (!layer.extends) return [name]
-  return [...buildLayerChain(layer.extends, layers, seen), name]
+  return [...walk(layer.extends, layers, seen), name]
 }
 
-/** Walk the chain from tip back to root, returning the first defined include list. */
 export function pickInclude(
   input: DefineTsconfigInput,
   chain: string[],
@@ -29,7 +27,6 @@ export function pickInclude(
   return input.include ?? input.profile?.include
 }
 
-/** Walk the chain from tip back to root, returning the first defined exclude list. */
 export function pickExclude(
   input: DefineTsconfigInput,
   chain: string[],

@@ -30,12 +30,17 @@
     "test": "bun test",
     "prepublishOnly": "bun run build"
   },
+  "peerDependencies": {
+    "typescript": ">=5.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@clack/prompts": "^1.2.0",
-    "c12": "^3.3.4",
-    "citty": "^0.2.2",
-    "defu": "^6.1.7",
-    "jsonc-parser": "^3.3.1"
+    "citty": "^0.2.2"
   },
   "devDependencies": {
     "@types/bun": "latest",
