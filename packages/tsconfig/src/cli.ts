@@ -3,8 +3,10 @@ import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
 import { applyWrites, generate, parsePathsArg, planGenerate } from './generate'
+import { mergeWithChanges } from './write'
 import { splitNames } from './utils'
 
+import type { FieldChange } from './write'
 import type { Framework, GenOptions, ModuleMode, Runtime, ViewSpec } from './generate'
 
 function parseViewSpec(spec: string): ViewSpec {
@@ -19,6 +21,13 @@ function parseViewSpec(spec: string): ViewSpec {
 function orExit<T>(v: T | symbol): T {
   if (p.isCancel(v)) { p.cancel('Cancelled'); process.exit(0) }
   return v as T
+}
+
+function formatChange(c: FieldChange): string {
+  const val = (v: unknown) => JSON.stringify(v)
+  if (c.kind === 'added') return `+ ${c.key}: ${val(c.newValue)}`
+  if (c.kind === 'removed') return `- ${c.key}: ${val(c.oldValue)}`
+  return `~ ${c.key}: ${val(c.oldValue)} → ${val(c.newValue)}`
 }
 
 function buildEquivalentCommand(opts: GenOptions): string {
@@ -179,6 +188,8 @@ const main = defineCommand({
         const plans = await planGenerate(opts)
         const skip = new Set<string>()
 
+        const merges = new Map<string, string>()
+
         for (const plan of plans) {
           if (plan.kind === 'unchanged') {
             p.log.info(`unchanged  ${plan.filename}`)
@@ -188,12 +199,31 @@ const main = defineCommand({
             p.log.info(`new  ${plan.filename}`)
             continue
           }
-          p.log.message(`\n${plan.diff}`)
-          const confirm = orExit(await p.confirm({ message: `Overwrite ${plan.filename}?` }))
-          if (!confirm) skip.add(plan.filename)
+
+          const options = plan.changes.map((c) => ({
+            value: c.key,
+            label: formatChange(c),
+            hint: c.key,
+          }))
+          const defaultSelected = plan.changes
+            .filter((c) => c.kind !== 'added')
+            .map((c) => c.key)
+
+          const selected = orExit(await p.multiselect<string>({
+            message: `${plan.filename} — select changes to apply:`,
+            options,
+            initialValues: defaultSelected,
+            required: false,
+          }))
+
+          if (selected.length === 0) {
+            skip.add(plan.filename)
+          } else {
+            merges.set(plan.filename, mergeWithChanges(plan, new Set(selected)))
+          }
         }
 
-        const result = await applyWrites(plans, skip)
+        const result = await applyWrites(plans, skip, merges)
         p.log.info(`Equivalent command:\n  ${buildEquivalentCommand(opts)}`)
         const summary = [
           result.written.length > 0 ? `written: ${result.written.join(', ')}` : '',
