@@ -7,11 +7,10 @@
 - Array merge control: shorthand array, `'none'`, `ArrayControl { merge: 'append'|'replace'|'none', value? }`
 - Atoms: `base`, `runtimeNode/Bun/Browser/Edge`, `buildBundler/TscEmit`, `projectLib`, `frameworkReact/Nextjs/Nestjs`
 - CLI:
-  - `tsconfig gen` — interactive (6-question flow) or flag-based
+  - `tsconfig` — interactive or flag-based
   - Flags: `--runtime`, `--module`, `--framework`, `--lib`, `--view`, `--references`, `--paths`
   - Prints equivalent command after interactive session
 - Views: extra tsconfig files extending the base (`--view name:types:include`)
-- Self-hosted: the package generates its own `tsconfig.json`
 
 ## Next (0.1.0, minimal-viable package)
 

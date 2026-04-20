@@ -13,19 +13,19 @@ This package generates `tsconfig.json` from composable atoms with:
 
 - **Smart merge** for array fields (`types`, `lib`, `plugins`) — append + dedupe by default, override when needed
 - **Atom-based composition** — pick runtime, module system, framework, and extra views
-- **No DSL file to maintain** — generate directly from CLI flags or interactive prompts
+- **No config file to maintain** — generate directly from CLI flags or interactive prompts
 
 ## Quick start
 
 ```bash
-# Interactive — answers 6 questions, then writes tsconfig.json
-tsconfig gen
+# Interactive — answers questions, then writes tsconfig.json
+tsconfig
 
 # Non-interactive (CI / scripts)
-tsconfig gen --runtime node --module bundler --framework react
-tsconfig gen --runtime node,browser --module bundler --framework nextjs \
-             --view test:vitest/globals:**/*.test.ts \
-             --paths '@/*=./src/*'
+tsconfig --runtime node --module bundler --framework react
+tsconfig --runtime node,browser --module bundler --framework nextjs \
+         --view test:vitest/globals:**/*.test.ts \
+         --paths '@/*=./src/*'
 ```
 
 ## Atoms
@@ -37,11 +37,11 @@ Each atom is a function returning a partial `CompilerOptions`. Atoms are compose
 | `base()` | Strict mode, incremental, all quality flags |
 | `runtimeNode()` | `types: ['node']`, `lib: ['esnext']` |
 | `runtimeBun()` | `types: ['bun']`, `lib: ['esnext']` |
-| `runtimeBrowser()` | `lib: ['esnext', 'DOM', 'DOM.Iterable']` |
-| `runtimeEdge()` | `lib: ['esnext']` (no DOM, no node) |
+| `runtimeBrowser()` | `types: []`, `lib: ['esnext', 'DOM', 'DOM.Iterable']` |
+| `runtimeEdge()` | `types: []`, `lib: ['esnext']` |
 | `buildBundler()` | `module: preserve`, `moduleResolution: bundler`, `noEmit: true` |
-| `buildTscEmit()` | `module: nodenext`, `moduleResolution: nodenext`, `outDir: dist` |
-| `projectLib()` | `declaration: true`, `isolatedDeclarations: true` |
+| `buildTscEmit()` | `module: nodenext`, `moduleResolution: nodenext`, `noEmit: false`, `outDir: dist` |
+| `projectLib()` | `declaration: true`, `isolatedDeclarations: true`, `allowJs: false`, `noPropertyAccessFromIndexSignature: true` |
 | `frameworkReact()` | `jsx: react-jsx` |
 | `frameworkNextjs()` | `jsx: react-jsx`, `module: preserve`, `moduleResolution: bundler` |
 | `frameworkNestjs()` | `experimentalDecorators`, `emitDecoratorMetadata`, relax `strictPropertyInitialization` |
@@ -62,19 +62,19 @@ const compilerOptions = composeAtoms(base(), runtimeNode(), buildBundler())
 | Object (`paths`) | Deep merge | — |
 | Array (`types`, `lib`, `plugins`) | Append + dedupe | Use `ArrayControl` |
 
-When the default is wrong, use an `ArrayControl` object:
+When the default is wrong, use an `ArrayControl` object in `compilerOptions`:
 
 ```ts
-compilerOptions: {
-  // replace entirely — ignore profile's types
-  types: { merge: 'replace', value: ['node'] },
+const opts = composeAtoms(base(), runtimeNode(), buildBundler())
 
-  // clear to empty
-  lib: 'none',
+// replace entirely — clear any accumulated types and set only ['node']
+opts.types = { merge: 'replace', value: ['node'] }
 
-  // explicit append (same as writing the array directly)
-  plugins: { merge: 'append', value: [{ name: 'my-plugin' }] },
-}
+// clear to empty
+opts.lib = 'none'
+
+// explicit append (same as writing the array directly)
+opts.plugins = { merge: 'append', value: [{ name: 'my-plugin' }] }
 ```
 
 `ArrayField<T>` accepts three forms:
@@ -87,11 +87,11 @@ compilerOptions: {
 
 ## CLI
 
-### `tsconfig gen`
+### `tsconfig`
 
 Generates `tsconfig.json` (plus one file per view). Two modes:
 
-**Interactive** (TTY, no flags) — asks 6 questions:
+**Interactive** (TTY, no flags) — asks questions:
 
 1. Framework? `none / react / nextjs / nestjs`
 2. Runtime(s)? multi-select `node / bun / browser / edge`
@@ -106,27 +106,27 @@ After interactive mode, prints the equivalent command so you can repeat it witho
 
 ```bash
 # Node + bundler (Vite, tsdown)
-tsconfig gen --runtime node --module bundler
+tsconfig --runtime node --module bundler
 
 # Bun app
-tsconfig gen --runtime bun --module nodenext
+tsconfig --runtime bun --module nodenext
 
 # Next.js (universal runtime)
-tsconfig gen --runtime node,browser --module bundler --framework nextjs
+tsconfig --runtime node,browser --module bundler --framework nextjs
 
 # NestJS
-tsconfig gen --runtime node --module nodenext --framework nestjs
+tsconfig --runtime node --module nodenext --framework nestjs
 
 # React library
-tsconfig gen --runtime browser --module bundler --framework react --lib
+tsconfig --runtime browser --module bundler --framework react --lib
 
 # With extra tsconfig views (e.g. for vitest)
-tsconfig gen --runtime node --module bundler \
+tsconfig --runtime node --module bundler \
   --view test:vitest/globals:**/*.test.ts \
   --view build::src/**
 
 # With path aliases and cross-package references
-tsconfig gen --runtime node --module bundler \
+tsconfig --runtime node --module bundler \
   --paths '@/*=./src/*' \
   --references ../shared,../ui
 ```
@@ -163,7 +163,7 @@ Format: `name:types:include` where `types` and `include` are comma-separated. Ei
 
 ```bash
 bun add -D @infra-x/tsconfig
-tsconfig gen              # interactive
+tsconfig              # interactive
 ```
 
 Commit the generated `tsconfig.json`. The file carries a `// AUTO-GENERATED` header; don't hand-edit it.
@@ -173,7 +173,7 @@ Commit the generated `tsconfig.json`. The file carries a `// AUTO-GENERATED` hea
 Re-generate to verify no drift:
 
 ```bash
-tsconfig gen --runtime node --module bundler --framework nextjs
+tsconfig --runtime node --module bundler --framework nextjs
 git diff --exit-code tsconfig.json
 ```
 
@@ -181,7 +181,7 @@ git diff --exit-code tsconfig.json
 
 ```bash
 bun update @infra-x/tsconfig
-tsconfig gen --runtime <same-as-before> --module <same-as-before>
+tsconfig --runtime <same-as-before> --module <same-as-before>
 git diff tsconfig.json   # review what changed
 ```
 
@@ -189,9 +189,7 @@ git diff tsconfig.json   # review what changed
 
 - Atoms: `base`, `runtimeNode/Bun/Browser/Edge`, `buildBundler/TscEmit`, `projectLib`, `frameworkReact/Nextjs/Nestjs`
 - Array merge control: shorthand array, `'none'`, `ArrayControl { merge, value }`
-- CLI: `gen` (interactive + flags), views, references, paths
-- Interactive + non-interactive (auto-detects TTY)
-- Self-hosted — this package generates its own `tsconfig.json`
+- CLI: interactive + flags, views, references, paths
 
 ## Roadmap
 

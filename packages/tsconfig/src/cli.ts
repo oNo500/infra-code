@@ -22,7 +22,7 @@ function orExit<T>(v: T | symbol): T {
 }
 
 function buildEquivalentCommand(opts: GenOptions): string {
-  const parts = ['tsconfig gen']
+  const parts = ['tsconfig']
   parts.push(`--runtime ${opts.runtimes.join(',')}`)
   parts.push(`--module ${opts.module}`)
   if (opts.framework && opts.framework !== 'none') parts.push(`--framework ${opts.framework}`)
@@ -42,11 +42,8 @@ function buildEquivalentCommand(opts: GenOptions): string {
   return parts.join(' ')
 }
 
-const gen = defineCommand({
-  meta: {
-    name: 'gen',
-    description: 'Generate tsconfig.json files interactively or from flags.',
-  },
+const main = defineCommand({
+  meta: { name: 'tsconfig', version: '0.0.0', description: 'Generate tsconfig.json files interactively or from flags.' },
   args: {
     cwd: { type: 'string', description: 'Working directory', default: '.' },
     runtime: { type: 'string', description: 'Comma-separated runtimes: node,bun,browser,edge' },
@@ -197,11 +194,6 @@ const gen = defineCommand({
       process.exit(1)
     }
   },
-})
-
-const main = defineCommand({
-  meta: { name: 'tsconfig', version: '0.0.0', description: 'tsconfig.json generator' },
-  subCommands: { gen },
 })
 
 void runMain(main)
