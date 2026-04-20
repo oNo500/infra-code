@@ -7,12 +7,7 @@ export interface TemplateInput {
   paths?: Record<string, readonly string[]>
 }
 
-/**
- * Render a tsconfig.config.ts source file based on scaffolding choices.
- * Exports a plain DefineTsconfigInput (not a pre-resolved RenderedConfig) so
- * that both `tsconfig gen` (which renders) and `tsconfig explain` (which needs
- * the unresolved source) can consume it.
- */
+/** Render a tsconfig.config.ts source file based on scaffolding choices. */
 export function renderConfigTemplate(input: TemplateInput): string {
   const { profileFnName, layers, paths } = input
 
