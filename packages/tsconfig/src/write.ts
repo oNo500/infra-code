@@ -74,9 +74,9 @@ export function autoAccepted(changes: FieldChange[]): Set<string> {
   return new Set(changes.filter((c) => !isPreserved(c)).map((c) => c.key))
 }
 
-// Used by interactive CLI: added fields default to unselected (user decides).
+// Used by interactive CLI: preserve project-owned fields; all compilerOptions changes default to selected.
 export function defaultSelected(changes: FieldChange[]): string[] {
-  return changes.filter((c) => !isPreserved(c) && c.kind !== 'added').map((c) => c.key)
+  return changes.filter((c) => !isPreserved(c)).map((c) => c.key)
 }
 
 export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set(), merges: Map<string, string> = new Map()): Promise<WriteResult> {
