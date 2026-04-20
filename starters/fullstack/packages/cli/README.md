@@ -1,41 +1,52 @@
-# base-bun-cli
+# @workspace/cli
 
-Starter template for a command-line tool built with Bun and published to npm as a Node-compatible ESM package.
+Internal CLI tools for the fullstack monorepo. Run via `pnpm theme` from the repo root.
 
 ## Stack
 
-- Runtime (dev): Bun
-- Runtime (publish): Node 20+ ESM
+- Runtime: Bun
 - Args: [citty](https://github.com/unjs/citty)
 - Bundler: [tsdown](https://tsdown.dev)
-- Lint: `oxlint` + `eslint` via `@infra-x/eslint-config`
+- Lint: `oxlint`
 - Tests: `bun test`
 
-## Scripts
+## Commands
+
+### `theme`
+
+Switches the shadcn colour theme across the entire monorepo.
 
 ```bash
-bun install
-bun run dev --name Bun      # run from source
-bun run build               # bundle to dist/ for publishing
-bun run typecheck
-bun run lint
-bun run test
+pnpm theme                       # interactive picker
+pnpm theme --preset <code>       # apply a known preset directly, e.g. b0
 ```
+
+**What it does:**
+
+1. Prompts for style, theme, baseColor, radius, font, iconLibrary, menuColor, menuAccent, chartColor
+2. Encodes the selection into a shadcn preset code
+3. Syncs `packages/ui/components.json`, `apps/web/components.json`, `apps/api-web/components.json`
+4. Runs `shadcn add --overwrite` from `packages/ui` to regenerate `shadcn-theme.css` and all components
+
+**Preset codes** are base62-encoded strings (e.g. `b0` = default neutral/nova). Save them to reapply a theme later.
 
 ## Adding a command
 
-1. Add the pure function under `src/commands/<name>.ts`
-2. Add a test under `tests/<name>.test.ts`
-3. Wire it into `src/index.ts`
+1. Add `src/commands/<name>.ts` and export a `defineCommand(...)` object
+2. Register it in `src/index.ts` under `subCommands`
 
-## Publishing
+## Known gotchas
 
-```bash
-npm publish --access public
-```
+### shadcn alias resolution in monorepos
 
-`prepublishOnly` builds automatically. The resulting package runs on any Node 20+ host — no Bun required by consumers.
+shadcn resolves write paths from the `aliases` in `components.json` using the executing directory's `tsconfig` paths. If a scoped alias like `@workspace/ui/components` has no matching entry in `tsconfig.json`, shadcn writes it as a literal directory name (e.g. `@workspace/ui/components/button.tsx`).
 
-## Constraints
+**Fix already applied:** `packages/ui/components.json` uses relative aliases (`src/components`, `src/lib`, etc.) so shadcn always writes to the correct location when executed from `packages/ui`.
 
-Do **not** import Bun-only APIs (`Bun.file`, `Bun.serve`, `Bun.$`, etc.). Use `node:*` modules so the published artifact runs under plain Node.
+### Do not run `shadcn init` for theme switching
+
+`shadcn init` modifies `layout.tsx`, `package.json`, and other app files as side effects — even with `--no-reinstall`. Use `shadcn add --overwrite` instead, which only touches component files and `shadcn-theme.css`.
+
+### Always execute from `packages/ui`
+
+Running `shadcn add` from an app directory (`apps/api-web`, `apps/web`) causes components to be written into the app's local `src/components/` instead of the shared `packages/ui/src/components/`. The theme command handles this automatically.
