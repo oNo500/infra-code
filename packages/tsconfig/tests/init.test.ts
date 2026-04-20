@@ -101,13 +101,14 @@ describe('generate', () => {
     expect(opts['moduleResolution']).toBe('nodenext')
   })
 
-  it('enables declaration for lib mode', async () => {
+  it('enables isolatedDeclarations for lib mode', async () => {
     const cwd = tmp()
     await generate({ ...base, cwd, lib: true })
     const json = readJson(cwd, 'tsconfig.json')
     const opts = json['compilerOptions'] as Record<string, unknown>
-    expect(opts['declaration']).toBe(true)
     expect(opts['isolatedDeclarations']).toBe(true)
+    // declaration is owned by buildTscEmit, not projectLib — bundler handles .d.ts via its own dts option
+    expect(opts['declaration']).toBeUndefined()
   })
 
   it('writes one extra file per view', async () => {
