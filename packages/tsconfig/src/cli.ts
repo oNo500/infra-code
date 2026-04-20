@@ -206,7 +206,13 @@ const main = defineCommand({
             hint: c.key,
           }))
           const defaultSelected = plan.changes
-            .filter((c) => c.kind !== 'added')
+            .filter((c) => {
+              // always preserve project-owned structural fields (any kind of change)
+              if (['include', 'exclude', 'references'].includes(c.key)) return false
+              // only preserve existing paths aliases (not new ones added by the tool)
+              if (c.key === 'compilerOptions.paths' && c.kind !== 'added') return false
+              return c.kind !== 'added'
+            })
             .map((c) => c.key)
 
           const selected = orExit(await p.multiselect<string>({
