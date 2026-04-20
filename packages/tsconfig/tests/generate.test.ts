@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { generate, parsePathsArg } from '../src/generate'
+
 import type { GenOptions } from '../src/generate'
 
 function tmp() {

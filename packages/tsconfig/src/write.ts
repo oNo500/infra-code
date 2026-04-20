@@ -19,7 +19,14 @@ export type FieldChange =
 
 export type FilePlan =
   | { kind: 'new'; filename: string; absPath: string; content: string }
-  | { kind: 'changed'; filename: string; absPath: string; current: Record<string, unknown>; generated: Record<string, unknown>; changes: FieldChange[] }
+  | {
+      kind: 'changed'
+      filename: string
+      absPath: string
+      current: Record<string, unknown>
+      generated: Record<string, unknown>
+      changes: FieldChange[]
+    }
   | { kind: 'unchanged'; filename: string }
 
 export async function planWrites(config: RenderedConfig, cwd: string): Promise<FilePlan[]> {
@@ -28,21 +35,33 @@ export async function planWrites(config: RenderedConfig, cwd: string): Promise<F
       const absPath = resolve(cwd, file.filename)
       const actual = await readIfExists(absPath)
 
-      if (actual === null) return { kind: 'new', filename: file.filename, absPath, content: fileToString(file) }
+      if (actual === null)
+        return { kind: 'new', filename: file.filename, absPath, content: fileToString(file) }
 
       const currentObj = parseJson(actual)
-      if (currentObj === null) return { kind: 'new', filename: file.filename, absPath, content: fileToString(file) }
+      if (currentObj === null)
+        return { kind: 'new', filename: file.filename, absPath, content: fileToString(file) }
 
       const generatedObj = file.content as unknown as Record<string, unknown>
       const changes = diffObjects(currentObj, generatedObj)
       if (changes.length === 0) return { kind: 'unchanged', filename: file.filename }
 
-      return { kind: 'changed', filename: file.filename, absPath, current: currentObj, generated: generatedObj, changes }
+      return {
+        kind: 'changed',
+        filename: file.filename,
+        absPath,
+        current: currentObj,
+        generated: generatedObj,
+        changes,
+      }
     }),
   )
 }
 
-export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, accepted: Set<string>): string {
+export function mergeWithChanges(
+  plan: Extract<FilePlan, { kind: 'changed' }>,
+  accepted: Set<string>,
+): string {
   const result = structuredClone(plan.current)
   for (const change of plan.changes) {
     if (!accepted.has(change.key)) continue
@@ -63,7 +82,12 @@ export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, a
 }
 
 // Fields owned by the project — never auto-overwrite. User edits manually or selects in interactive mode.
-export const PRESERVE_KEYS: readonly string[] = ['include', 'exclude', 'references', 'compilerOptions.paths']
+export const PRESERVE_KEYS: readonly string[] = [
+  'include',
+  'exclude',
+  'references',
+  'compilerOptions.paths',
+]
 
 function isPreserved(c: FieldChange): boolean {
   return PRESERVE_KEYS.includes(c.key)
@@ -79,7 +103,11 @@ export function defaultSelected(changes: FieldChange[]): string[] {
   return changes.filter((c) => !isPreserved(c)).map((c) => c.key)
 }
 
-export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set(), merges: Map<string, string> = new Map()): Promise<WriteResult> {
+export async function applyWrites(
+  plans: FilePlan[],
+  skip: Set<string> = new Set(),
+  merges: Map<string, string> = new Map(),
+): Promise<WriteResult> {
   const result: WriteResult = { written: [], unchanged: [], skipped: [] }
   await Promise.all(
     plans.map(async (plan) => {
@@ -88,9 +116,10 @@ export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set
       } else if (skip.has(plan.filename)) {
         result.skipped.push(plan.filename)
       } else {
-        const content = plan.kind === 'changed'
-          ? (merges.get(plan.filename) ?? JSON.stringify(plan.generated, null, 2) + '\n')
-          : plan.content
+        const content =
+          plan.kind === 'changed'
+            ? (merges.get(plan.filename) ?? JSON.stringify(plan.generated, null, 2) + '\n')
+            : plan.content
         await writeFile(plan.absPath, content, 'utf8')
         result.written.push(plan.filename)
       }
@@ -110,7 +139,11 @@ export async function writeFiles(config: RenderedConfig, cwd: string): Promise<W
   return applyWrites(plans, new Set(), merges)
 }
 
-function diffObjects(current: Record<string, unknown>, generated: Record<string, unknown>, prefix = ''): FieldChange[] {
+function diffObjects(
+  current: Record<string, unknown>,
+  generated: Record<string, unknown>,
+  prefix = '',
+): FieldChange[] {
   const changes: FieldChange[] = []
   const allKeys = new Set([...Object.keys(current), ...Object.keys(generated)])
   for (const key of allKeys) {
@@ -124,7 +157,12 @@ function diffObjects(current: Record<string, unknown>, generated: Record<string,
     } else if (isPlainObject(current[key]) && isPlainObject(generated[key])) {
       changes.push(...diffObjects(current[key], generated[key], path))
     } else if (JSON.stringify(current[key]) !== JSON.stringify(generated[key])) {
-      changes.push({ kind: 'modified', key: path, oldValue: current[key], newValue: generated[key] })
+      changes.push({
+        kind: 'modified',
+        key: path,
+        oldValue: current[key],
+        newValue: generated[key],
+      })
     }
   }
   return changes
@@ -135,7 +173,7 @@ function parseJson(text: string): Record<string, unknown> | null {
     const stripped = text.replace(/^\s*\/\/.*$/gm, '').trim()
     const parsed = JSON.parse(stripped) as unknown
     return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
-      ? parsed as Record<string, unknown>
+      ? (parsed as Record<string, unknown>)
       : null
   } catch {
     return null

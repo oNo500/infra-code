@@ -3,11 +3,24 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { base, buildBundler, composeAtoms, frameworkNextjs, runtimeBrowser, runtimeNode } from '../src/atoms'
+import {
+  base,
+  buildBundler,
+  composeAtoms,
+  frameworkNextjs,
+  runtimeBrowser,
+  runtimeNode,
+} from '../src/atoms'
 import { renderConfig } from '../src/render'
 import { writeFiles } from '../src/write'
 
-const nextjsOptions = composeAtoms(base(), runtimeNode(), runtimeBrowser(), buildBundler(), frameworkNextjs())
+const nextjsOptions = composeAtoms(
+  base(),
+  runtimeNode(),
+  runtimeBrowser(),
+  buildBundler(),
+  frameworkNextjs(),
+)
 
 let tmp: string
 
@@ -33,7 +46,11 @@ describe('writeFiles', () => {
     // Simulate a file with different field ordering (e.g. written by another tool)
     const { writeFileSync, readFileSync } = await import('node:fs')
     const filePath = join(tmp, 'tsconfig.json')
-    const existing = JSON.parse(readFileSync(filePath, 'utf8').replace(/^\s*\/\/.*$/gm, '').trim()) as Record<string, unknown>
+    const existing = JSON.parse(
+      readFileSync(filePath, 'utf8')
+        .replace(/^\s*\/\/.*$/gm, '')
+        .trim(),
+    ) as Record<string, unknown>
     const reordered = JSON.stringify({ ...existing }, null, 2) + '\n'
     writeFileSync(filePath, reordered)
 

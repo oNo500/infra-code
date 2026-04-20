@@ -16,7 +16,12 @@ interface TypescriptModule {
 }
 
 function isTypescriptModule(v: unknown): v is TypescriptModule {
-  return typeof v === 'object' && v !== null && 'optionDeclarations' in v && Array.isArray((v as TypescriptModule).optionDeclarations)
+  return (
+    typeof v === 'object' &&
+    v !== null &&
+    'optionDeclarations' in v &&
+    Array.isArray((v as TypescriptModule).optionDeclarations)
+  )
 }
 
 let declarations: CommandLineOption[] | null | undefined = undefined
@@ -64,9 +69,7 @@ function editDistance(a: string, b: string): number {
   return dp[m]![n]!
 }
 
-export function validateCompilerOptions(
-  opts: Record<string, unknown>,
-): ValidationWarning[] {
+export function validateCompilerOptions(opts: Record<string, unknown>): ValidationWarning[] {
   const decls = loadDeclarations()
   if (!decls) return []
 

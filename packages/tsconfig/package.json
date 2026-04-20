@@ -38,9 +38,9 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "bumpp": "^10.4.1",
     "@types/diff": "^8.0.0",
     "@types/node": "^25.0.0",
+    "bumpp": "^10.4.1",
     "tsdown": "^0.21.0",
     "typescript": "^6.0.0"
   },
