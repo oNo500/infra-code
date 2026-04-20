@@ -6,8 +6,8 @@ import {
   frameworkNestjs,
   frameworkNextjs,
   frameworkReact,
-  frameworkVitest,
   projectLib,
+  testingVitest,
   runtimeBrowser,
   runtimeBun,
   runtimeEdge,
@@ -20,7 +20,8 @@ import { splitNames } from './utils'
 import type { CompilerOptions, RenderInput, ViewInput as RenderViewInput } from './types'
 import type { FilePlan, WriteResult } from './write'
 
-export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs' | 'vitest'
+export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs'
+export type Testing = 'vitest'
 export type Runtime = 'node' | 'bun' | 'browser' | 'edge'
 export type ModuleMode = 'bundler' | 'nodenext'
 
@@ -35,6 +36,7 @@ export interface GenOptions {
   runtimes: Runtime[]
   module: ModuleMode
   framework?: Framework
+  testing?: Testing
   lib?: boolean
   views?: ViewSpec[]
   references?: string[]
@@ -67,7 +69,7 @@ function buildRenderInput(opts: GenOptions): RenderInput {
   if (opts.framework === 'react') atoms.push(frameworkReact())
   else if (opts.framework === 'nextjs') atoms.push(frameworkNextjs())
   else if (opts.framework === 'nestjs') atoms.push(frameworkNestjs())
-  else if (opts.framework === 'vitest') atoms.push(frameworkVitest())
+  if (opts.testing === 'vitest') atoms.push(testingVitest())
 
   if (opts.lib) atoms.push(projectLib())
 

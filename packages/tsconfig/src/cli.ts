@@ -7,7 +7,7 @@ import { defaultSelected, mergeWithChanges } from './write'
 import { splitNames } from './utils'
 
 import type { FieldChange } from './write'
-import type { Framework, GenOptions, ModuleMode, Runtime, ViewSpec } from './generate'
+import type { Framework, GenOptions, ModuleMode, Runtime, Testing, ViewSpec } from './generate'
 
 function parseViewSpec(spec: string): ViewSpec {
   const [name = '', typesStr = '', includeStr = ''] = spec.split(':')
@@ -35,6 +35,7 @@ function buildEquivalentCommand(opts: GenOptions): string {
   parts.push(`--runtime ${opts.runtimes.join(',')}`)
   parts.push(`--module ${opts.module}`)
   if (opts.framework && opts.framework !== 'none') parts.push(`--framework ${opts.framework}`)
+  if (opts.testing) parts.push(`--testing ${opts.testing}`)
   if (opts.lib) parts.push('--lib')
   if (opts.views) {
     for (const v of opts.views) {
@@ -58,6 +59,7 @@ const main = defineCommand({
     runtime: { type: 'string', description: 'Comma-separated runtimes: node,bun,browser,edge' },
     module: { type: 'string', description: 'Module mode: bundler or nodenext' },
     framework: { type: 'string', description: 'Framework: none, react, nextjs, nestjs' },
+    testing: { type: 'string', description: 'Testing: vitest' },
     lib: { type: 'boolean', description: 'Enable library mode (declaration output)' },
     view: { type: 'string', description: 'View spec: name:types:include (repeat flag for multiple views)', multiple: true },
     references: { type: 'string', description: 'Cross-package references: ../shared,../ui' },
@@ -81,7 +83,6 @@ const main = defineCommand({
           { value: 'react', label: 'React', hint: 'Vite, CRA, etc.' },
           { value: 'nextjs', label: 'Next.js', hint: 'App Router, RSC' },
           { value: 'nestjs', label: 'NestJS', hint: 'decorators + DI' },
-          { value: 'vitest', label: 'Vitest', hint: 'vitest/globals types' },
         ],
       }))
 
@@ -115,9 +116,14 @@ const main = defineCommand({
         initialValue: defaultModule,
       }))
 
-      const libMode = orExit(await p.confirm({
-        message: 'Library mode? (enables declaration + isolatedDeclarations)',
-        initialValue: false,
+      type Extra = 'lib' | Testing
+      const extras = orExit(await p.multiselect<Extra>({
+        message: 'Extras?',
+        options: [
+          { value: 'lib', label: 'Library mode', hint: 'declaration + isolatedDeclarations' },
+          { value: 'vitest', label: 'Vitest', hint: 'vitest/globals types' },
+        ],
+        required: false,
       }))
 
       const addViews = orExit(await p.confirm({
@@ -150,7 +156,8 @@ const main = defineCommand({
         framework: framework === 'none' ? undefined : framework,
         runtimes,
         module: moduleMode,
-        lib: libMode,
+        lib: extras.includes('lib'),
+        testing: extras.includes('vitest') ? 'vitest' : undefined,
         views: views.length > 0 ? views : undefined,
         paths,
       }
@@ -175,6 +182,7 @@ const main = defineCommand({
       opts = {
         cwd,
         framework: args.framework && args.framework !== 'none' ? (args.framework as Framework) : undefined,
+        testing: args.testing ? (args.testing as Testing) : undefined,
         runtimes,
         module: moduleMode,
         lib: args.lib,

@@ -80,7 +80,7 @@ export const frameworkNestjs = (): CompilerOptions => ({
   strictPropertyInitialization: false,
 })
 
-export const frameworkVitest = (): CompilerOptions => ({
+export const testingVitest = (): CompilerOptions => ({
   types: ['vitest/globals'],
 })
 
