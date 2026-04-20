@@ -16,7 +16,6 @@ export interface ExplainedConfig {
   layers: ExplainedLayer[]
 }
 
-/** Like defineTsconfig, but returns per-field source metadata. */
 export function explainTsconfig(input: DefineTsconfigInput): ExplainedConfig {
   const layers = input.layers ?? {}
   const layerNames = Object.keys(layers)
@@ -64,7 +63,7 @@ function explainLayer(
   }
   prov = applyProvenance(prov, input.compilerOptions, { kind: 'root', name: 'root' })
 
-  const chain = buildLayerChain(name, layers, new Set())
+  const chain = buildLayerChain(name, layers)
   for (const stepName of chain) {
     prov = applyProvenance(prov, layers[stepName]!.compilerOptions, {
       kind: 'layer',
@@ -88,10 +87,6 @@ export interface RenderExplainOptions {
   format?: 'text' | 'json'
 }
 
-/**
- * Render an ExplainedConfig into a human-readable (or JSON) string.
- * This is the dump used by `tsconfig explain` CLI.
- */
 export function renderExplain(explained: ExplainedConfig, opts: RenderExplainOptions = {}): string {
   const format = opts.format ?? 'text'
   const layers = opts.layer

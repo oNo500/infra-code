@@ -47,7 +47,6 @@ export function defineTsconfig(input: DefineTsconfigInput): RenderedConfig {
   return { files }
 }
 
-/** Stringify a rendered file as JSON with the generated header. */
 export function renderToString(file: RenderedFile): string {
   return `${GENERATED_HEADER}\n${JSON.stringify(file.content, null, 2)}\n`
 }

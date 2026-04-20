@@ -32,6 +32,10 @@ function hasScaffoldArgs(args: { profile?: string; layers?: string; paths?: stri
   return Boolean(args.profile || args.layers || args.paths)
 }
 
+function splitNames(s: string): string[] {
+  return s.split(',').map((x) => x.trim()).filter(Boolean)
+}
+
 const gen = defineCommand({
   meta: {
     name: 'gen',
@@ -155,10 +159,7 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
         p.cancel('Cancelled')
         process.exit(0)
       }
-      layerNames = input
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
+      layerNames = splitNames(input)
     } else {
       layerNames = chosenList
     }
@@ -219,12 +220,7 @@ async function scaffold(opts: ScaffoldOpts): Promise<void> {
       )
       process.exit(1)
     }
-    layerNames = args.layers
-      ? args.layers
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : []
+    layerNames = args.layers ? splitNames(args.layers) : []
   }
 
   const spinner = interactive ? p.spinner() : null

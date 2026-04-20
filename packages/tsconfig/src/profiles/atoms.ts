@@ -1,3 +1,5 @@
+import { dedupe } from '../utils'
+
 import type { CompilerOptions } from '../types'
 
 /**
@@ -100,14 +102,3 @@ export function composeAtoms(...atoms: CompilerOptions[]): CompilerOptions {
   return result
 }
 
-function dedupe<T>(arr: T[]): T[] {
-  const seen = new Set<string>()
-  const out: T[] = []
-  for (const item of arr) {
-    const key = typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item)
-    if (seen.has(key)) continue
-    seen.add(key)
-    out.push(item)
-  }
-  return out
-}

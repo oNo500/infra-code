@@ -6,12 +6,9 @@ import { buildLayer } from './layer-presets'
 import { PROFILES, findProfile } from './profiles/registry'
 import { syncToDisk } from './sync'
 import { renderConfigTemplate } from './template'
+import { isErrnoException } from './utils'
 
 import type { CompilerOptions, LayerInput } from './types'
-
-function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
-  return err instanceof Error && 'code' in err
-}
 
 export interface InitOptions {
   cwd: string

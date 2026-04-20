@@ -1,3 +1,5 @@
+import { dedupe, isPlainObject } from './utils'
+
 import type { ArrayField, ArrayVerb, CompilerOptions } from './types'
 
 /**
@@ -80,22 +82,6 @@ function isArrayVerb(v: unknown): v is ArrayVerb<unknown> {
   const keys = Object.keys(v)
   if (keys.length === 0) return false
   return keys.every((k) => k === '$set' || k === '$remove' || k === '$prepend' || k === '$append')
-}
-
-function isPlainObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v) && v.constructor === Object
-}
-
-function dedupe<T>(arr: readonly T[]): T[] {
-  const seen = new Set<string>()
-  const out: T[] = []
-  for (const item of arr) {
-    const key = typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item)
-    if (seen.has(key)) continue
-    seen.add(key)
-    out.push(item)
-  }
-  return out
 }
 
 export type { ArrayField }

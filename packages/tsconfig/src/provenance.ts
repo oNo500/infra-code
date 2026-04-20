@@ -1,3 +1,5 @@
+import { isPlainObject, itemKey } from './utils'
+
 import type { CompilerOptions } from './types'
 
 /**
@@ -121,14 +123,6 @@ function isArrayVerb(v: unknown): v is ArrayVerb {
   const keys = Object.keys(v)
   if (keys.length === 0) return false
   return keys.every((k) => k === '$set' || k === '$remove' || k === '$prepend' || k === '$append')
-}
-
-function isPlainObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v) && v.constructor === Object
-}
-
-function itemKey(item: unknown): string {
-  return typeof item === 'object' && item !== null ? JSON.stringify(item) : String(item)
 }
 
 function dedupeItemSources(

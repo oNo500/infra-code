@@ -5,6 +5,7 @@ import { isDeepStrictEqual } from 'node:util'
 import { parse as parseJsonc } from 'jsonc-parser'
 
 import { renderToString } from './define'
+import { isErrnoException } from './utils'
 
 import type { RenderedConfig } from './types'
 
@@ -21,53 +22,42 @@ export interface CheckResult {
   }>
 }
 
-function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
-  return err instanceof Error && 'code' in err
-}
-
-/** Write all generated files to disk, relative to cwd. */
 export async function syncToDisk(config: RenderedConfig, cwd: string): Promise<SyncResult> {
-  const written: string[] = []
-  const unchanged: string[] = []
-
-  for (const file of config.files) {
-    const absPath = resolve(cwd, file.filename)
-    const expected = renderToString(file)
-    const actual = await readIfExists(absPath)
-    if (actual === expected) {
-      unchanged.push(file.filename)
-    } else {
+  const results = await Promise.all(
+    config.files.map(async (file) => {
+      const absPath = resolve(cwd, file.filename)
+      const expected = renderToString(file)
+      const actual = await readIfExists(absPath)
+      if (actual === expected) return { kind: 'unchanged' as const, filename: file.filename }
       await writeFile(absPath, expected, 'utf8')
-      written.push(file.filename)
-    }
-  }
+      return { kind: 'written' as const, filename: file.filename }
+    }),
+  )
 
-  return { written, unchanged }
+  return {
+    written: results.filter((r) => r.kind === 'written').map((r) => r.filename),
+    unchanged: results.filter((r) => r.kind === 'unchanged').map((r) => r.filename),
+  }
 }
 
 /**
- * Compare generated output to what's on disk — semantically, not byte-wise.
- * Disk JSON is parsed as JSONC (tolerates comments and trailing commas), then
- * deep-compared with the DSL output. This means formatter passes, key order
- * changes, and whitespace variation don't count as drift — only actual
- * compilerOptions / include / exclude / references differences do.
+ * Semantic (not byte-wise) disk comparison: parses JSONC, deep-compares.
+ * Formatter passes, key order, and whitespace changes are not drift.
  */
 export async function checkAgainstDisk(config: RenderedConfig, cwd: string): Promise<CheckResult> {
-  const mismatches: CheckResult['mismatches'] = []
+  const results = await Promise.all(
+    config.files.map(async (file) => {
+      const absPath = resolve(cwd, file.filename)
+      const actualRaw = await readIfExists(absPath)
+      if (actualRaw === null) return { filename: file.filename, reason: 'missing' as const }
+      const actualParsed = parseJsonc(actualRaw) as unknown
+      if (!isDeepStrictEqual(actualParsed, file.content))
+        return { filename: file.filename, reason: 'changed' as const }
+      return null
+    }),
+  )
 
-  for (const file of config.files) {
-    const absPath = resolve(cwd, file.filename)
-    const actualRaw = await readIfExists(absPath)
-    if (actualRaw === null) {
-      mismatches.push({ filename: file.filename, reason: 'missing' })
-      continue
-    }
-    const actualParsed = parseJsonc(actualRaw) as unknown
-    if (!isDeepStrictEqual(actualParsed, file.content)) {
-      mismatches.push({ filename: file.filename, reason: 'changed' })
-    }
-  }
-
+  const mismatches = results.filter((r): r is NonNullable<typeof r> => r !== null)
   return { ok: mismatches.length === 0, mismatches }
 }
 
