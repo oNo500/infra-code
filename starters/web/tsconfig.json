@@ -30,7 +30,8 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowArbitraryExtensions": true
   },
   "include": [
     "src/**/*",
