@@ -80,6 +80,9 @@ export async function generate(opts: GenOptions): Promise<GenResult> {
   // build views (extra tsconfig files)
   const layers: Record<string, LayerInput> = {}
   if (opts.views && opts.views.length > 0) {
+    if (opts.views.some((v) => v.name === 'app')) {
+      throw new Error("View name 'app' is reserved. Choose a different name.")
+    }
     layers['app'] = {}
     for (const view of opts.views) {
       layers[view.name] = {

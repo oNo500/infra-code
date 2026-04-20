@@ -57,7 +57,7 @@ export function defineTsconfig(input: DefineTsconfigInput): RenderedConfig {
   const files: RenderedFile[] = []
 
   for (const name of layerNames) {
-    const resolved = resolveLayer(name, input, layers)
+    const resolved = resolveLayer(name, input, layers, primaryName)
     const filename = name === primaryName ? 'tsconfig.json' : `tsconfig.${name}.json`
     files.push({ filename, content: resolved })
   }
@@ -86,6 +86,7 @@ function resolveLayer(
   name: string,
   input: DefineTsconfigInput,
   layers: Record<string, LayerInput>,
+  primaryName: string,
 ): RenderedTsconfig {
   const layer = layers[name]!
   const chain = buildLayerChain(name, layers)
@@ -101,6 +102,7 @@ function resolveLayer(
     include: pickInclude(input, chain, layers),
     exclude: withAutoExcludes(pickExclude(input, chain, layers)),
     files: layer.files,
+    references: name === primaryName ? input.references : undefined,
   }
   pruneUndefined(content)
   return content
