@@ -4,28 +4,28 @@ Starter template for a command-line tool built with Bun and published to npm as 
 
 ## Stack
 
-- Runtime (dev): Bun
-- Runtime (publish): Node 20+ ESM
-- Args: [citty](https://github.com/unjs/citty)
-- Bundler: [tsdown](https://tsdown.dev)
-- Lint: `oxlint` + `eslint` via `@infra-x/eslint-config`
-- Tests: `bun test`
+- **Runtime (dev)**: Bun
+- **Runtime (publish)**: Node 20+ ESM
+- **Args**: [citty](https://github.com/unjs/citty)
+- **Bundler**: [tsdown](https://tsdown.dev)
+- **Lint**: `oxlint` + `oxfmt` via `@infra-x/code-quality`
+- **Tests**: `bun test`
 
-## Scripts
+## Quick Start
 
 ```bash
 bun install
-bun run dev --name Bun      # run from source
-bun run build               # bundle to dist/ for publishing
+bun run dev --name Bun   # run from source
+bun run build            # bundle to dist/ for publishing
 bun run typecheck
 bun run lint
 bun run test
 ```
 
-## Adding a command
+## Adding a Command
 
-1. Add the pure function under `src/commands/<name>.ts`
-2. Add a test under `tests/<name>.test.ts`
+1. Add the handler under `src/commands/<name>.ts`
+2. Add a co-located test `src/commands/<name>.test.ts`
 3. Wire it into `src/index.ts`
 
 ## Publishing
@@ -38,4 +38,5 @@ npm publish --access public
 
 ## Constraints
 
-Do **not** import Bun-only APIs (`Bun.file`, `Bun.serve`, `Bun.$`, etc.). Use `node:*` modules so the published artifact runs under plain Node.
+> [!IMPORTANT]
+> Do not import Bun-only APIs (`Bun.file`, `Bun.serve`, `Bun.$`, etc.). Use `node:*` modules so the published artifact runs under plain Node.
