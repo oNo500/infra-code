@@ -2,33 +2,22 @@ import { dedupe } from '../utils'
 
 import type { CompilerOptions } from '../types'
 
-/**
- * Internal atoms used to compose profiles. Not exported publicly — users
- * consume profile functions instead. Keeping this file private lets us
- * refactor the composition without API surface changes.
- */
-
 export const base = (): CompilerOptions => ({
   target: 'esnext',
-
   esModuleInterop: true,
   skipLibCheck: true,
   resolveJsonModule: true,
   moduleDetection: 'force',
   isolatedModules: true,
   verbatimModuleSyntax: true,
-
   strict: true,
   noUncheckedIndexedAccess: true,
   noImplicitOverride: true,
-
   noUnusedLocals: true,
   noUnusedParameters: true,
   noFallthroughCasesInSwitch: true,
   noImplicitReturns: true,
-
   forceConsistentCasingInFileNames: true,
-
   incremental: true,
   tsBuildInfoFile: './node_modules/.cache/tsconfig.tsbuildinfo',
 })
@@ -48,9 +37,9 @@ export const runtimeBrowser = (): CompilerOptions => ({
   lib: ['esnext', 'DOM', 'DOM.Iterable'],
 })
 
-export const runtimeUniversal = (): CompilerOptions => ({
-  types: ['node'],
-  lib: ['esnext', 'DOM', 'DOM.Iterable'],
+export const runtimeEdge = (): CompilerOptions => ({
+  types: [],
+  lib: ['esnext'],
 })
 
 export const buildBundler = (): CompilerOptions => ({
@@ -77,6 +66,13 @@ export const frameworkReact = (): CompilerOptions => ({
   jsx: 'react-jsx',
 })
 
+export const frameworkNextjs = (): CompilerOptions => ({
+  jsx: 'react-jsx',
+  // Next.js App Router requires preserve for server/client component interop
+  module: 'preserve',
+  moduleResolution: 'bundler',
+})
+
 export const frameworkNestjs = (): CompilerOptions => ({
   experimentalDecorators: true,
   emitDecoratorMetadata: true,
@@ -101,4 +97,3 @@ export function composeAtoms(...atoms: CompilerOptions[]): CompilerOptions {
   }
   return result
 }
-
