@@ -68,7 +68,8 @@ export const frameworkReact = (): CompilerOptions => ({
 
 export const frameworkNextjs = (): CompilerOptions => ({
   jsx: 'react-jsx',
-  // Next.js App Router requires preserve for server/client component interop
+  // Next.js uses its own bundler (Turbopack/webpack) — always override module
+  // resolution to bundler mode, regardless of the build atom selected.
   module: 'preserve',
   moduleResolution: 'bundler',
 })
