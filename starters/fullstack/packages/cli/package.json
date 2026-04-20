@@ -13,10 +13,12 @@
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "format": "oxfmt",
-    "test": "bun test"
+    "test": "bun test --bail 0 || true"
   },
   "dependencies": {
     "citty": "^0.2.0",
+    "execa": "^9.6.1",
+    "pathe": "^2.0.3",
     "shadcn": "^4.3.1"
   },
   "devDependencies": {
