@@ -48,16 +48,27 @@ export async function planWrites(config: RenderedConfig, cwd: string): Promise<F
 }
 
 export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, accepted: Set<string>): string {
-  const result: Record<string, unknown> = { ...plan.current }
+  const result = deepClone(plan.current)
   for (const change of plan.changes) {
     if (!accepted.has(change.key)) continue
+    const parts = change.key.split('.')
+    const last = parts[parts.length - 1]!
+    let obj = result
+    for (const part of parts.slice(0, -1)) {
+      if (typeof obj[part] !== 'object' || obj[part] === null) obj[part] = {}
+      obj = obj[part] as Record<string, unknown>
+    }
     if (change.kind === 'removed') {
-      delete result[change.key]
+      delete obj[last]
     } else {
-      result[change.key] = change.newValue
+      obj[last] = change.newValue
     }
   }
   return JSON.stringify(result, null, 2) + '\n'
+}
+
+function deepClone(obj: Record<string, unknown>): Record<string, unknown> {
+  return JSON.parse(JSON.stringify(obj)) as Record<string, unknown>
 }
 
 export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set(), merges: Map<string, string> = new Map()): Promise<WriteResult> {
@@ -84,21 +95,32 @@ export async function writeFiles(config: RenderedConfig, cwd: string): Promise<W
   return applyWrites(await planWrites(config, cwd))
 }
 
-function diffObjects(current: Record<string, unknown>, generated: Record<string, unknown>): FieldChange[] {
+function diffObjects(current: Record<string, unknown>, generated: Record<string, unknown>, prefix = ''): FieldChange[] {
   const changes: FieldChange[] = []
   const allKeys = new Set([...Object.keys(current), ...Object.keys(generated)])
   for (const key of allKeys) {
+    const path = prefix ? `${prefix}.${key}` : key
     const inCurrent = Object.hasOwn(current, key)
     const inGenerated = Object.hasOwn(generated, key)
     if (!inCurrent) {
-      changes.push({ kind: 'added', key, newValue: generated[key] })
+      changes.push({ kind: 'added', key: path, newValue: generated[key] })
     } else if (!inGenerated) {
-      changes.push({ kind: 'removed', key, oldValue: current[key] })
+      changes.push({ kind: 'removed', key: path, oldValue: current[key] })
+    } else if (isPlainObj(current[key]) && isPlainObj(generated[key])) {
+      changes.push(...diffObjects(
+        current[key] as Record<string, unknown>,
+        generated[key] as Record<string, unknown>,
+        path,
+      ))
     } else if (JSON.stringify(current[key]) !== JSON.stringify(generated[key])) {
-      changes.push({ kind: 'modified', key, oldValue: current[key], newValue: generated[key] })
+      changes.push({ kind: 'modified', key: path, oldValue: current[key], newValue: generated[key] })
     }
   }
   return changes
+}
+
+function isPlainObj(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
 function parseJson(text: string): Record<string, unknown> | null {
