@@ -50,8 +50,8 @@ function closestMatch(key: string, candidates: string[]): string | undefined {
 function editDistance(a: string, b: string): number {
   const m = a.length
   const n = b.length
-  const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
-    Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)),
+  const dp: number[][] = Array.from({ length: m + 1 }, (_a, i) =>
+    Array.from({ length: n + 1 }, (_b, j) => (i === 0 ? j : j === 0 ? i : 0)),
   )
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {

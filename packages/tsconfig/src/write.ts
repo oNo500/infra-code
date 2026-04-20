@@ -126,11 +126,7 @@ function diffObjects(current: Record<string, unknown>, generated: Record<string,
     } else if (!inGenerated) {
       changes.push({ kind: 'removed', key: path, oldValue: current[key] })
     } else if (isPlainObject(current[key]) && isPlainObject(generated[key])) {
-      changes.push(...diffObjects(
-        current[key] as Record<string, unknown>,
-        generated[key] as Record<string, unknown>,
-        path,
-      ))
+      changes.push(...diffObjects(current[key], generated[key], path))
     } else if (JSON.stringify(current[key]) !== JSON.stringify(generated[key])) {
       changes.push({ kind: 'modified', key: path, oldValue: current[key], newValue: generated[key] })
     }
