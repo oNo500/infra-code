@@ -48,7 +48,7 @@
     },
     "packages/tsconfig": {
       "name": "@infra-x/tsconfig",
-      "version": "0.0.0",
+      "version": "0.0.1",
       "bin": {
         "tsconfig": "./dist/cli.mjs",
       },
@@ -61,6 +61,7 @@
         "@types/bun": "latest",
         "@types/diff": "^8.0.0",
         "@types/node": "^25.0.0",
+        "bumpp": "^10.4.1",
         "tsdown": "^0.21.0",
         "typescript": "^6.0.0",
       },

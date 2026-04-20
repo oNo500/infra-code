@@ -1,7 +1,7 @@
 {
   "name": "@infra-x/tsconfig",
-  "version": "0.0.0",
-  "description": "DSL-based TypeScript config generator. Replaces @infra-x/typescript-config.",
+  "version": "0.0.1",
+  "description": "Atom-based TypeScript config generator CLI. Replaces @infra-x/typescript-config.",
   "license": "MIT",
   "author": "infra-x",
   "repository": {
@@ -28,6 +28,7 @@
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
+    "release": "bumpp",
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
@@ -37,6 +38,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "bumpp": "^10.4.1",
     "@types/diff": "^8.0.0",
     "@types/node": "^25.0.0",
     "tsdown": "^0.21.0",
