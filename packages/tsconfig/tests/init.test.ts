@@ -4,14 +4,22 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { generate, parsePathsArg } from '../src/init'
+import type { GenOptions } from '../src/init'
 
 function tmp() {
   return mkdtempSync(join(tmpdir(), 'tsconfig-gen-'))
 }
 
-function stripHeader(content: string): string {
-  const idx = content.indexOf('{')
-  return idx >= 0 ? content.slice(idx) : content
+function readJson(cwd: string, name: string): Record<string, unknown> {
+  const raw = readFileSync(join(cwd, name), 'utf8')
+  const idx = raw.indexOf('{')
+  return JSON.parse(idx >= 0 ? raw.slice(idx) : raw) as Record<string, unknown>
+}
+
+const base: GenOptions = {
+  cwd: '',
+  runtimes: ['node'],
+  module: 'bundler',
 }
 
 describe('parsePathsArg', () => {
@@ -36,41 +44,109 @@ describe('parsePathsArg', () => {
 })
 
 describe('generate', () => {
-  it('writes tsconfig.json for a profile with no layers', async () => {
+  it('writes tsconfig.json for node+bundler', async () => {
     const cwd = tmp()
-    const result = await generate({ cwd, profile: 'nextjs', layers: [] })
+    const result = await generate({ ...base, cwd })
     expect(result.written).toContain('tsconfig.json')
   })
 
-  it('writes one file per layer', async () => {
+  it('includes node types for node runtime', async () => {
     const cwd = tmp()
-    const result = await generate({ cwd, profile: 'nextjs', layers: ['app', 'test'] })
+    await generate({ ...base, cwd })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['types']).toContain('node')
+  })
+
+  it('includes bun types for bun runtime', async () => {
+    const cwd = tmp()
+    await generate({ ...base, cwd, runtimes: ['bun'] })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['types']).toContain('bun')
+  })
+
+  it('merges node+browser runtimes (universal)', async () => {
+    const cwd = tmp()
+    await generate({ ...base, cwd, runtimes: ['node', 'browser'] })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['types']).toContain('node')
+    expect((opts['lib'] as string[]).some((l) => l.toLowerCase().includes('dom'))).toBe(true)
+  })
+
+  it('sets jsx for react framework', async () => {
+    const cwd = tmp()
+    await generate({ ...base, cwd, framework: 'react' })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['jsx']).toBe('react-jsx')
+  })
+
+  it('enables decorators for nestjs framework', async () => {
+    const cwd = tmp()
+    await generate({ ...base, cwd, framework: 'nestjs', module: 'nodenext' })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['experimentalDecorators']).toBe(true)
+    expect(opts['emitDecoratorMetadata']).toBe(true)
+  })
+
+  it('sets nodenext module resolution when module=nodenext', async () => {
+    const cwd = tmp()
+    await generate({ ...base, cwd, module: 'nodenext' })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['module']).toBe('nodenext')
+    expect(opts['moduleResolution']).toBe('nodenext')
+  })
+
+  it('enables declaration for lib mode', async () => {
+    const cwd = tmp()
+    await generate({ ...base, cwd, lib: true })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['declaration']).toBe(true)
+    expect(opts['isolatedDeclarations']).toBe(true)
+  })
+
+  it('writes one extra file per view', async () => {
+    const cwd = tmp()
+    const result = await generate({
+      ...base,
+      cwd,
+      views: [{ name: 'test', types: ['vitest/globals'], include: ['**/*.test.ts'] }],
+    })
     expect(result.written).toContain('tsconfig.json')
     expect(result.written).toContain('tsconfig.test.json')
   })
 
-  it('merges types across layers correctly', async () => {
+  it('view file has correct types merged', async () => {
     const cwd = tmp()
-    await generate({ cwd, profile: 'nextjs', layers: ['app', 'test'] })
-    const testJson = JSON.parse(stripHeader(readFileSync(join(cwd, 'tsconfig.test.json'), 'utf8')))
-    expect(testJson.compilerOptions.types).toEqual(['node', 'vitest/globals'])
+    await generate({
+      ...base,
+      cwd,
+      runtimes: ['node'],
+      views: [{ name: 'test', types: ['vitest/globals'], include: ['**/*.test.ts'] }],
+    })
+    const json = readJson(cwd, 'tsconfig.test.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['types']).toContain('node')
+    expect(opts['types']).toContain('vitest/globals')
   })
 
   it('injects paths into compilerOptions', async () => {
     const cwd = tmp()
-    await generate({ cwd, profile: 'nextjs', layers: [], paths: { '@/*': ['./src/*'] } })
-    const json = JSON.parse(stripHeader(readFileSync(join(cwd, 'tsconfig.json'), 'utf8')))
-    expect(json.compilerOptions.paths).toEqual({ '@/*': ['./src/*'] })
-  })
-
-  it('rejects unknown profile', () => {
-    expect(generate({ cwd: tmp(), profile: 'bogus', layers: [] })).rejects.toThrow(/Unknown profile/)
+    await generate({ ...base, cwd, paths: { '@/*': ['./src/*'] } })
+    const json = readJson(cwd, 'tsconfig.json')
+    const opts = json['compilerOptions'] as Record<string, unknown>
+    expect(opts['paths']).toEqual({ '@/*': ['./src/*'] })
   })
 
   it('does not write files when content unchanged', async () => {
     const cwd = tmp()
-    await generate({ cwd, profile: 'nextjs', layers: [] })
-    const second = await generate({ cwd, profile: 'nextjs', layers: [] })
+    await generate({ ...base, cwd })
+    const second = await generate({ ...base, cwd })
     expect(second.written).toHaveLength(0)
   })
 })
