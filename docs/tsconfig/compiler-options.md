@@ -219,8 +219,8 @@ Both address the same problem at different levels: **when a bundler transpiles f
 **Root cause:**
 
 ```typescript
-import { SomeType } from './types'  // type-only import
-export { SomeType }                 // re-export
+import { SomeType } from './types' // type-only import
+export { SomeType } // re-export
 ```
 
 tsc knows `SomeType` is a type and deletes the whole line on emit. But esbuild / oxc process files one at a time without cross-file type analysis — they cannot tell this line is safe to delete, so they keep it, producing a runtime import of something that does not exist.
@@ -247,6 +247,7 @@ Both are in `base()`: `isolatedModules` is the minimum requirement for bundler c
 tsc determines whether a file is a module or a script by the presence of `import`/`export`. Script files have global top-level declarations; module files have local ones.
 
 `moduleDetection: 'force'` treats every file as a module because:
+
 - Modern projects have virtually no script files — the default behavior exists only for historical compatibility
 - In `auto` mode, a utility file with no imports/exports silently becomes a script, polluting the global type space and causing hard-to-trace type conflicts
 

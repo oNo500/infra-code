@@ -47,10 +47,7 @@ describe('mergeCompilerOptions', () => {
   })
 
   it('lib: append dedupes', () => {
-    const r = mergeCompilerOptions(
-      { lib: ['esnext', 'DOM'] },
-      { lib: ['DOM', 'DOM.Iterable'] },
-    )
+    const r = mergeCompilerOptions({ lib: ['esnext', 'DOM'] }, { lib: ['DOM', 'DOM.Iterable'] })
     expect(r.lib).toEqual(['esnext', 'DOM', 'DOM.Iterable'])
   })
 

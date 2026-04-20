@@ -32,19 +32,19 @@ tsconfig --runtime node,browser --module bundler --framework nextjs \
 
 Each atom is a function returning a partial `CompilerOptions`. Atoms are composed with last-wins for scalars and append+dedupe for arrays.
 
-| Atom | What it sets |
-|------|-------------|
-| `base()` | Strict mode, incremental, all quality flags |
-| `runtimeNode()` | `types: ['node']`, `lib: ['esnext']` |
-| `runtimeBun()` | `types: ['bun']`, `lib: ['esnext']` |
-| `runtimeBrowser()` | `types: []`, `lib: ['esnext', 'DOM', 'DOM.Iterable']` |
-| `runtimeEdge()` | `types: []`, `lib: ['esnext']` |
-| `buildBundler()` | `module: preserve`, `moduleResolution: bundler`, `noEmit: true` |
-| `buildTscEmit()` | `module: nodenext`, `moduleResolution: nodenext`, `noEmit: false`, `outDir: dist` |
-| `projectLib()` | `declaration: true`, `isolatedDeclarations: true`, `allowJs: false`, `noPropertyAccessFromIndexSignature: true` |
-| `frameworkReact()` | `jsx: react-jsx` |
-| `frameworkNextjs()` | `jsx: react-jsx`, `module: preserve`, `moduleResolution: bundler` |
-| `frameworkNestjs()` | `experimentalDecorators`, `emitDecoratorMetadata`, relax `strictPropertyInitialization` |
+| Atom                | What it sets                                                                                                    |
+| ------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `base()`            | Strict mode, incremental, all quality flags                                                                     |
+| `runtimeNode()`     | `types: ['node']`, `lib: ['esnext']`                                                                            |
+| `runtimeBun()`      | `types: ['bun']`, `lib: ['esnext']`                                                                             |
+| `runtimeBrowser()`  | `types: []`, `lib: ['esnext', 'DOM', 'DOM.Iterable']`                                                           |
+| `runtimeEdge()`     | `types: []`, `lib: ['esnext']`                                                                                  |
+| `buildBundler()`    | `module: preserve`, `moduleResolution: bundler`, `noEmit: true`                                                 |
+| `buildTscEmit()`    | `module: nodenext`, `moduleResolution: nodenext`, `noEmit: false`, `outDir: dist`                               |
+| `projectLib()`      | `declaration: true`, `isolatedDeclarations: true`, `allowJs: false`, `noPropertyAccessFromIndexSignature: true` |
+| `frameworkReact()`  | `jsx: react-jsx`                                                                                                |
+| `frameworkNextjs()` | `jsx: react-jsx`, `module: preserve`, `moduleResolution: bundler`                                               |
+| `frameworkNestjs()` | `experimentalDecorators`, `emitDecoratorMetadata`, relax `strictPropertyInitialization`                         |
 
 Compose them directly in code:
 
@@ -56,11 +56,11 @@ const compilerOptions = composeAtoms(base(), runtimeNode(), buildBundler())
 
 ## Merge semantics
 
-| Field kind | Default behavior | Override |
-|------------|-----------------|---------|
-| Scalar (`strict`, `target`) | Last atom wins | — |
-| Object (`paths`) | Deep merge | — |
-| Array (`types`, `lib`, `plugins`) | Append + dedupe | Use `ArrayControl` |
+| Field kind                        | Default behavior | Override           |
+| --------------------------------- | ---------------- | ------------------ |
+| Scalar (`strict`, `target`)       | Last atom wins   | —                  |
+| Object (`paths`)                  | Deep merge       | —                  |
+| Array (`types`, `lib`, `plugins`) | Append + dedupe  | Use `ArrayControl` |
 
 When the default is wrong, use an `ArrayControl` object in `compilerOptions`:
 
@@ -79,11 +79,11 @@ opts.plugins = { merge: 'append', value: [{ name: 'my-plugin' }] }
 
 `ArrayField<T>` accepts three forms:
 
-| Form | Meaning |
-|------|---------|
-| `T[]` | Append to base value, dedupe |
-| `'none'` | Clear to `[]` |
-| `{ merge: 'append' \| 'replace' \| 'none', value?: T[] }` | Full control |
+| Form                                                      | Meaning                      |
+| --------------------------------------------------------- | ---------------------------- |
+| `T[]`                                                     | Append to base value, dedupe |
+| `'none'`                                                  | Clear to `[]`                |
+| `{ merge: 'append' \| 'replace' \| 'none', value?: T[] }` | Full control                 |
 
 ## CLI
 
@@ -133,16 +133,16 @@ tsconfig --runtime node --module bundler \
 
 ### Flags
 
-| Flag | Type | Description |
-|------|------|-------------|
-| `--runtime` | `string` | Comma-separated: `node,bun,browser,edge` |
-| `--module` | `string` | `bundler` or `nodenext` |
-| `--framework` | `string` | `none`, `react`, `nextjs`, `nestjs` |
-| `--lib` | `boolean` | Enable `declaration` + `isolatedDeclarations` |
-| `--view` | `string` (repeatable) | `name:types:include` — each flag adds one file |
-| `--references` | `string` | Comma-separated paths for TS project references |
-| `--paths` | `string` | `@/*=./src/*,@ui/*=../ui/src/*` |
-| `--cwd` | `string` | Working directory (default: `.`) |
+| Flag           | Type                  | Description                                     |
+| -------------- | --------------------- | ----------------------------------------------- |
+| `--runtime`    | `string`              | Comma-separated: `node,bun,browser,edge`        |
+| `--module`     | `string`              | `bundler` or `nodenext`                         |
+| `--framework`  | `string`              | `none`, `react`, `nextjs`, `nestjs`             |
+| `--lib`        | `boolean`             | Enable `declaration` + `isolatedDeclarations`   |
+| `--view`       | `string` (repeatable) | `name:types:include` — each flag adds one file  |
+| `--references` | `string`              | Comma-separated paths for TS project references |
+| `--paths`      | `string`              | `@/*=./src/*,@ui/*=../ui/src/*`                 |
+| `--cwd`        | `string`              | Working directory (default: `.`)                |
 
 ### Views
 

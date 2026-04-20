@@ -1,9 +1,22 @@
 import { describe, expect, it } from 'bun:test'
 
-import { base, buildBundler, composeAtoms, frameworkNextjs, runtimeBrowser, runtimeNode } from '../src/atoms'
+import {
+  base,
+  buildBundler,
+  composeAtoms,
+  frameworkNextjs,
+  runtimeBrowser,
+  runtimeNode,
+} from '../src/atoms'
 import { renderConfig } from '../src/render'
 
-const nextjsOptions = composeAtoms(base(), runtimeNode(), runtimeBrowser(), buildBundler(), frameworkNextjs())
+const nextjsOptions = composeAtoms(
+  base(),
+  runtimeNode(),
+  runtimeBrowser(),
+  buildBundler(),
+  frameworkNextjs(),
+)
 
 describe('integration: nextjs produces correct tsconfig', () => {
   it('single-file Next.js app', () => {
@@ -54,6 +67,10 @@ describe('integration: nextjs produces correct tsconfig', () => {
     // paths from primary propagate to views
     expect(test.content.compilerOptions.paths).toEqual({ '@/*': ['./src/*'] })
     // view include overrides primary include
-    expect(test.content.include).toEqual(['__tests__/**/*', 'src/**/*.test.ts', 'src/**/*.test.tsx'])
+    expect(test.content.include).toEqual([
+      '__tests__/**/*',
+      'src/**/*.test.ts',
+      'src/**/*.test.tsx',
+    ])
   })
 })

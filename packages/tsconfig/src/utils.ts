@@ -23,5 +23,8 @@ export function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
 }
 
 export function splitNames(s: string): string[] {
-  return s.split(',').map((x) => x.trim()).filter(Boolean)
+  return s
+    .split(',')
+    .map((x) => x.trim())
+    .filter(Boolean)
 }

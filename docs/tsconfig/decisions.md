@@ -67,9 +67,11 @@ Continue with atom + extends model, add more profiles.
 Rejected: the root cause is tsc's extends semantics — atom reorganization cannot fix array merging.
 
 **B. Chained functional DSL**
+
 ```ts
 tsconfig('node').pipe(withTypes.append(['vitest/globals']))
 ```
+
 Rejected: tsconfig is a static object with no conditional composition needs. A chained API requires many helpers with no real benefit.
 
 **C. Gitignore generated files + postinstall regeneration**

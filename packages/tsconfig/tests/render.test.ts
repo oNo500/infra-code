@@ -1,9 +1,22 @@
 import { describe, expect, it } from 'bun:test'
 
-import { base, buildBundler, composeAtoms, frameworkNextjs, runtimeBrowser, runtimeNode } from '../src/atoms'
+import {
+  base,
+  buildBundler,
+  composeAtoms,
+  frameworkNextjs,
+  runtimeBrowser,
+  runtimeNode,
+} from '../src/atoms'
 import { renderConfig } from '../src/render'
 
-const nextjsOptions = composeAtoms(base(), runtimeNode(), runtimeBrowser(), buildBundler(), frameworkNextjs())
+const nextjsOptions = composeAtoms(
+  base(),
+  runtimeNode(),
+  runtimeBrowser(),
+  buildBundler(),
+  frameworkNextjs(),
+)
 
 describe('renderConfig', () => {
   it('produces a single tsconfig.json when no views', () => {
@@ -66,7 +79,11 @@ describe('renderConfig', () => {
       references: [{ path: '../shared' }],
       views: [{ name: 'test' }],
     })
-    expect(result.files.find((f) => f.filename === 'tsconfig.json')!.content.references).toEqual([{ path: '../shared' }])
-    expect(result.files.find((f) => f.filename === 'tsconfig.test.json')!.content.references).toBeUndefined()
+    expect(result.files.find((f) => f.filename === 'tsconfig.json')!.content.references).toEqual([
+      { path: '../shared' },
+    ])
+    expect(
+      result.files.find((f) => f.filename === 'tsconfig.test.json')!.content.references,
+    ).toBeUndefined()
   })
 })
