@@ -3,66 +3,70 @@ import { describe, expect, it } from 'bun:test'
 import { mergeCompilerOptions } from '../src/merge'
 
 describe('mergeCompilerOptions', () => {
-  it('merges scalar fields with user override winning', () => {
-    const result = mergeCompilerOptions({ strict: true }, { strict: false })
-    expect(result.strict).toBe(false)
+  it('scalar: user wins', () => {
+    expect(mergeCompilerOptions({ strict: true }, { strict: false }).strict).toBe(false)
   })
 
-  it('appends and dedupes string arrays by default', () => {
-    const result = mergeCompilerOptions({ types: ['node'] }, { types: ['vitest/globals', 'node'] })
-    expect(result.types).toEqual(['node', 'vitest/globals'])
+  it('array shorthand: appends and dedupes', () => {
+    const r = mergeCompilerOptions({ types: ['node'] }, { types: ['vitest/globals', 'node'] })
+    expect(r.types).toEqual(['node', 'vitest/globals'])
   })
 
-  it('deep-merges paths', () => {
-    const result = mergeCompilerOptions(
+  it("array shorthand 'none': clears to []", () => {
+    const r = mergeCompilerOptions({ types: ['node'] }, { types: 'none' })
+    expect(r.types).toEqual([])
+  })
+
+  it('ArrayControl append: same as shorthand', () => {
+    const r = mergeCompilerOptions(
+      { types: ['node'] },
+      { types: { merge: 'append', value: ['vitest/globals'] } },
+    )
+    expect(r.types).toEqual(['node', 'vitest/globals'])
+  })
+
+  it('ArrayControl replace: replaces entirely', () => {
+    const r = mergeCompilerOptions(
+      { types: ['node', 'react'] },
+      { types: { merge: 'replace', value: ['vitest/globals'] } },
+    )
+    expect(r.types).toEqual(['vitest/globals'])
+  })
+
+  it('ArrayControl none: clears to []', () => {
+    const r = mergeCompilerOptions({ types: ['node'] }, { types: { merge: 'none' } })
+    expect(r.types).toEqual([])
+  })
+
+  it('paths: deep-merges', () => {
+    const r = mergeCompilerOptions(
       { paths: { '@/*': ['./src/*'] } },
       { paths: { '@ui/*': ['./ui/*'] } },
     )
-    expect(result.paths).toEqual({
-      '@/*': ['./src/*'],
-      '@ui/*': ['./ui/*'],
-    })
+    expect(r.paths).toEqual({ '@/*': ['./src/*'], '@ui/*': ['./ui/*'] })
   })
 
-  it('$set replaces entirely', () => {
-    const result = mergeCompilerOptions(
-      { types: ['node', 'react'] },
-      { types: { $set: ['vitest/globals'] } },
+  it('lib: append dedupes', () => {
+    const r = mergeCompilerOptions(
+      { lib: ['esnext', 'DOM'] },
+      { lib: ['DOM', 'DOM.Iterable'] },
     )
-    expect(result.types).toEqual(['vitest/globals'])
+    expect(r.lib).toEqual(['esnext', 'DOM', 'DOM.Iterable'])
   })
 
-  it('$remove drops specific items', () => {
-    const result = mergeCompilerOptions(
-      { lib: ['esnext', 'DOM', 'DOM.Iterable'] },
-      { lib: { $remove: ['DOM', 'DOM.Iterable'] } },
-    )
-    expect(result.lib).toEqual(['esnext'])
-  })
-
-  it('$prepend inserts at head', () => {
-    const result = mergeCompilerOptions(
-      { plugins: [{ name: 'next' }] },
-      { plugins: { $prepend: [{ name: 'foo' }] } },
-    )
-    expect(result.plugins).toEqual([{ name: 'foo' }, { name: 'next' }])
-  })
-
-  it('handles empty base with user input only', () => {
-    const result = mergeCompilerOptions(undefined, { types: ['node'] })
-    expect(result.types).toEqual(['node'])
-  })
-
-  it('handles empty user input with base only', () => {
-    const result = mergeCompilerOptions({ types: ['node'] }, undefined)
-    expect(result.types).toEqual(['node'])
-  })
-
-  it('dedupes object arrays by deep equality', () => {
-    const result = mergeCompilerOptions(
+  it('plugins: append dedupes by deep equality', () => {
+    const r = mergeCompilerOptions(
       { plugins: [{ name: 'next' }] },
       { plugins: [{ name: 'next' }, { name: 'graphql' }] },
     )
-    expect(result.plugins).toEqual([{ name: 'next' }, { name: 'graphql' }])
+    expect(r.plugins).toEqual([{ name: 'next' }, { name: 'graphql' }])
+  })
+
+  it('handles undefined base', () => {
+    expect(mergeCompilerOptions(undefined, { types: ['node'] }).types).toEqual(['node'])
+  })
+
+  it('handles undefined over', () => {
+    expect(mergeCompilerOptions({ types: ['node'] }, undefined).types).toEqual(['node'])
   })
 })

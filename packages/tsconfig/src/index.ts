@@ -10,7 +10,6 @@ export { appBun } from './profiles/app-bun'
 export { appNestjs } from './profiles/app-nestjs'
 export type {
   ArrayField,
-  ArrayVerb,
   CompilerOptions,
   DefineTsconfigInput,
   LayerInput,

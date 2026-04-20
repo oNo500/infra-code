@@ -34,11 +34,11 @@ describe('explainTsconfig', () => {
     ])
   })
 
-  it('tracks verbs separately', () => {
+  it('tracks merges separately', () => {
     const result = explainTsconfig({
       profile: nextjs(),
       compilerOptions: {
-        lib: { $remove: ['DOM'] },
+        lib: { merge: 'replace', value: ['esnext', 'DOM.Iterable'] },
       },
     })
     const lib = result.layers[0]!.compilerOptions['lib']!

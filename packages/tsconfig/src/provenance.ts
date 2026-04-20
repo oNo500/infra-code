@@ -1,6 +1,6 @@
 import { isPlainObject, itemKey } from './utils'
 
-import type { CompilerOptions } from './types'
+import type { ArrayControl, ArrayField, CompilerOptions } from './types'
 
 /**
  * A source describes where a value in the rendered config came from.
@@ -26,7 +26,7 @@ export type Provenance = Record<string, FieldProvenance>
 /**
  * Apply a partial compilerOptions onto a provenance map, tracking sources.
  * Semantics match mergeCompilerOptions: scalar replace, object deep merge,
- * array append + dedupe, $set/$remove/$prepend/$append verbs.
+ * array append + dedupe, ArrayField (array shorthand, 'none', or ArrayControl).
  */
 export function applyProvenance(
   current: Provenance,
@@ -43,26 +43,12 @@ export function applyProvenance(
     const existing = result[key]
     const existingSources = existing?.sources ?? []
 
-    if (isArrayVerb(value)) {
-      const newValue = applyVerbToProvenance(existing, value, source)
+    if (isArrayField(value)) {
+      const newValue = applyArrayFieldToProvenance(existing, value, source)
       result[key] = {
         value: newValue.value,
         sources: [...existingSources, source],
         itemSources: newValue.itemSources,
-      }
-      continue
-    }
-
-    if (Array.isArray(value)) {
-      const combinedItems: Array<{ item: unknown; source: Source }> = [
-        ...(existing?.itemSources ?? []),
-        ...value.map((item) => ({ item, source })),
-      ]
-      const deduped = dedupeItemSources(combinedItems)
-      result[key] = {
-        value: deduped.map((x) => x.item),
-        sources: [...existingSources, source],
-        itemSources: deduped,
       }
       continue
     }
@@ -85,44 +71,45 @@ export function applyProvenance(
   return result
 }
 
-interface ArrayVerb {
-  $set?: readonly unknown[]
-  $remove?: readonly unknown[]
-  $prepend?: readonly unknown[]
-  $append?: readonly unknown[]
-}
-
-function applyVerbToProvenance(
+function applyArrayFieldToProvenance(
   existing: FieldProvenance | undefined,
-  verb: ArrayVerb,
+  field: ArrayField<unknown>,
   source: Source,
 ): { value: unknown[]; itemSources: Array<{ item: unknown; source: Source }> } {
-  if (verb.$set !== undefined) {
-    const items = verb.$set.map((item) => ({ item, source }))
+  if (field === 'none') {
+    return { value: [], itemSources: [] }
+  }
+
+  if (Array.isArray(field)) {
+    // Array shorthand: append to existing
+    const existingItems = existing?.itemSources ?? []
+    const newItems = field.map((item) => ({ item, source }))
+    const combined = dedupeItemSources([...existingItems, ...newItems])
+    return { value: combined.map((x) => x.item), itemSources: combined }
+  }
+
+  // ArrayControl
+  const ctrl = field as ArrayControl<unknown>
+  if (ctrl.merge === 'none') {
+    return { value: [], itemSources: [] }
+  }
+  if (ctrl.merge === 'replace') {
+    const items = (ctrl.value ?? []).map((item) => ({ item, source }))
     const deduped = dedupeItemSources(items)
     return { value: deduped.map((x) => x.item), itemSources: deduped }
   }
-
-  let items: Array<{ item: unknown; source: Source }> = [...(existing?.itemSources ?? [])]
-
-  if (verb.$remove) {
-    const removeKeys = new Set(verb.$remove.map((item) => itemKey(item)))
-    items = items.filter(({ item }) => !removeKeys.has(itemKey(item)))
-  }
-  if (verb.$prepend) {
-    items = dedupeItemSources([...verb.$prepend.map((item) => ({ item, source })), ...items])
-  }
-  if (verb.$append) {
-    items = dedupeItemSources([...items, ...verb.$append.map((item) => ({ item, source }))])
-  }
-  return { value: items.map((x) => x.item), itemSources: items }
+  // merge === 'append' (default)
+  const existingItems = existing?.itemSources ?? []
+  const newItems = (ctrl.value ?? []).map((item) => ({ item, source }))
+  const combined = dedupeItemSources([...existingItems, ...newItems])
+  return { value: combined.map((x) => x.item), itemSources: combined }
 }
 
-function isArrayVerb(v: unknown): v is ArrayVerb {
-  if (!isPlainObject(v)) return false
-  const keys = Object.keys(v)
-  if (keys.length === 0) return false
-  return keys.every((k) => k === '$set' || k === '$remove' || k === '$prepend' || k === '$append')
+function isArrayField(v: unknown): v is ArrayField<unknown> {
+  if (v === 'none') return true
+  if (Array.isArray(v)) return true
+  if (isPlainObject(v) && 'merge' in v) return true
+  return false
 }
 
 function dedupeItemSources(
