@@ -11,7 +11,6 @@ import type { Profile, ProfileResult } from '../types'
  * relaxed because DI injects properties.
  */
 export const appNestjs: Profile = (): ProfileResult => ({
-  label: 'app-nestjs',
   compilerOptions: composeAtoms(base(), runtimeNode(), buildBundler(), frameworkNestjs()),
   include: ['src/**/*', 'tests/**/*'],
   exclude: ['node_modules', 'dist'],

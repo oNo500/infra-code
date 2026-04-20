@@ -18,7 +18,6 @@ import type { Profile, ProfileResult } from '../types'
  * `compilerOptions: { isolatedDeclarations: false }` when needed.
  */
 export const libReact: Profile = (): ProfileResult => ({
-  label: 'lib-react',
   compilerOptions: composeAtoms(
     base(),
     runtimeBrowser(),

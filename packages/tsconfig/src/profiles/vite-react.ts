@@ -7,7 +7,6 @@ import type { Profile, ProfileResult } from '../types'
  * Composes: base + runtime-browser + build-bundler + framework-react.
  */
 export const viteReact: Profile = (): ProfileResult => ({
-  label: 'vite-react',
   compilerOptions: composeAtoms(base(), runtimeBrowser(), buildBundler(), frameworkReact()),
   include: ['src/**/*'],
   exclude: ['node_modules', 'dist'],

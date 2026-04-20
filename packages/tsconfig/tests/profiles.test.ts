@@ -11,8 +11,7 @@ describe('all profiles', () => {
     describe(descriptor.name, () => {
       const result = descriptor.factory()
 
-      it('has a matching label and base flags', () => {
-        expect(result.label).toBe(descriptor.name)
+      it('has base flags', () => {
         const co = result.compilerOptions
         expect(co.strict).toBe(true)
         expect(co.target).toBe('esnext')

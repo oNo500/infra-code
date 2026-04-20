@@ -8,7 +8,6 @@ import type { Profile, ProfileResult } from '../types'
  * plus Next-specific overrides (jsx: preserve, next plugin, allowImportingTsExtensions).
  */
 export const nextjs: Profile = (): ProfileResult => ({
-  label: 'nextjs',
   compilerOptions: composeAtoms(
     base(),
     runtimeUniversal(),

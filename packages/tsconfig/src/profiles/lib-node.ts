@@ -8,7 +8,6 @@ import type { Profile, ProfileResult } from '../types'
  * Composes: base + runtime-node + build-bundler + project-lib.
  */
 export const libNode: Profile = (): ProfileResult => ({
-  label: 'lib-node',
   compilerOptions: composeAtoms(base(), runtimeNode(), buildBundler(), projectLib()),
   include: ['src/**/*'],
   exclude: ['node_modules', 'dist'],
