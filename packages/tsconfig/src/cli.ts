@@ -3,69 +3,141 @@ import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
 import { generate, parsePathsArg } from './init'
-import { LAYER_PRESETS } from './layer-presets'
-import { PROFILES } from './profiles/registry'
+
+import type { Framework, GenOptions, ModuleMode, Runtime, ViewInput } from './init'
 
 function splitNames(s: string): string[] {
   return s.split(',').map((x) => x.trim()).filter(Boolean)
 }
 
+/**
+ * Parse a view spec string: "name:types:include"
+ * types and include are optional, comma-separated within each segment.
+ * Example: "test:vitest/globals:**\/*.test.ts"
+ */
+function parseViewSpec(spec: string): ViewInput {
+  const [name = '', typesStr = '', includeStr = ''] = spec.split(':')
+  return {
+    name: name.trim(),
+    types: typesStr ? typesStr.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+    include: includeStr ? includeStr.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+  }
+}
+
+function buildEquivalentCommand(opts: GenOptions): string {
+  const parts = ['tsconfig gen']
+  parts.push(`--runtime ${opts.runtimes.join(',')}`)
+  parts.push(`--module ${opts.module}`)
+  if (opts.framework && opts.framework !== 'none') parts.push(`--framework ${opts.framework}`)
+  if (opts.lib) parts.push('--lib')
+  if (opts.views) {
+    for (const v of opts.views) {
+      const types = v.types?.join(',') ?? ''
+      const include = v.include?.join(',') ?? ''
+      parts.push(`--view ${v.name}:${types}:${include}`)
+    }
+  }
+  if (opts.references) parts.push(`--references ${opts.references.join(',')}`)
+  if (opts.paths) {
+    const aliases = Object.entries(opts.paths).map(([k, v]) => `${k}=${v[0]}`).join(',')
+    parts.push(`--paths ${aliases}`)
+  }
+  return parts.join(' ')
+}
+
 const gen = defineCommand({
   meta: {
     name: 'gen',
-    description: 'Generate tsconfig.*.json files interactively or from flags.',
+    description: 'Generate tsconfig.json files interactively or from flags.',
   },
   args: {
     cwd: { type: 'string', description: 'Working directory', default: '.' },
-    profile: { type: 'string', description: 'Profile name (e.g. nextjs)' },
-    layers: { type: 'string', description: 'Comma-separated layer names (e.g. app,test)' },
-    paths: { type: 'string', description: 'Path aliases: "@/*=./src/*,@ui/*=../ui/src/*"' },
+    runtime: { type: 'string', description: 'Comma-separated runtimes: node,bun,browser,edge' },
+    module: { type: 'string', description: 'Module mode: bundler or nodenext' },
+    framework: { type: 'string', description: 'Framework: none, react, nextjs, nestjs' },
+    lib: { type: 'boolean', description: 'Enable library mode (declaration output)' },
+    view: { type: 'string', description: 'View spec: name:types:include (use space to repeat)' },
+    references: { type: 'string', description: 'Cross-package references: ../shared,../ui' },
+    paths: { type: 'string', description: 'Path aliases: @/*=./src/*' },
   },
   async run({ args }) {
     const cwd = args.cwd
     const isTty = process.stdout.isTTY ?? false
-    const hasArgs = Boolean(args.profile || args.layers || args.paths)
+    const hasArgs = Boolean(args.runtime || args.module || args.framework)
     const interactive = isTty && !hasArgs
 
-    let profileName = args.profile
-    let layerNames: string[] = args.layers ? splitNames(args.layers) : []
-    let paths: Record<string, readonly string[]> | undefined
-    if (args.paths) paths = parsePathsArg(args.paths)
+    let opts: GenOptions
 
     if (interactive) {
-      p.intro('tsconfig')
+      p.intro('tsconfig generator')
 
-      const selected = await p.select({
-        message: 'Which profile?',
-        options: PROFILES.map((d) => ({ value: d.name, label: d.label, hint: d.description })),
-      })
-      if (p.isCancel(selected)) { p.cancel('Cancelled'); process.exit(0) }
-      profileName = selected
-
-      const chosen = await p.multiselect({
-        message: 'Which layers? (leave empty for a single tsconfig.json)',
+      const framework = await p.select<Framework>({
+        message: 'Framework?',
         options: [
-          ...Object.entries(LAYER_PRESETS).map(([value, preset]) => ({
-            value,
-            label: preset.label,
-            hint: preset.hint,
-          })),
-          { value: 'custom', label: 'custom…', hint: 'enter your own names' },
+          { value: 'none', label: 'None', hint: 'plain TypeScript' },
+          { value: 'react', label: 'React', hint: 'Vite, CRA, etc.' },
+          { value: 'nextjs', label: 'Next.js', hint: 'App Router, RSC' },
+          { value: 'nestjs', label: 'NestJS', hint: 'decorators + DI' },
         ],
-        required: false,
       })
-      if (p.isCancel(chosen)) { p.cancel('Cancelled'); process.exit(0) }
+      if (p.isCancel(framework)) { p.cancel('Cancelled'); process.exit(0) }
 
-      if (chosen.includes('custom')) {
-        const input = await p.text({
-          message: 'Layer names (comma-separated)',
-          placeholder: 'app,test',
-          defaultValue: chosen.filter((x) => x !== 'custom').join(',') || 'app,test',
+      const defaultRuntimes: Runtime[] =
+        framework === 'nextjs' ? ['node', 'browser'] :
+        framework === 'nestjs' ? ['node'] :
+        framework === 'react' ? ['browser'] :
+        ['node']
+
+      const runtimes = await p.multiselect<Runtime>({
+        message: 'Runtime(s)?',
+        options: [
+          { value: 'node', label: 'Node.js' },
+          { value: 'bun', label: 'Bun' },
+          { value: 'browser', label: 'Browser' },
+          { value: 'edge', label: 'Edge (Cloudflare Workers, etc.)' },
+        ],
+        initialValues: defaultRuntimes,
+        required: true,
+      })
+      if (p.isCancel(runtimes)) { p.cancel('Cancelled'); process.exit(0) }
+
+      const defaultModule: ModuleMode =
+        framework === 'nestjs' ? 'nodenext' : 'bundler'
+
+      const moduleMode = await p.select<ModuleMode>({
+        message: 'Module system?',
+        options: [
+          { value: 'bundler', label: 'Bundler', hint: 'Vite, Next.js, tsdown — no emit' },
+          { value: 'nodenext', label: 'NodeNext', hint: 'tsc emit, strict ESM/CJS' },
+        ],
+        initialValue: defaultModule,
+      })
+      if (p.isCancel(moduleMode)) { p.cancel('Cancelled'); process.exit(0) }
+
+      const libMode = await p.confirm({
+        message: 'Library mode? (enables declaration + isolatedDeclarations)',
+        initialValue: false,
+      })
+      if (p.isCancel(libMode)) { p.cancel('Cancelled'); process.exit(0) }
+
+      const addViews = await p.confirm({
+        message: 'Add extra tsconfig views? (e.g. test, build)',
+        initialValue: false,
+      })
+      if (p.isCancel(addViews)) { p.cancel('Cancelled'); process.exit(0) }
+
+      const views: ViewInput[] = []
+      if (addViews) {
+        const viewInput = await p.text({
+          message: 'View specs (space-separated, format: name:types:include)',
+          placeholder: 'test:vitest/globals:**/*.test.ts',
         })
-        if (p.isCancel(input)) { p.cancel('Cancelled'); process.exit(0) }
-        layerNames = splitNames(input)
-      } else {
-        layerNames = chosen
+        if (p.isCancel(viewInput)) { p.cancel('Cancelled'); process.exit(0) }
+        if (viewInput.trim()) {
+          for (const spec of viewInput.trim().split(' ').map((s) => s.trim()).filter(Boolean)) {
+            views.push(parseViewSpec(spec))
+          }
+        }
       }
 
       const pathsInput = await p.text({
@@ -74,23 +146,56 @@ const gen = defineCommand({
         defaultValue: '',
       })
       if (p.isCancel(pathsInput)) { p.cancel('Cancelled'); process.exit(0) }
-      const raw = pathsInput.trim()
-      if (raw) paths = parsePathsArg(raw)
-    } else if (!profileName) {
-      console.error(
-        '--profile is required in non-interactive mode.\n' +
-          `  Available profiles: ${PROFILES.map((p) => p.name).join(', ')}`,
-      )
-      process.exit(1)
+      const paths = pathsInput.trim() ? parsePathsArg(pathsInput.trim()) : undefined
+
+      opts = {
+        cwd,
+        framework: framework === 'none' ? undefined : framework,
+        runtimes,
+        module: moduleMode,
+        lib: libMode,
+        views: views.length > 0 ? views : undefined,
+        paths,
+      }
+    } else {
+      // flag mode
+      if (!args.runtime) {
+        console.error('--runtime is required in non-interactive mode (e.g. --runtime node)')
+        process.exit(1)
+      }
+      if (!args.module) {
+        console.error('--module is required in non-interactive mode (e.g. --module bundler)')
+        process.exit(1)
+      }
+
+      const runtimes = splitNames(args.runtime) as Runtime[]
+      const moduleMode = args.module as ModuleMode
+      const views: ViewInput[] = args.view
+        ? splitNames(args.view).map(parseViewSpec)
+        : []
+      const references = args.references ? splitNames(args.references) : undefined
+      const paths = args.paths ? parsePathsArg(args.paths) : undefined
+
+      opts = {
+        cwd,
+        framework: (args.framework as Framework) || undefined,
+        runtimes,
+        module: moduleMode,
+        lib: args.lib,
+        views: views.length > 0 ? views : undefined,
+        references,
+        paths,
+      }
     }
 
     const spinner = interactive ? p.spinner() : null
     spinner?.start('Generating tsconfig files')
 
     try {
-      const result = await generate({ cwd, profile: profileName!, layers: layerNames, paths })
+      const result = await generate(opts)
       spinner?.stop('Done')
       if (interactive) {
+        p.log.info(`Equivalent command:\n  ${buildEquivalentCommand(opts)}`)
         p.outro(`Generated ${result.written.length} file(s): ${result.written.join(', ')}`)
       } else {
         for (const f of result.written) console.log(`write  ${f}`)
