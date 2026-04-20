@@ -71,6 +71,35 @@ function deepClone(obj: Record<string, unknown>): Record<string, unknown> {
   return JSON.parse(JSON.stringify(obj)) as Record<string, unknown>
 }
 
+// Fields owned by the project — never overwrite unless the user explicitly selects them.
+// 'added' changes to paths are allowed (tool is introducing aliases for the first time).
+export const PRESERVE_KEYS = ['include', 'exclude', 'references'] as const
+export const PRESERVE_IF_EXISTING_KEYS = ['compilerOptions.paths'] as const
+
+// Used by non-interactive writeFiles: accept everything except project-owned structural fields.
+export function autoAccepted(changes: FieldChange[]): Set<string> {
+  return new Set(
+    changes
+      .filter((c) => {
+        if ((PRESERVE_KEYS as readonly string[]).includes(c.key)) return false
+        if ((PRESERVE_IF_EXISTING_KEYS as readonly string[]).includes(c.key) && c.kind !== 'added') return false
+        return true
+      })
+      .map((c) => c.key),
+  )
+}
+
+// Used by interactive CLI: added fields default to unselected (user decides).
+export function defaultSelected(changes: FieldChange[]): string[] {
+  return changes
+    .filter((c) => {
+      if ((PRESERVE_KEYS as readonly string[]).includes(c.key)) return false
+      if ((PRESERVE_IF_EXISTING_KEYS as readonly string[]).includes(c.key) && c.kind !== 'added') return false
+      return c.kind !== 'added'
+    })
+    .map((c) => c.key)
+}
+
 export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set(), merges: Map<string, string> = new Map()): Promise<WriteResult> {
   const result: WriteResult = { written: [], unchanged: [], skipped: [] }
   await Promise.all(
@@ -92,7 +121,14 @@ export async function applyWrites(plans: FilePlan[], skip: Set<string> = new Set
 }
 
 export async function writeFiles(config: RenderedConfig, cwd: string): Promise<WriteResult> {
-  return applyWrites(await planWrites(config, cwd))
+  const plans = await planWrites(config, cwd)
+  const merges = new Map<string, string>()
+  for (const plan of plans) {
+    if (plan.kind === 'changed') {
+      merges.set(plan.filename, mergeWithChanges(plan, autoAccepted(plan.changes)))
+    }
+  }
+  return applyWrites(plans, new Set(), merges)
 }
 
 function diffObjects(current: Record<string, unknown>, generated: Record<string, unknown>, prefix = ''): FieldChange[] {

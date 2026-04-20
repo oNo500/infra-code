@@ -3,7 +3,7 @@ import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
 import { applyWrites, generate, parsePathsArg, planGenerate } from './generate'
-import { mergeWithChanges } from './write'
+import { defaultSelected, mergeWithChanges } from './write'
 import { splitNames } from './utils'
 
 import type { FieldChange } from './write'
@@ -205,20 +205,12 @@ const main = defineCommand({
             label: formatChange(c),
             hint: c.key,
           }))
-          const defaultSelected = plan.changes
-            .filter((c) => {
-              // always preserve project-owned structural fields (any kind of change)
-              if (['include', 'exclude', 'references'].includes(c.key)) return false
-              // only preserve existing paths aliases (not new ones added by the tool)
-              if (c.key === 'compilerOptions.paths' && c.kind !== 'added') return false
-              return c.kind !== 'added'
-            })
-            .map((c) => c.key)
+          const preSelected = defaultSelected(plan.changes)
 
           const selected = orExit(await p.multiselect<string>({
             message: `${plan.filename} — select changes to apply:`,
             options,
-            initialValues: defaultSelected,
+            initialValues: preSelected,
             required: false,
           }))
 
