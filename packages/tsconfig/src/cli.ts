@@ -56,7 +56,7 @@ const gen = defineCommand({
     module: { type: 'string', description: 'Module mode: bundler or nodenext' },
     framework: { type: 'string', description: 'Framework: none, react, nextjs, nestjs' },
     lib: { type: 'boolean', description: 'Enable library mode (declaration output)' },
-    view: { type: 'string', description: 'View spec: name:types:include (use space to repeat)' },
+    view: { type: 'string', description: 'View spec: name:types:include (repeat flag for multiple views)', multiple: true },
     references: { type: 'string', description: 'Cross-package references: ../shared,../ui' },
     paths: { type: 'string', description: 'Path aliases: @/*=./src/*' },
   },
@@ -170,15 +170,14 @@ const gen = defineCommand({
 
       const runtimes = splitNames(args.runtime) as Runtime[]
       const moduleMode = args.module as ModuleMode
-      const views: ViewInput[] = args.view
-        ? splitNames(args.view).map(parseViewSpec)
-        : []
+      const viewArgs = args.view ? (Array.isArray(args.view) ? args.view : [args.view]) : []
+      const views: ViewInput[] = viewArgs.map(parseViewSpec)
       const references = args.references ? splitNames(args.references) : undefined
       const paths = args.paths ? parsePathsArg(args.paths) : undefined
 
       opts = {
         cwd,
-        framework: (args.framework as Framework) || undefined,
+        framework: args.framework && args.framework !== 'none' ? (args.framework as Framework) : undefined,
         runtimes,
         module: moduleMode,
         lib: args.lib,
