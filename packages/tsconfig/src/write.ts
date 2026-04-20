@@ -62,15 +62,11 @@ export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, a
   return `${GENERATED_HEADER}\n${JSON.stringify(result, null, 2)}\n`
 }
 
-// Fields owned by the project — never overwrite unless the user explicitly selects them.
-// 'added' changes to paths are allowed (tool is introducing aliases for the first time).
-export const PRESERVE_KEYS: readonly string[] = ['include', 'exclude', 'references']
-export const PRESERVE_IF_EXISTING_KEYS: readonly string[] = ['compilerOptions.paths']
+// Fields owned by the project — never auto-overwrite. User edits manually or selects in interactive mode.
+export const PRESERVE_KEYS: readonly string[] = ['include', 'exclude', 'references', 'compilerOptions.paths']
 
 function isPreserved(c: FieldChange): boolean {
-  if (PRESERVE_KEYS.includes(c.key)) return true
-  if (PRESERVE_IF_EXISTING_KEYS.includes(c.key) && c.kind !== 'added') return true
-  return false
+  return PRESERVE_KEYS.includes(c.key)
 }
 
 // Used by non-interactive writeFiles: accept everything except project-owned structural fields.
