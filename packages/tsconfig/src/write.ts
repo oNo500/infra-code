@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import { fileToString } from './render'
+import { fileToString, GENERATED_HEADER } from './render'
 import { isErrnoException } from './utils'
 
 import type { RenderedConfig } from './types'
@@ -64,7 +64,7 @@ export function mergeWithChanges(plan: Extract<FilePlan, { kind: 'changed' }>, a
       obj[last] = change.newValue
     }
   }
-  return JSON.stringify(result, null, 2) + '\n'
+  return `${GENERATED_HEADER}\n${JSON.stringify(result, null, 2)}\n`
 }
 
 function deepClone(obj: Record<string, unknown>): Record<string, unknown> {

@@ -52,11 +52,11 @@ export const buildTscEmit = (): CompilerOptions => ({
   module: 'nodenext',
   moduleResolution: 'nodenext',
   noEmit: false,
-  declaration: true,
   outDir: 'dist',
 })
 
 export const projectLib = (): CompilerOptions => ({
+  declaration: true,
   isolatedDeclarations: true,
   allowJs: false,
   noPropertyAccessFromIndexSignature: true,
