@@ -59,8 +59,7 @@ function applyArrayField<T>(base: readonly T[], field: ArrayField<T>): readonly 
 function isArrayField(v: unknown): v is ArrayField<unknown> {
   if (v === 'none') return true
   if (Array.isArray(v)) return true
-  if (isPlainObject(v) && 'merge' in v) return true
-  return false
+  return isPlainObject(v) && 'merge' in v
 }
 
 export type { ArrayField }

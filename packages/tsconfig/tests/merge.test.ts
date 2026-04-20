@@ -69,4 +69,13 @@ describe('mergeCompilerOptions', () => {
   it('handles undefined over', () => {
     expect(mergeCompilerOptions({ types: ['node'] }, undefined).types).toEqual(['node'])
   })
+
+  it('handles both undefined', () => {
+    expect(mergeCompilerOptions(undefined, undefined)).toEqual({})
+  })
+
+  it('ArrayControl append with no value: appends nothing', () => {
+    const r = mergeCompilerOptions({ types: ['node'] }, { types: { merge: 'append' } })
+    expect(r.types).toEqual(['node'])
+  })
 })
