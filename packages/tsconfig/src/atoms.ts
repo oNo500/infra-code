@@ -33,12 +33,10 @@ export const runtimeBun = (): CompilerOptions => ({
 })
 
 export const runtimeBrowser = (): CompilerOptions => ({
-  types: [],
   lib: ['esnext', 'DOM', 'DOM.Iterable'],
 })
 
 export const runtimeEdge = (): CompilerOptions => ({
-  types: [],
   lib: ['esnext'],
 })
 

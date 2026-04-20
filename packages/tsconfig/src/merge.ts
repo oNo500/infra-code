@@ -39,7 +39,8 @@ export function normalizeCompilerOptions(opts: CompilerOptions): CompilerOptions
   const result: CompilerOptions = {}
   for (const [key, value] of Object.entries(opts)) {
     if (isArrayField(value)) {
-      result[key] = applyArrayField([], value)
+      const arr = applyArrayField([], value)
+      if (arr.length > 0) result[key] = arr
     } else {
       result[key] = value
     }
