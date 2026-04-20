@@ -3,6 +3,9 @@
 {
   "extends": "@infra-x/typescript-config/recipe-lib-react.json",
   "compilerOptions": {
+    "paths": {
+      "@workspace/ui/*": ["./src/*"]
+    },
     "target": "esnext",
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -20,11 +23,7 @@
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
-    "lib": [
-      "esnext",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
     "module": "preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -32,7 +31,5 @@
     "isolatedDeclarations": false,
     "declaration": false
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

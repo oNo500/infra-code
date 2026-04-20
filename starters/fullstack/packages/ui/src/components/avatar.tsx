@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { Avatar as AvatarPrimitive } from "src/components/avatar"
+import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
 
-import { cn } from "src/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 
 function Avatar({
   className,
