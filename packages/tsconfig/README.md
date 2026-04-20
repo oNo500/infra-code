@@ -9,13 +9,12 @@ See [RFC 001](../../docs/rfc/001-tsconfig-dsl.md) for the full design rationale.
 
 ## Why
 
-TS native `extends` is **field-level replacement**, not deep merge. Array fields (`types`, `lib`, `plugins`) silently overwrite across layers — stacking `runtime-universal` (`types: ['node']`) and `framework-vitest` (`types: ['vitest/globals']`) drops `node`, and users have to manually re-declare the combined value in every leaf tsconfig.
+TS native `extends` is **field-level replacement**, not deep merge. Array fields (`types`, `lib`, `plugins`) silently overwrite across layers — stacking a profile with `types: ['node']` and a test layer with `types: ['vitest/globals']` drops `node`, forcing users to re-declare the combined value manually.
 
 This package generates `tsconfig.json` from a TypeScript DSL with:
 
-- **Deep-merge** for arrays and objects (with explicit verbs for precise control)
+- **Smart merge** for array fields (`types`, `lib`, `plugins`) — append + dedupe by default, override when needed
 - **Profile-based defaults** — `nextjs()` / `viteReact()` / `libNode()` / etc.
-- **Source-traceable output** — `tsconfig explain` shows where every field came from
 - **Semantic drift detection** — `tsconfig sync --check` ignores formatter-only diffs
 
 ## Quick start
@@ -81,17 +80,28 @@ Then `tsconfig gen` produces:
 | Object (`paths`)                  | User deep-merges with profile   | User keys add             |
 | Array (`types`, `lib`, `plugins`) | User appends to profile, dedupe | User adds after profile   |
 
-When the default is wrong, wrap the value in a verb:
+When the default is wrong, use an `ArrayControl` object:
 
 ```ts
 compilerOptions: {
-  types: { $set: ['node'] },       // replace entirely, ignore profile
-  lib: { $remove: ['DOM'] },       // remove from profile default
-  plugins: { $prepend: [...] },    // prepend instead of append
+  // replace entirely — ignore profile's types
+  types: { merge: 'replace', value: ['node'] },
+
+  // clear to empty
+  lib: 'none',
+
+  // explicit append (same as writing the array directly)
+  plugins: { merge: 'append', value: [{ name: 'my-plugin' }] },
 }
 ```
 
-Supported verbs: `$set` · `$remove` · `$prepend` · `$append`.
+`ArrayField<T>` accepts three forms:
+
+| Form | Meaning |
+| ---- | ------- |
+| `T[]` | Append to profile value, dedupe |
+| `'none'` | Clear to `[]` |
+| `{ merge: 'append' \| 'replace' \| 'none', value?: T[] }` | Full control |
 
 ### Layers
 
@@ -145,33 +155,6 @@ tsconfig sync --check               # CI: exit 1 if disk drifts from DSL
 
 `--check` is **semantic**, not byte-wise. It parses the disk JSON (JSONC-tolerant — comments and trailing commas OK), then deep-compares with the DSL output. Formatter passes, whitespace changes, and key reordering don't trigger drift — only actual value changes do.
 
-### `tsconfig explain`
-
-Trace every field to its origin — profile default, root override, or specific layer.
-
-```bash
-tsconfig explain                    # all layers
-tsconfig explain test               # one layer
-tsconfig explain test --field types # one field
-tsconfig explain test --format json # machine-readable
-tsconfig explain test --hypothetical
-```
-
-`--hypothetical` shows what each field would become if you removed a specific source — useful for "do I still need this override?" decisions.
-
-Example output:
-
-```
-tsconfig.test.json   (layer: test)
-
-compilerOptions:
-  types:   [profile:nextjs → layer:test]
-    - "node"             [profile:nextjs]
-    - "vitest/globals"   [layer:test]
-    if without profile:nextjs → ["vitest/globals"]
-    if without layer:test    → ["node"]
-```
-
 ## Workflow
 
 ### First-time setup
@@ -205,12 +188,12 @@ Your overrides in `tsconfig.config.ts` stay — only the profile-provided defaul
 ## Status
 
 - Profiles: `nextjs()`, `viteReact()`, `libNode()`, `libReact()`, `appBun()`, `appNestjs()`
-- Merge verbs: `$set`, `$remove`, `$prepend`, `$append`
-- CLI: `gen` (unified scaffold + regen), `sync --check`, `explain`
+- Array merge control: shorthand array, `'none'`, `ArrayControl { merge, value }`
+- CLI: `gen` (unified scaffold + regen), `sync --check`
 - Interactive + non-interactive (auto-detects TTY)
 - Semantic drift detection (JSONC-tolerant)
 - Self-hosted — this package generates its own tsconfig
 
 ## Roadmap
 
-See [ROADMAP.md](./ROADMAP.md). Planned: interactive TUI for `explain`, watch mode, parameterized profiles (`nextjs({ version: 16 })`), edge runtime profiles.
+See [ROADMAP.md](./ROADMAP.md). Planned: watch mode, parameterized profiles (`nextjs({ version: 16 })`), edge runtime profiles.
