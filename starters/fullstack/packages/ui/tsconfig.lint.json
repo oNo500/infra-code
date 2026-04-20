@@ -1,8 +1,0 @@
-{
-  "extends": "@infra-x/typescript-config/recipe-lib-react.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src", "turbo"],
-  "exclude": ["node_modules", "dist"]
-}

@@ -1,4 +1,4 @@
-import { base, typeAware, unicorn, depend } from '@infra-x/code-quality/lint'
+import { base, typeAware, unicorn, depend, vitest } from '@infra-x/code-quality/lint'
 import { defineConfig } from 'oxlint'
 
 export default defineConfig({
