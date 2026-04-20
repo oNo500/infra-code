@@ -5,11 +5,6 @@ type Jsx = 'preserve' | 'react-native' | 'react-jsx' | 'react-jsxdev' | 'react'
 type ModuleDetection = 'auto' | 'legacy' | 'force'
 type NewLine = 'crlf' | 'lf'
 
-/**
- * compilerOptions accepted by the DSL. Enum fields use string literals matching
- * what tsc accepts in tsconfig.json (case-insensitive). Unknown keys are allowed
- * via the index signature and validated at runtime against optionDeclarations.
- */
 export interface CompilerOptions {
   target?: Target
   module?: Module
@@ -65,39 +60,20 @@ export interface ArrayControl<T> {
   value?: readonly T[]
 }
 
-// Shorthand: array = append, 'none' = clear
 export type ArrayField<T> = readonly T[] | 'none' | ArrayControl<T>
 
-export interface LayerInput {
-  /** DSL-level extends — inherit from another sibling layer */
-  extends?: string
+export interface ViewInput {
+  name: string
   compilerOptions?: CompilerOptions
   include?: readonly string[]
   exclude?: readonly string[]
-  files?: readonly string[]
 }
 
-export interface ProfileResult {
+export interface RenderInput {
   compilerOptions: CompilerOptions
   include?: readonly string[]
   exclude?: readonly string[]
-}
-
-/**
- * A Profile is a function that returns its baseline output.
- * Accepting options now keeps the door open for parameterisation (e.g. nextjs({ version })).
- */
-export type Profile<Options = void> = (options?: Options) => ProfileResult
-
-export interface DefineTsconfigInput {
-  profile?: ProfileResult
-  compilerOptions?: CompilerOptions
-  include?: readonly string[]
-  exclude?: readonly string[]
-  layers?: Record<string, LayerInput>
-  /** Which layer becomes tsconfig.json. Defaults to 'app' if present, else first declared. */
-  primary?: string
-  /** References stay as-is — we don't manage cross-package topology. */
+  views?: ViewInput[]
   references?: readonly { path: string }[]
 }
 

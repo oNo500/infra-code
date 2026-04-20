@@ -1,4 +1,3 @@
-import { defineTsconfig } from './define'
 import {
   base,
   buildBundler,
@@ -12,18 +11,19 @@ import {
   runtimeBun,
   runtimeEdge,
   runtimeNode,
-} from './profiles/atoms'
-import { commitPlan, planSync, syncToDisk } from './sync'
+} from './atoms'
+import { renderConfig } from './render'
+import { applyWrites, planWrites, writeFiles } from './write'
 import { splitNames } from './utils'
 
-import type { CompilerOptions, LayerInput } from './types'
-import type { FilePlan } from './sync'
+import type { CompilerOptions, RenderInput, ViewInput as RenderViewInput } from './types'
+import type { FilePlan, WriteResult } from './write'
 
 export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs'
 export type Runtime = 'node' | 'bun' | 'browser' | 'edge'
 export type ModuleMode = 'bundler' | 'nodenext'
 
-export interface ViewInput {
+export interface ViewSpec {
   name: string
   types?: string[]
   include?: string[]
@@ -35,32 +35,22 @@ export interface GenOptions {
   module: ModuleMode
   framework?: Framework
   lib?: boolean
-  views?: ViewInput[]
+  views?: ViewSpec[]
   references?: string[]
   paths?: Record<string, readonly string[]>
 }
 
-export interface GenResult {
-  written: string[]
+export async function generate(opts: GenOptions): Promise<WriteResult> {
+  return writeFiles(renderConfig(buildRenderInput(opts)), opts.cwd)
 }
 
-export async function generate(opts: GenOptions): Promise<GenResult> {
-  const rendered = buildRendered(opts)
-  const result = await syncToDisk(rendered, opts.cwd)
-  return { written: result.written }
+export async function planGenerate(opts: GenOptions): Promise<FilePlan[]> {
+  return planWrites(renderConfig(buildRenderInput(opts)), opts.cwd)
 }
 
-export async function planGenerate(opts: GenOptions): Promise<{ plans: FilePlan[]; rendered: ReturnType<typeof defineTsconfig> }> {
-  const rendered = buildRendered(opts)
-  const plans = await planSync(rendered, opts.cwd)
-  return { plans, rendered }
-}
+export { applyWrites }
 
-export async function commitGenerate(plans: FilePlan[], skip: Set<string> = new Set()) {
-  return commitPlan(plans, skip)
-}
-
-function buildRendered(opts: GenOptions) {
+function buildRenderInput(opts: GenOptions): RenderInput {
   const atoms: CompilerOptions[] = [base()]
 
   for (const rt of opts.runtimes) {
@@ -78,39 +68,27 @@ function buildRendered(opts: GenOptions) {
 
   if (opts.lib) atoms.push(projectLib())
 
-  const baseOptions = composeAtoms(...atoms)
+  const compilerOptions = composeAtoms(...atoms)
 
   if (opts.paths) {
-    baseOptions.paths = Object.fromEntries(
+    compilerOptions.paths = Object.fromEntries(
       Object.entries(opts.paths).map(([k, v]) => [k, [...v]]),
     )
   }
 
-  let layers: Record<string, LayerInput> | undefined
-  if (opts.views && opts.views.length > 0) {
-    if (opts.views.some((v) => v.name === 'app')) {
-      throw new Error("View name 'app' is reserved. Choose a different name.")
-    }
-    layers = { app: {} }
-    for (const view of opts.views) {
-      layers[view.name] = {
-        extends: 'app',
-        compilerOptions: view.types ? { types: view.types } : undefined,
-        include: view.include,
-      }
-    }
+  const views: RenderViewInput[] | undefined = opts.views?.map((v) => ({
+    name: v.name,
+    compilerOptions: v.types ? { types: v.types } : undefined,
+    include: v.include,
+  }))
+
+  return {
+    compilerOptions,
+    views,
+    references: opts.references?.map((p) => ({ path: p })),
   }
-
-  const refs = opts.references?.map((p) => ({ path: p }))
-
-  return defineTsconfig({
-    profile: { compilerOptions: baseOptions },
-    layers,
-    references: refs,
-  })
 }
 
-/** Parse a paths string like "@/*=./src/*,@ui/*=../ui/src/*" into an object. */
 export function parsePathsArg(input: string): Record<string, readonly string[]> {
   const result: Record<string, readonly string[]> = {}
   for (const pair of splitNames(input)) {

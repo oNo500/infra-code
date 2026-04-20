@@ -1,4 +1,4 @@
-export { defineTsconfig, renderToString } from './define'
+export { renderConfig, fileToString } from './render'
 export { mergeCompilerOptions } from './merge'
 export {
   base,
@@ -13,16 +13,14 @@ export {
   frameworkNextjs,
   frameworkNestjs,
   composeAtoms,
-} from './profiles/atoms'
+} from './atoms'
 export type {
   ArrayControl,
   ArrayField,
   ArrayMerge,
   CompilerOptions,
-  DefineTsconfigInput,
-  LayerInput,
-  Profile,
-  ProfileResult,
+  RenderInput,
+  ViewInput,
   RenderedConfig,
   RenderedFile,
   RenderedTsconfig,

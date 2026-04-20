@@ -1,6 +1,6 @@
-import { dedupe } from '../utils'
+import { dedupe } from './utils'
 
-import type { CompilerOptions } from '../types'
+import type { CompilerOptions } from './types'
 
 export const base = (): CompilerOptions => ({
   target: 'esnext',

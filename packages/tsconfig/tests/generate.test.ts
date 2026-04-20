@@ -3,8 +3,8 @@ import { mkdtempSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { generate, parsePathsArg } from '../src/init'
-import type { GenOptions } from '../src/init'
+import { generate, parsePathsArg } from '../src/generate'
+import type { GenOptions } from '../src/generate'
 
 function tmp() {
   return mkdtempSync(join(tmpdir(), 'tsconfig-gen-'))

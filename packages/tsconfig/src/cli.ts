@@ -2,12 +2,12 @@
 import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
-import { commitGenerate, generate, parsePathsArg, planGenerate } from './init'
+import { applyWrites, generate, parsePathsArg, planGenerate } from './generate'
 import { splitNames } from './utils'
 
-import type { Framework, GenOptions, ModuleMode, Runtime, ViewInput } from './init'
+import type { Framework, GenOptions, ModuleMode, Runtime, ViewSpec } from './generate'
 
-function parseViewSpec(spec: string): ViewInput {
+function parseViewSpec(spec: string): ViewSpec {
   const [name = '', typesStr = '', includeStr = ''] = spec.split(':')
   return {
     name: name.trim(),
@@ -115,7 +115,7 @@ const main = defineCommand({
         initialValue: false,
       }))
 
-      const views: ViewInput[] = []
+      const views: ViewSpec[] = []
       if (addViews) {
         const viewInput = orExit(await p.text({
           message: 'View specs (space-separated, format: name:types:include)',
@@ -158,7 +158,7 @@ const main = defineCommand({
       const runtimes = splitNames(args.runtime) as Runtime[]
       const moduleMode = args.module as ModuleMode
       const viewArgs = args.view ? (Array.isArray(args.view) ? args.view : [args.view]) : []
-      const views: ViewInput[] = viewArgs.map(parseViewSpec)
+      const views: ViewSpec[] = viewArgs.map(parseViewSpec)
       const references = args.references ? splitNames(args.references) : undefined
       const paths = args.paths ? parsePathsArg(args.paths) : undefined
 
@@ -176,7 +176,7 @@ const main = defineCommand({
 
     try {
       if (interactive) {
-        const { plans } = await planGenerate(opts)
+        const plans = await planGenerate(opts)
         const skip = new Set<string>()
 
         for (const plan of plans) {
@@ -193,7 +193,7 @@ const main = defineCommand({
           if (!confirm) skip.add(plan.filename)
         }
 
-        const result = await commitGenerate(plans, skip)
+        const result = await applyWrites(plans, skip)
         p.log.info(`Equivalent command:\n  ${buildEquivalentCommand(opts)}`)
         const summary = [
           result.written.length > 0 ? `written: ${result.written.join(', ')}` : '',
