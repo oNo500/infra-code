@@ -10,10 +10,12 @@
     "format:check": "turbo run format:check",
     "test": "turbo run test --continue",
     "typecheck": "turbo run typecheck",
-    "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm test"
+    "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm test",
+    "theme": "bun packages/cli/src/index.ts theme"
   },
   "devDependencies": {
     "@infra-x/code-quality": "^0.4.0",
+    "bun-types": "^1.3.13",
     "oxfmt": "^0.45.0",
     "oxlint": "^1.59.0",
     "taze": "^19.10.0",
