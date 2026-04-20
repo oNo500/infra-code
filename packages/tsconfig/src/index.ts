@@ -1,6 +1,5 @@
 export { defineTsconfig, renderToString } from './define'
 export { mergeCompilerOptions } from './merge'
-export { checkAgainstDisk, syncToDisk } from './sync'
 export { nextjs } from './profiles/nextjs'
 export { viteReact } from './profiles/vite-react'
 export { libNode } from './profiles/lib-node'

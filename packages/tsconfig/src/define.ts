@@ -1,7 +1,9 @@
 import { buildLayerChain, pickExclude, pickInclude, resolvePrimary } from './layer-chain'
 import { mergeCompilerOptions, normalizeCompilerOptions } from './merge'
+import { validateCompilerOptions } from './compiler-options'
 
 import type {
+  CompilerOptions,
   DefineTsconfigInput,
   LayerInput,
   RenderedConfig,
@@ -27,7 +29,23 @@ function withAutoExcludes(exclude: readonly string[] | undefined): readonly stri
   return missing.length === 0 ? base : [...base, ...missing]
 }
 
+function warnCompilerOptions(opts: CompilerOptions | undefined, context: string): void {
+  if (!opts) return
+  const warnings = validateCompilerOptions(opts as Record<string, unknown>)
+  for (const w of warnings) {
+    const hint = w.suggestion ? ` Did you mean "${w.suggestion}"?` : ''
+    console.warn(`[tsconfig] ${context}: ${w.message}${hint}`)
+  }
+}
+
 export function defineTsconfig(input: DefineTsconfigInput): RenderedConfig {
+  warnCompilerOptions(input.compilerOptions, 'compilerOptions')
+  if (input.layers) {
+    for (const [name, layer] of Object.entries(input.layers)) {
+      warnCompilerOptions(layer.compilerOptions, `layers.${name}.compilerOptions`)
+    }
+  }
+
   const layers = input.layers ?? {}
   const layerNames = Object.keys(layers)
 

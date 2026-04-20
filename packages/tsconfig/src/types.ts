@@ -1,27 +1,60 @@
+type Target = 'es3' | 'es5' | 'es6' | 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'es2023' | 'es2024' | 'es2025' | 'esnext'
+type Module = 'none' | 'commonjs' | 'amd' | 'system' | 'umd' | 'es6' | 'es2015' | 'es2020' | 'es2022' | 'esnext' | 'node16' | 'node18' | 'node20' | 'nodenext' | 'preserve'
+type ModuleResolution = 'node10' | 'node' | 'classic' | 'node16' | 'nodenext' | 'bundler'
+type Jsx = 'preserve' | 'react-native' | 'react-jsx' | 'react-jsxdev' | 'react'
+type ModuleDetection = 'auto' | 'legacy' | 'force'
+type NewLine = 'crlf' | 'lf'
+
 /**
- * Minimal subset of TypeScript compilerOptions fields we support in the DSL.
- * Keep loose; tsc accepts more than this — we only type-check the common ones.
+ * compilerOptions accepted by the DSL. Enum fields use string literals matching
+ * what tsc accepts in tsconfig.json (case-insensitive). Unknown keys are allowed
+ * via the index signature and validated at runtime against optionDeclarations.
  */
 export interface CompilerOptions {
-  strict?: boolean
-  target?: string
-  module?: string
-  moduleResolution?: string
-  jsx?: string
+  target?: Target
+  module?: Module
+  moduleResolution?: ModuleResolution
+  jsx?: Jsx
+  moduleDetection?: ModuleDetection
+  newLine?: NewLine
   lib?: ArrayField<string>
   types?: ArrayField<string>
   paths?: Record<string, string[]>
   plugins?: ArrayField<{ name: string; [k: string]: unknown }>
-  incremental?: boolean
+  strict?: boolean
+  noEmit?: boolean
   declaration?: boolean
   declarationMap?: boolean
   sourceMap?: boolean
-  noEmit?: boolean
+  incremental?: boolean
+  composite?: boolean
+  isolatedDeclarations?: boolean
+  isolatedModules?: boolean
+  allowJs?: boolean
+  checkJs?: boolean
+  noImplicitAny?: boolean
+  noImplicitReturns?: boolean
+  noImplicitThis?: boolean
+  noUnusedLocals?: boolean
+  noUnusedParameters?: boolean
+  noFallthroughCasesInSwitch?: boolean
+  noUncheckedIndexedAccess?: boolean
+  noPropertyAccessFromIndexSignature?: boolean
+  exactOptionalPropertyTypes?: boolean
+  noEmitOnError?: boolean
+  allowImportingTsExtensions?: boolean
+  allowSyntheticDefaultImports?: boolean
+  esModuleInterop?: boolean
+  experimentalDecorators?: boolean
+  emitDecoratorMetadata?: boolean
+  skipLibCheck?: boolean
+  forceConsistentCasingInFileNames?: boolean
+  verbatimModuleSyntax?: boolean
+  erasableSyntaxOnly?: boolean
   outDir?: string
   rootDir?: string
-  isolatedDeclarations?: boolean
-  noPropertyAccessFromIndexSignature?: boolean
-  allowJs?: boolean
+  baseUrl?: string
+  tsBuildInfoFile?: string
   [key: string]: unknown
 }
 
