@@ -13,10 +13,11 @@ import {
   runtimeEdge,
   runtimeNode,
 } from './profiles/atoms'
-import { syncToDisk } from './sync'
+import { commitPlan, planSync, syncToDisk } from './sync'
 import { splitNames } from './utils'
 
 import type { CompilerOptions, LayerInput } from './types'
+import type { FilePlan } from './sync'
 
 export type Framework = 'none' | 'react' | 'nextjs' | 'nestjs'
 export type Runtime = 'node' | 'bun' | 'browser' | 'edge'
@@ -44,6 +45,22 @@ export interface GenResult {
 }
 
 export async function generate(opts: GenOptions): Promise<GenResult> {
+  const rendered = buildRendered(opts)
+  const result = await syncToDisk(rendered, opts.cwd)
+  return { written: result.written }
+}
+
+export async function planGenerate(opts: GenOptions): Promise<{ plans: FilePlan[]; rendered: ReturnType<typeof defineTsconfig> }> {
+  const rendered = buildRendered(opts)
+  const plans = await planSync(rendered, opts.cwd)
+  return { plans, rendered }
+}
+
+export async function commitGenerate(plans: FilePlan[], skip: Set<string> = new Set()) {
+  return commitPlan(plans, skip)
+}
+
+function buildRendered(opts: GenOptions) {
   const atoms: CompilerOptions[] = [base()]
 
   for (const rt of opts.runtimes) {
@@ -86,14 +103,11 @@ export async function generate(opts: GenOptions): Promise<GenResult> {
 
   const refs = opts.references?.map((p) => ({ path: p }))
 
-  const rendered = defineTsconfig({
+  return defineTsconfig({
     profile: { compilerOptions: baseOptions },
     layers,
     references: refs,
   })
-
-  const result = await syncToDisk(rendered, opts.cwd)
-  return { written: result.written }
 }
 
 /** Parse a paths string like "@/*=./src/*,@ui/*=../ui/src/*" into an object. */

@@ -2,7 +2,7 @@
 import * as p from '@clack/prompts'
 import { defineCommand, runMain } from 'citty'
 
-import { generate, parsePathsArg } from './init'
+import { commitGenerate, generate, parsePathsArg, planGenerate } from './init'
 import { splitNames } from './utils'
 
 import type { Framework, GenOptions, ModuleMode, Runtime, ViewInput } from './init'
@@ -174,20 +174,38 @@ const main = defineCommand({
       }
     }
 
-    const spinner = interactive ? p.spinner() : null
-    spinner?.start('Generating tsconfig files')
-
     try {
-      const result = await generate(opts)
-      spinner?.stop('Done')
       if (interactive) {
+        const { plans } = await planGenerate(opts)
+        const skip = new Set<string>()
+
+        for (const plan of plans) {
+          if (plan.kind === 'unchanged') {
+            p.log.info(`unchanged  ${plan.filename}`)
+            continue
+          }
+          if (plan.kind === 'new') {
+            p.log.info(`new  ${plan.filename}`)
+            continue
+          }
+          p.log.message(`\n${plan.diff}`)
+          const confirm = orExit(await p.confirm({ message: `Overwrite ${plan.filename}?` }))
+          if (!confirm) skip.add(plan.filename)
+        }
+
+        const result = await commitGenerate(plans, skip)
         p.log.info(`Equivalent command:\n  ${buildEquivalentCommand(opts)}`)
-        p.outro(`Generated ${result.written.length} file(s): ${result.written.join(', ')}`)
+        const summary = [
+          result.written.length > 0 ? `written: ${result.written.join(', ')}` : '',
+          result.skipped.length > 0 ? `skipped: ${result.skipped.join(', ')}` : '',
+          result.unchanged.length > 0 ? `unchanged: ${result.unchanged.join(', ')}` : '',
+        ].filter(Boolean).join(' · ')
+        p.outro(summary || 'Nothing to do')
       } else {
+        const result = await generate(opts)
         for (const f of result.written) console.log(`write  ${f}`)
       }
     } catch (err) {
-      spinner?.stop('Failed')
       const message = err instanceof Error ? err.message : String(err)
       if (interactive) p.log.error(message)
       else console.error(message)
