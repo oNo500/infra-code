@@ -25,14 +25,15 @@ export interface CompilerOptions {
   [key: string]: unknown
 }
 
-export type ArrayField<T> = readonly T[] | ArrayVerb<T>
+export type ArrayMerge = 'append' | 'replace' | 'none'
 
-export interface ArrayVerb<T> {
-  $set?: readonly T[]
-  $remove?: readonly T[]
-  $prepend?: readonly T[]
-  $append?: readonly T[]
+export interface ArrayControl<T> {
+  merge: ArrayMerge
+  value?: readonly T[]
 }
+
+// 简写：数组 = append，'none' = 清空
+export type ArrayField<T> = readonly T[] | 'none' | ArrayControl<T>
 
 export interface LayerInput {
   /** DSL-level extends — inherit from another sibling layer */
@@ -44,8 +45,6 @@ export interface LayerInput {
 }
 
 export interface ProfileResult {
-  /** Human-readable origin label for --explain (e.g. 'nextjs → base') */
-  label: string
   compilerOptions: CompilerOptions
   include?: readonly string[]
   exclude?: readonly string[]
