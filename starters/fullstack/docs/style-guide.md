@@ -2,15 +2,15 @@
 
 ## 命名规范
 
-| 类型 | 约定 | 示例 |
-|---|---|---|
-| 文件 / 目录 | kebab-case | `user-profile.tsx`, `auth-provider/` |
-| 组件（代码中） | PascalCase | `UserProfile`, `AuthProvider` |
-| 函数 / 变量 | camelCase | `getUserData`, `isAuthenticated` |
-| 类型 / 接口 | PascalCase | `User`, `AuthConfig` |
-| 常量 | UPPER_SNAKE_CASE | `API_BASE_URL`, `MAX_RETRIES` |
-| `lib/` | — | 对第三方库的封装（axios 实例、dayjs 配置等） |
-| `utils/` | — | 纯工具函数，与第三方库无关 |
+| 类型           | 约定             | 示例                                         |
+| -------------- | ---------------- | -------------------------------------------- |
+| 文件 / 目录    | kebab-case       | `user-profile.tsx`, `auth-provider/`         |
+| 组件（代码中） | PascalCase       | `UserProfile`, `AuthProvider`                |
+| 函数 / 变量    | camelCase        | `getUserData`, `isAuthenticated`             |
+| 类型 / 接口    | PascalCase       | `User`, `AuthConfig`                         |
+| 常量           | UPPER_SNAKE_CASE | `API_BASE_URL`, `MAX_RETRIES`                |
+| `lib/`         | —                | 对第三方库的封装（axios 实例、dayjs 配置等） |
+| `utils/`       | —                | 纯工具函数，与第三方库无关                   |
 
 ## 代码风格
 
