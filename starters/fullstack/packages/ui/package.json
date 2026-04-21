@@ -36,7 +36,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@infra-x/typescript-config": "^2.0.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@turbo/gen": "^2.8.20",
     "@types/node": "^25.5.0",

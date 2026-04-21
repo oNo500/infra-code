@@ -37,7 +37,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@infra-x/typescript-config": "^2.0.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
