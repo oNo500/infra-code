@@ -3,4 +3,4 @@ packages:
   - apps/*
 
 publicHoistPattern:
-  - "*eslint*"
+  - '*eslint*'

@@ -61,5 +61,3 @@ Constitution
 - **Environment variables**：所有配置必须通过环境变量注入，禁止硬编码配置值。环境变量必须集中在 `src/config/env.ts` 中验证和导出；禁止在其他文件直接访问 `process.env.*` 或 `import.meta.env.*`。
 - **No double type assertions**：禁止双重类型断言（`value as X as Y`）。出现双重断言说明存在类型不匹配，是设计缺陷的信号。修复设计，而不是绕过类型系统。
 - **No emoji in source code**：禁止在所有源文件中使用 emoji，除非项目负责人针对特定用途明确要求。
-
-

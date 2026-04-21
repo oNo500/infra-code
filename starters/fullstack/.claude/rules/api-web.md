@@ -97,12 +97,12 @@ src/
 
 **默认用 API Route**，承载所有业务逻辑。Server Action 仅作为薄代理，用于触发 `revalidateTag` / `revalidatePath`。
 
-| 场景 | 方案 |
-|------|------|
-| 表单提交、按钮点击等内部 mutation | API Route（可搭配 Server Action 做 revalidate） |
-| Webhook（Stripe、GitHub 等外部系统） | API Route |
-| 移动端 / 第三方消费接口 | API Route |
-| Better Auth catch-all | API Route（保持现状） |
+| 场景                                 | 方案                                            |
+| ------------------------------------ | ----------------------------------------------- |
+| 表单提交、按钮点击等内部 mutation    | API Route（可搭配 Server Action 做 revalidate） |
+| Webhook（Stripe、GitHub 等外部系统） | API Route                                       |
+| 移动端 / 第三方消费接口              | API Route                                       |
+| Better Auth catch-all                | API Route（保持现状）                           |
 
 > [!TIP]
 > 这样做的核心价值：业务逻辑集中在 `features/*/mutations` 和 `features/*/queries` 纯函数中，不依赖 Next.js，可独立测试。
@@ -130,7 +130,10 @@ import { db } from '@/db'
 import { posts } from '@/db/schema'
 
 export function createPost(userId: string, data: CreatePostInput) {
-  return db.insert(posts).values({ ...data, userId }).returning()
+  return db
+    .insert(posts)
+    .values({ ...data, userId })
+    .returning()
 }
 ```
 

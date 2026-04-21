@@ -4,15 +4,16 @@
 
 ## 目录
 
-1. Constitution            项目原则（AI需要遵守的第一宪法）
-2. Architecture            架构和分层
-3. Tech Stack              技术栈和约束
-4. Quickstart              快速上手
-5. Style Guide             风格指南（命名规范、代码风格、日志错误、测试约定）
+1. Constitution 项目原则（AI需要遵守的第一宪法）
+2. Architecture 架构和分层
+3. Tech Stack 技术栈和约束
+4. Quickstart 快速上手
+5. Style Guide 风格指南（命名规范、代码风格、日志错误、测试约定）
 
 ### Template
 
-### 1. Constitution  
+### 1. Constitution
+
 ```
 待补充
 灵感来自于：spec-kit
@@ -31,7 +32,7 @@
 - **环境变量**：所有配置通过环境变量注入，不硬编码
 - **TypeScript 类型**：禁止双重断言（`as X as Y`）；双重断言表明类型不匹配，说明设计本身存在问题
 - **禁止 emoji**：源代码中不得使用 emoji，除非有明确要求
-```        
+```
 
 ### Architecture 架构和分层
 
@@ -77,7 +78,7 @@
 ## CI or Linter
 ```
 
-###  Style Guide 风格指南
+### Style Guide 风格指南
 
 ```
 ## 命名规范
