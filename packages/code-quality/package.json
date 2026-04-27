@@ -54,7 +54,7 @@
     "@infra-x/tsconfig": "workspace:*",
     "@types/node": "^25.3.3",
     "bumpp": "^10.4.1",
-    "oxfmt": "^0.46.0",
+    "oxfmt": "^0.47.0",
     "oxlint": "^1.59.0",
     "tsdown": "^0.21.0",
     "typescript": "^6.0.0"
