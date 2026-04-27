@@ -99,7 +99,6 @@ import {
   drizzle,
   vitest,
   tailwind,
-  boundaries,
 } from '@infra-x/code-quality/lint'
 import { defineConfig } from 'oxlint'
 
@@ -116,19 +115,12 @@ export default defineConfig({
     }),
     vitest({ files: ['**/*.spec.ts', '**/*.e2e-spec.ts'] }),
     tailwind({ entryPoint: 'src/styles/globals.css', rootFontSize: 16 }),
-    boundaries({
-      elements: [
-        { type: 'feature', pattern: 'src/features/*' },
-        { type: 'shared', pattern: 'src/shared/*' },
-      ],
-      rules: [
-        { from: 'shared', allow: ['shared'] },
-        { from: 'feature', allow: ['shared', 'feature'] },
-      ],
-    }),
   ],
 })
 ```
+
+> [!NOTE]
+> Architectural boundary checks are intentionally **not** part of this package. For path-based import bans use the native `no-restricted-imports` rule; for cycle detection use `import/no-cycle`; for layer/feature isolation, traversal reachability, or orphan detection run [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser) in pre-commit or CI instead of inside lint.
 
 > [!WARNING]
 > **NestJS projects** must disable `typescript/consistent-type-imports` — NestJS DI uses runtime class references in constructor params, and without type-aware linting this rule incorrectly converts them to `import type`, breaking DI at runtime.

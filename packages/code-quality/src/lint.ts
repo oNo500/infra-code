@@ -306,7 +306,7 @@ export function storybook(overrides?: Partial<OxlintConfig>): OxlintConfig {
 }
 
 // ============================================================================
-// Tailwind / Boundaries
+// Tailwind
 // ============================================================================
 
 interface TailwindOptions extends Partial<OxlintConfig> {
@@ -333,50 +333,6 @@ export function tailwind(options: TailwindOptions = {}): OxlintConfig {
           },
         },
       ],
-    },
-    overrides,
-  )
-}
-
-interface BoundaryElement {
-  type: string
-  pattern: string | string[]
-  capture?: string[]
-  mode?: 'file' | 'folder' | 'full'
-}
-
-interface BoundaryRule {
-  from: string | string[]
-  allow?: (string | [string, Record<string, string>])[]
-  disallow?: string[]
-  message?: string
-}
-
-/** Architectural boundaries lint preset — loads eslint-plugin-boundaries via jsPlugin. */
-export function boundaries(
-  config: {
-    elements: BoundaryElement[]
-    rules: BoundaryRule[]
-  },
-  overrides?: Partial<OxlintConfig>,
-): OxlintConfig {
-  return preset(
-    {
-      jsPlugins: resolvePlugins(['eslint-plugin-boundaries']),
-      settings: { 'boundaries/elements': config.elements },
-      rules: {
-        'boundaries/dependencies': [
-          'error',
-          {
-            default: 'disallow',
-            rules: config.rules.map((rule) => ({
-              from: Array.isArray(rule.from) ? rule.from : [rule.from],
-              allow: rule.allow,
-              message: rule.message,
-            })),
-          },
-        ],
-      },
     },
     overrides,
   )

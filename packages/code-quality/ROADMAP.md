@@ -1,8 +1,8 @@
 # @infra-x/code-quality Roadmap
 
-## Current (v0.3)
+## Current
 
-- Oxlint presets: base, typeAware, unicorn, depend, node, promise, react, reactVite, nextjs, a11y, jsdoc, vitest, storybook, nestjs, drizzle, tailwind(), boundaries()
+- Oxlint presets: base, typeAware, unicorn, depend, node, promise, react, reactVite, nextjs, a11y, jsdoc, vitest, storybook, nestjs, drizzle, tailwind()
 - Oxfmt preset: format(), tailwindFormat()
 - All presets are functions with defu-based overrides
 - jsPlugin paths resolved via require.resolve() for pnpm compatibility
@@ -83,8 +83,20 @@ Enable individually in base preset or via `pedantic` category:
 - Monitor oxlint native plugin additions to replace remaining jsPlugins:
   - eslint-plugin-depend
   - eslint-plugin-better-tailwindcss
-  - eslint-plugin-boundaries
   - eslint-plugin-storybook
   - eslint-plugin-react-refresh
   - eslint-plugin-drizzle
   - @darraghor/eslint-plugin-nestjs-typed
+
+### Architectural boundaries strategy
+
+The `boundaries()` preset has been removed. `eslint-plugin-boundaries` runs through the jsPlugin channel, which is materially slower than oxlint's native rules and scales poorly as projects grow. Its capabilities are split across faster / stronger alternatives:
+
+- **Import-name bans, simple path blacklists** — use the native `no-restricted-imports` rule. Zero overhead, real-time feedback in the editor.
+- **Cycle detection** — use `import/no-cycle`. Native, bounded cost, real-time feedback.
+- **Layered isolation, feature mutual-exclusion, transitive reachability, orphan detection** — run [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser) in pre-commit or CI. Keep it out of the lint flow.
+
+Planned follow-ups in this package:
+
+- Add a `restrictedImports()` preset — thin wrapper around the native `no-restricted-imports` rule for ergonomic layer / export-name bans (e.g. `Service` files cannot import `DrizzleService`, `domain/` cannot import runtime libraries).
+- Consider extracting `dependency-cruiser` presets into a sibling package (e.g. `@infra-x/dep-rules`) rather than bundling them here — this package stays scoped to oxlint + oxfmt.
