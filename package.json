@@ -12,6 +12,7 @@
     "lint:fix": "oxlint --disable-nested-config --fix",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
+    "version": "bunx changeset version && bun install --no-frozen-lockfile",
     "release": "bunx changeset publish"
   },
   "devDependencies": {
