@@ -18,17 +18,20 @@ importers:
   .:
     devDependencies:
       '@infra-x/code-quality':
-        specifier: ^0.4.0
-        version: 0.4.1(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@1.62.0(oxlint-tsgolint@0.21.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)
+        specifier: ^0.5.0
+        version: 0.5.0(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@1.62.0(oxlint-tsgolint@0.22.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)
       bun-types:
         specifier: ^1.3.13
         version: 1.3.13
+      dependency-cruiser:
+        specifier: ^17.3.10
+        version: 17.3.10
       oxfmt:
         specifier: ^0.47.0
         version: 0.47.0
       oxlint:
         specifier: ^1.59.0
-        version: 1.62.0(oxlint-tsgolint@0.21.1)
+        version: 1.62.0(oxlint-tsgolint@0.22.1)
       taze:
         specifier: ^19.10.0
         version: 19.11.0
@@ -52,7 +55,7 @@ importers:
         version: link:../../packages/ui
       better-auth:
         specifier: ^1.5.5
-        version: 1.6.9(42c8a56568cdef4bd0d05a0877f720ac)
+        version: 1.6.9(613316cf16159208610f5d45c10c349f)
       dotenv:
         specifier: ^17.3.1
         version: 17.4.2
@@ -64,7 +67,7 @@ importers:
         version: 1.11.0(react@19.2.5)
       next:
         specifier: 16.2.4
-        version: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 16.2.4(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -161,7 +164,7 @@ importers:
         version: 1.11.0(react@19.2.5)
       next:
         specifier: 16.2.4
-        version: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 16.2.4(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -244,7 +247,7 @@ importers:
     devDependencies:
       '@infra-x/code-quality':
         specifier: ^0.4.0
-        version: 0.4.1(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@1.62.0(oxlint-tsgolint@0.21.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)
+        version: 0.4.1(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@0.18.1)(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)
       '@infra-x/typescript-config':
         specifier: ^2.0.0
         version: 2.0.0
@@ -256,7 +259,7 @@ importers:
         version: 0.47.0
       oxlint:
         specifier: ^0.18.0
-        version: 1.62.0(oxlint-tsgolint@0.21.1)
+        version: 0.18.1
       tsdown:
         specifier: ^0.21.9
         version: 0.21.10(synckit@0.11.12)(typescript@6.0.3)
@@ -1460,6 +1463,19 @@ packages:
       storybook:
         optional: true
 
+  '@infra-x/code-quality@0.5.0':
+    resolution: {integrity: sha512-znk9RnVAEGgDaR0VjRWIEtmA/51c9ke0bP+SvSdV3u50gOLswtD1nqlVBbhH4gU4rUxJ/YLaGomaSi6NtNwvJA==}
+    peerDependencies:
+      class-validator: '*'
+      oxfmt: '>=0.44.0'
+      oxlint: '>=1.59.0'
+      storybook: '>=10.0.0'
+    peerDependenciesMeta:
+      class-validator:
+        optional: true
+      storybook:
+        optional: true
+
   '@infra-x/fwrap@0.1.1':
     resolution: {integrity: sha512-uqisYtZT6bqkrI+FL1Z0bClbpEKgO9j9LZQZNggcaUmAC/bbqJUi/NTfWXvnJLOj/HMK+MW+WiofZq/YODSfkQ==}
 
@@ -1918,8 +1934,18 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@oxlint-tsgolint/darwin-arm64@0.22.1':
+    resolution: {integrity: sha512-4150Lpgc1YM09GcjA6GSrra1JoPjC7aOpfywLjWEY4vW0Sd1qKzqHF1WRaiw0/qUZ40OATYdv3aRd7ipPkWQbw==}
+    cpu: [arm64]
+    os: [darwin]
+
   '@oxlint-tsgolint/darwin-x64@0.21.1':
     resolution: {integrity: sha512-7wf9Wf75nTzA7zpL9myhFe2RKvfuqGUOADNvUooCjEWvh7hmPz3lSEqTMh5Z/VQhzsG04mM9ACyghxhRzq7zFw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@oxlint-tsgolint/darwin-x64@0.22.1':
+    resolution: {integrity: sha512-vFWcPWYOgZs4HWcgS1EjUZg33NLcNfEYU49KGImmCfZWkflENrmBYV4HN/C0YeAPum6ZZ/goPSvQrB/cOD+NfA==}
     cpu: [x64]
     os: [darwin]
 
@@ -1928,8 +1954,18 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@oxlint-tsgolint/linux-arm64@0.22.1':
+    resolution: {integrity: sha512-6LiUpP0Zir3+29FvBm7Y28q/dBjSHqTZ5MhG1Ckw4fGhI4cAvbcwXaKvbjx1TP7rRmBNOoq/M5xdpHjTb+GAew==}
+    cpu: [arm64]
+    os: [linux]
+
   '@oxlint-tsgolint/linux-x64@0.21.1':
     resolution: {integrity: sha512-d1niGuTbh2qiv7dR7tqkbOcM5cIR63of0lMBFdEQavL1KrJV8zuRdwdi68K7MNGdgoR+J5A9ajpGGvsHwp1bPg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@oxlint-tsgolint/linux-x64@0.22.1':
+    resolution: {integrity: sha512-fuX1hEQfpHauUbXADsfqVhRzrUrGabzGXbj5wsp2vKhV5uk/Rze8Mba9GdjFGECzvXudMGqHqxB4r6jGRdhxVA==}
     cpu: [x64]
     os: [linux]
 
@@ -1938,8 +1974,18 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@oxlint-tsgolint/win32-arm64@0.22.1':
+    resolution: {integrity: sha512-8SZidAj+jrbZf9ZjBEYW0tiNZ+KasqB2zgW26qdiPpQSF/DzURnPmXz651IeA9YsmbVdHGIooEHUmev6QJdquA==}
+    cpu: [arm64]
+    os: [win32]
+
   '@oxlint-tsgolint/win32-x64@0.21.1':
     resolution: {integrity: sha512-cTEFCFjCj6iXfrSHcvajSPNqhEA4TxSzU3gFxbdGSAUTNXGToU99IbdhWAPSbhcucoym0XE4Zl7E41NiSkNTug==}
+    cpu: [x64]
+    os: [win32]
+
+  '@oxlint-tsgolint/win32-x64@0.22.1':
+    resolution: {integrity: sha512-QweSk9H5lFh5Y+WUf2Kq/OAN88V6+62ZwGhP38gqdRotI90luXSMkruFTj7Q2rYrzH4ZVNaSqx7NY8JpSfIzqg==}
     cpu: [x64]
     os: [win32]
 
@@ -2062,6 +2108,50 @@ packages:
   '@oxlint/binding-win32-x64-msvc@1.62.0':
     resolution: {integrity: sha512-6hMpyDWQ2zGA1OXFKBrdYMUveUCO8UJhkO6JdwZPd78xIdHZNhjx+pib+4fC2Cljuhjyl0QwA2F3df/bs4Bp6A==}
     engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
+    os: [win32]
+
+  '@oxlint/darwin-arm64@0.18.1':
+    resolution: {integrity: sha512-FqDrcQJmEGNkgmZgI4wbCrGyJl1tiRZa3udxvyYaXag8W80A0zLFNCyWVvHIgUJ0DHlZjRc7O72xUGjiyvQrqQ==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@oxlint/darwin-x64@0.18.1':
+    resolution: {integrity: sha512-YUcyWBJdNuMcJxAwdV/i25/kvnKrVsA+vLn7SsL87cAwiD//rqGdOixk0r8sKUYa71Kx3h0Fg2ToUOjdE6ddYw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@oxlint/linux-arm64-gnu@0.18.1':
+    resolution: {integrity: sha512-ol3jhmUv5VI/omMrt6DkwY/jVTSVJlflFyU1SnSb/BuVVf3TyBiCHmZ4wVtcrcT5k3sWjrvYWw2kSozvmuE4tg==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@oxlint/linux-arm64-musl@0.18.1':
+    resolution: {integrity: sha512-iKDj1ZwlU4KpXuIL1qkVP6NJzri2VSJreqXCIAe1Bf5RZXMAGSO3xjldgiX+HBvFOKSBIarLcqONYDbYco9uaQ==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@oxlint/linux-x64-gnu@0.18.1':
+    resolution: {integrity: sha512-A3g+fZhlOivUdK7xU/IrbhBcMHig5GLrfMX0HYjXL1fiSqKYu9n1o1p42WpT6KfPL3L2uncSg/iyg7hspcN6qA==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@oxlint/linux-x64-musl@0.18.1':
+    resolution: {integrity: sha512-LA02SdATWZEZBy8ZZpR2GlUbDg7+Jq1/WKkywMXqxdClkcoyyFozj8aQD2iTMKELSra4OSyqqZpOYroqjSSKmw==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@oxlint/win32-arm64@0.18.1':
+    resolution: {integrity: sha512-FNL+OxDflqLGXRgLxfBM/X4RnLYgtOKTsb1mNSqsjSCEfUi1Oqivh7KvZ09IfAMZeJ85/fL6EI6hSOyY7nNYUg==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@oxlint/win32-x64@0.18.1':
+    resolution: {integrity: sha512-W+aVE9Siqs6Oe3NDaDOTTOYsN9X3znl+whfqWK1EcLpqJXX1kdB8Hf45HkGjqnHoFoP96GRgUnXQHQvmUybjvg==}
     cpu: [x64]
     os: [win32]
 
@@ -2898,10 +2988,21 @@ packages:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
     engines: {node: '>= 0.6'}
 
+  acorn-jsx-walk@2.0.0:
+    resolution: {integrity: sha512-uuo6iJj4D4ygkdzd6jPtcxs8vZgDX9YFIkqczGImoypX2fQ4dVImmu3UzA4ynixCIMTrEOWW+95M2HuBaCEOVA==}
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
+
+  acorn-loose@8.5.2:
+    resolution: {integrity: sha512-PPvV6g8UGMGgjrMu+n/f9E/tCSkNQ2Y97eFvuVdJfG11+xdIeDcLyNdC8SHcrHbRqkfwLASdplyR6B6sKM1U4A==}
+    engines: {node: '>=0.4.0'}
+
+  acorn-walk@8.3.5:
+    resolution: {integrity: sha512-HEHNfbars9v4pgpW6SO1KSPkfoS0xVOM/9UzkJltjlsHZmJasxg8aXkuZa7SMf8vKGIBhpUsPluQSqhJFCqebw==}
+    engines: {node: '>=0.4.0'}
 
   acorn@8.16.0:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
@@ -3403,6 +3504,11 @@ packages:
   depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
+
+  dependency-cruiser@17.3.10:
+    resolution: {integrity: sha512-jF5WaIb+O+wLabXrQE7iBY2zYBEW8VlnuuL0+iZPvZHGhTaAYdLk31DI0zkwhcGE8CiHcDwGhMnn3PfOAYnVdQ==}
+    engines: {node: ^20.12||^22||>=24}
+    hasBin: true
 
   dequal@2.0.3:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
@@ -3995,6 +4101,10 @@ packages:
     engines: {node: '>=12'}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
+  global-directory@4.0.1:
+    resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
+    engines: {node: '>=18'}
+
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
@@ -4077,6 +4187,10 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
+  ignore@7.0.5:
+    resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
+    engines: {node: '>= 4'}
+
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
@@ -4099,6 +4213,14 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+
+  ini@4.1.1:
+    resolution: {integrity: sha512-QQnnxNyfvmHFIsj7gkPcYymR8Jdw/o7mp5ZFihxn6h8Ci6fh3Dx4E1gPjpQEpIuPo9XVNY/ZUwh4BPMjGyL01g==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+
+  interpret@3.1.1:
+    resolution: {integrity: sha512-6xwYfHbajpoF0xLW+iwLkhwgvLoZDfjYfoFNu8ftMoXINzwuymNLd9u/KmwtdT2GbR+/Cz66otEGEVVUHX9QLQ==}
+    engines: {node: '>=10.13.0'}
 
   ip-address@10.1.0:
     resolution: {integrity: sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==}
@@ -4141,6 +4263,10 @@ packages:
     engines: {node: '>=14.16'}
     hasBin: true
 
+  is-installed-globally@1.0.0:
+    resolution: {integrity: sha512-K55T22lfpQ63N4KEN57jZUAaAYqYHEe8veb/TycJRk9DdSCLLcovXz/mL6mOnhQaZsQGwPhuFopdQIlqGSEjiQ==}
+    engines: {node: '>=18'}
+
   is-interactive@2.0.0:
     resolution: {integrity: sha512-qP1vozQRI+BMOPcjFzrjXuQvdak2pHNUMZoeG2eRbiSqyvbEf/wQtEOTOX1guk6E3t36RkaqiSt8A/6YElNxLQ==}
     engines: {node: '>=12'}
@@ -4154,6 +4280,10 @@ packages:
 
   is-obj@3.0.0:
     resolution: {integrity: sha512-IlsXEHOjtKhpN8r/tRFj2nDyTmHvcfNeu/nrRIcXE17ROeatXchkojffa1SpdqW4cr/Fj6QkEf/Gn4zf6KKvEQ==}
+    engines: {node: '>=12'}
+
+  is-path-inside@4.0.0:
+    resolution: {integrity: sha512-lJJV/5dYS+RcL8uQdBDW9c9uWFLLBNRyFhnAKXw5tVqLlKZ4RMGZKv+YQ/IA3OhD+RpbJa1LLFM1FQPGyIXvOA==}
     engines: {node: '>=12'}
 
   is-plain-obj@4.1.0:
@@ -4694,6 +4824,15 @@ packages:
     resolution: {integrity: sha512-O2hxiT14C2HJkwzBU6CQBFPoagSd/IcV+Tt3e3UUaXFwbW4BO5DSDPSSboc3UM5MIDY+MLyepvtQwBQafNxWdw==}
     hasBin: true
 
+  oxlint-tsgolint@0.22.1:
+    resolution: {integrity: sha512-YUSGSLUnoolsu8gxISEDio3q1rtsCozwfOzASUn3DT2mR2EeQ93uEEnen7s+6LpF+lyTQFln1pQfqwBh/fsVEg==}
+    hasBin: true
+
+  oxlint@0.18.1:
+    resolution: {integrity: sha512-JGcQvbhd00Qb+nq4f9sYYRh7mZIb0K/7rbMepNdJDMzo8pbmBpx1N2XOG61RjHDsNnY6ImAmVk3h4QVwFenwUQ==}
+    engines: {node: '>=8.*'}
+    hasBin: true
+
   oxlint@1.62.0:
     resolution: {integrity: sha512-1uFkg6HakjsGIpW9wNdeW4/2LOHW9MEkoWjZUTUfQtIHyLIZPYt00w3Sg+H3lH+206FgBPHBbW5dVE5l2ExECQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -4995,6 +5134,10 @@ packages:
     resolution: {integrity: sha512-YTUo+Flmw4ZXiWfQKGcwwc11KnoRAYgzAE2E7mXKCjSviTKShtxBsN6YUUBB2gtaBzKzeKunxhUwNHQuRryhWA==}
     engines: {node: '>= 4'}
 
+  rechoir@0.8.0:
+    resolution: {integrity: sha512-/vxpCXddiX8NGfGO/mTafwjq4aFa/71pvamip0++IQk3zG8cbCj0fifNPrjjF1XMXUne91jL9OoxmdykoEtifQ==}
+    engines: {node: '>= 10.13.0'}
+
   redent@3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
     engines: {node: '>=8'}
@@ -5004,6 +5147,10 @@ packages:
 
   regexp-to-ast@0.5.0:
     resolution: {integrity: sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==}
+
+  regexp-tree@0.1.27:
+    resolution: {integrity: sha512-iETxpjK6YoRWJG5o6hXLwvjYAoW+FEZn9os0PD/b6AP6xQwsa/Y7lCVgIixBbUPMfhu+i2LtdeAqVTgGlQarfA==}
+    hasBin: true
 
   remeda@2.33.4:
     resolution: {integrity: sha512-ygHswjlc/opg2VrtiYvUOPLjxjtdKvjGz1/plDhkG66hjNjFr1xmfrs2ClNFo/E6TyUFiwYNh53bKV26oBoMGQ==}
@@ -5083,6 +5230,9 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
+
+  safe-regex@2.1.1:
+    resolution: {integrity: sha512-rx+x8AMzKb5Q5lQ95Zoi6ZbJqwCLkqi3XuJXp5P3rT8OEc6sZCJG5AE5dU3lsgRr/F4Bs31jSlVN+j5KrsGu9A==}
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
@@ -5705,6 +5855,11 @@ packages:
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
     engines: {node: '>=18'}
+
+  watskeburt@5.0.3:
+    resolution: {integrity: sha512-g9CXukMjazlJJVQ3OHzXsnG25KFYgSgKMIyoJrD8ggr0DbS9UNF7OzIqWmmKKBMedkxj3T01uqEaGnn+y7QhMA==}
+    engines: {node: ^20.12||^22.13||>=24.0}
+    hasBin: true
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -6717,19 +6872,46 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@infra-x/code-quality@0.4.1(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@1.62.0(oxlint-tsgolint@0.21.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)':
+  '@infra-x/code-quality@0.4.1(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@0.18.1)(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)':
     dependencies:
       '@darraghor/eslint-plugin-nestjs-typed': 7.1.30(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3)
       defu: 6.1.7
-      eslint-plugin-better-tailwindcss: 4.4.1(eslint@10.2.0(jiti@2.6.1))(oxlint@1.62.0(oxlint-tsgolint@0.21.1))(tailwindcss@4.2.4)(typescript@6.0.3)
+      eslint-plugin-better-tailwindcss: 4.4.1(eslint@10.2.0(jiti@2.6.1))(oxlint@0.18.1)(tailwindcss@4.2.4)(typescript@6.0.3)
       eslint-plugin-boundaries: 6.0.2(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(eslint@10.2.0(jiti@2.6.1))
       eslint-plugin-depend: 1.5.0(eslint@10.2.0(jiti@2.6.1))
       eslint-plugin-drizzle: 0.2.3(eslint@10.2.0(jiti@2.6.1))
       eslint-plugin-react-refresh: 0.5.2(eslint@10.2.0(jiti@2.6.1))
       eslint-plugin-storybook: 10.3.5(eslint@10.2.0(jiti@2.6.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(typescript@6.0.3)
       oxfmt: 0.47.0
-      oxlint: 1.62.0(oxlint-tsgolint@0.21.1)
+      oxlint: 0.18.1
       oxlint-tsgolint: 0.21.1
+      std-env: 4.1.0
+    optionalDependencies:
+      class-validator: 0.15.1
+      storybook: 10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+    transitivePeerDependencies:
+      - '@eslint/css'
+      - '@typescript-eslint/parser'
+      - eslint
+      - eslint-import-resolver-node
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+      - tailwindcss
+      - typescript
+
+  '@infra-x/code-quality@0.5.0(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(oxfmt@0.47.0)(oxlint@1.62.0(oxlint-tsgolint@0.22.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(tailwindcss@4.2.4)(typescript@6.0.3)':
+    dependencies:
+      '@darraghor/eslint-plugin-nestjs-typed': 7.1.30(@typescript-eslint/parser@8.57.0(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3))(class-validator@0.15.1)(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.3)
+      defu: 6.1.7
+      eslint-plugin-better-tailwindcss: 4.4.1(eslint@10.2.0(jiti@2.6.1))(oxlint@1.62.0(oxlint-tsgolint@0.22.1))(tailwindcss@4.2.4)(typescript@6.0.3)
+      eslint-plugin-depend: 1.5.0(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-drizzle: 0.2.3(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-react-refresh: 0.5.2(eslint@10.2.0(jiti@2.6.1))
+      eslint-plugin-storybook: 10.3.5(eslint@10.2.0(jiti@2.6.1))(storybook@10.2.13(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(typescript@6.0.3)
+      oxfmt: 0.47.0
+      oxlint: 1.62.0(oxlint-tsgolint@0.22.1)
+      oxlint-tsgolint: 0.22.1
       std-env: 4.1.0
     optionalDependencies:
       class-validator: 0.15.1
@@ -7103,19 +7285,37 @@ snapshots:
   '@oxlint-tsgolint/darwin-arm64@0.21.1':
     optional: true
 
+  '@oxlint-tsgolint/darwin-arm64@0.22.1':
+    optional: true
+
   '@oxlint-tsgolint/darwin-x64@0.21.1':
+    optional: true
+
+  '@oxlint-tsgolint/darwin-x64@0.22.1':
     optional: true
 
   '@oxlint-tsgolint/linux-arm64@0.21.1':
     optional: true
 
+  '@oxlint-tsgolint/linux-arm64@0.22.1':
+    optional: true
+
   '@oxlint-tsgolint/linux-x64@0.21.1':
+    optional: true
+
+  '@oxlint-tsgolint/linux-x64@0.22.1':
     optional: true
 
   '@oxlint-tsgolint/win32-arm64@0.21.1':
     optional: true
 
+  '@oxlint-tsgolint/win32-arm64@0.22.1':
+    optional: true
+
   '@oxlint-tsgolint/win32-x64@0.21.1':
+    optional: true
+
+  '@oxlint-tsgolint/win32-x64@0.22.1':
     optional: true
 
   '@oxlint/binding-android-arm-eabi@1.62.0':
@@ -7173,6 +7373,30 @@ snapshots:
     optional: true
 
   '@oxlint/binding-win32-x64-msvc@1.62.0':
+    optional: true
+
+  '@oxlint/darwin-arm64@0.18.1':
+    optional: true
+
+  '@oxlint/darwin-x64@0.18.1':
+    optional: true
+
+  '@oxlint/linux-arm64-gnu@0.18.1':
+    optional: true
+
+  '@oxlint/linux-arm64-musl@0.18.1':
+    optional: true
+
+  '@oxlint/linux-x64-gnu@0.18.1':
+    optional: true
+
+  '@oxlint/linux-x64-musl@0.18.1':
+    optional: true
+
+  '@oxlint/win32-arm64@0.18.1':
+    optional: true
+
+  '@oxlint/win32-x64@0.18.1':
     optional: true
 
   '@pkgr/core@0.2.9': {}
@@ -7807,8 +8031,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.57.0(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.57.0(typescript@6.0.3)
-      '@typescript-eslint/types': 8.57.0
+      '@typescript-eslint/tsconfig-utils': 8.58.2(typescript@6.0.3)
+      '@typescript-eslint/types': 8.58.2
       debug: 4.4.3
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -7988,7 +8212,17 @@ snapshots:
       mime-types: 3.0.2
       negotiator: 1.0.0
 
+  acorn-jsx-walk@2.0.0: {}
+
   acorn-jsx@5.3.2(acorn@8.16.0):
+    dependencies:
+      acorn: 8.16.0
+
+  acorn-loose@8.5.2:
+    dependencies:
+      acorn: 8.16.0
+
+  acorn-walk@8.3.5:
     dependencies:
       acorn: 8.16.0
 
@@ -8065,7 +8299,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.21: {}
 
-  better-auth@1.6.9(42c8a56568cdef4bd0d05a0877f720ac):
+  better-auth@1.6.9(613316cf16159208610f5d45c10c349f):
     dependencies:
       '@better-auth/core': 1.6.9(@better-auth/utils@0.4.0)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.0)(better-call@1.3.5(zod@4.3.6))(jose@6.2.2)(kysely@0.28.16)(nanostores@1.3.0)
       '@better-auth/drizzle-adapter': 1.6.9(@better-auth/core@1.6.9(@better-auth/utils@0.4.0)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.0)(better-call@1.3.5(zod@4.3.6))(jose@6.2.2)(kysely@0.28.16)(nanostores@1.3.0))(@better-auth/utils@0.4.0)(drizzle-orm@0.45.2(@electric-sql/pglite@0.3.15)(@opentelemetry/api@1.9.0)(@prisma/client@7.4.2(prisma@7.4.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@types/pg@8.20.0)(bun-types@1.3.13)(kysely@0.28.16)(mysql2@3.15.3)(pg@8.20.0)(postgres@3.4.8)(prisma@7.4.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)))
@@ -8090,7 +8324,7 @@ snapshots:
       drizzle-orm: 0.45.2(@electric-sql/pglite@0.3.15)(@opentelemetry/api@1.9.0)(@prisma/client@7.4.2(prisma@7.4.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@types/pg@8.20.0)(bun-types@1.3.13)(kysely@0.28.16)(mysql2@3.15.3)(pg@8.20.0)(postgres@3.4.8)(prisma@7.4.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))
       mongodb: 7.1.0
       mysql2: 3.15.3
-      next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      next: 16.2.4(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       pg: 8.20.0
       prisma: 7.4.2(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
       react: 19.2.5
@@ -8418,6 +8652,27 @@ snapshots:
 
   depd@2.0.0: {}
 
+  dependency-cruiser@17.3.10:
+    dependencies:
+      acorn: 8.16.0
+      acorn-jsx: 5.3.2(acorn@8.16.0)
+      acorn-jsx-walk: 2.0.0
+      acorn-loose: 8.5.2
+      acorn-walk: 8.3.5
+      commander: 14.0.3
+      enhanced-resolve: 5.20.1
+      ignore: 7.0.5
+      interpret: 3.1.1
+      is-installed-globally: 1.0.0
+      json5: 2.2.3
+      picomatch: 4.0.4
+      prompts: 2.4.2
+      rechoir: 0.8.0
+      safe-regex: 2.1.1
+      semver: 7.7.4
+      tsconfig-paths-webpack-plugin: 4.2.0
+      watskeburt: 5.0.3
+
   dequal@2.0.3: {}
 
   destr@2.0.5: {}
@@ -8645,7 +8900,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-better-tailwindcss@4.4.1(eslint@10.2.0(jiti@2.6.1))(oxlint@1.62.0(oxlint-tsgolint@0.21.1))(tailwindcss@4.2.4)(typescript@6.0.3):
+  eslint-plugin-better-tailwindcss@4.4.1(eslint@10.2.0(jiti@2.6.1))(oxlint@0.18.1)(tailwindcss@4.2.4)(typescript@6.0.3):
     dependencies:
       '@eslint/css-tree': 4.0.2
       '@valibot/to-json-schema': 1.6.0(valibot@1.3.1(typescript@6.0.3))
@@ -8658,7 +8913,25 @@ snapshots:
       valibot: 1.3.1(typescript@6.0.3)
     optionalDependencies:
       eslint: 10.2.0(jiti@2.6.1)
-      oxlint: 1.62.0(oxlint-tsgolint@0.21.1)
+      oxlint: 0.18.1
+    transitivePeerDependencies:
+      - '@eslint/css'
+      - typescript
+
+  eslint-plugin-better-tailwindcss@4.4.1(eslint@10.2.0(jiti@2.6.1))(oxlint@1.62.0(oxlint-tsgolint@0.22.1))(tailwindcss@4.2.4)(typescript@6.0.3):
+    dependencies:
+      '@eslint/css-tree': 4.0.2
+      '@valibot/to-json-schema': 1.6.0(valibot@1.3.1(typescript@6.0.3))
+      enhanced-resolve: 5.20.1
+      jiti: 2.6.1
+      synckit: 0.11.12
+      tailwind-csstree: 0.3.1
+      tailwindcss: 4.2.4
+      tsconfig-paths-webpack-plugin: 4.2.0
+      valibot: 1.3.1(typescript@6.0.3)
+    optionalDependencies:
+      eslint: 10.2.0(jiti@2.6.1)
+      oxlint: 1.62.0(oxlint-tsgolint@0.22.1)
     transitivePeerDependencies:
       - '@eslint/css'
       - typescript
@@ -9056,6 +9329,10 @@ snapshots:
       minimatch: 5.1.9
       once: 1.4.0
 
+  global-directory@4.0.1:
+    dependencies:
+      ini: 4.1.1
+
   globrex@0.1.2: {}
 
   gopd@1.2.0: {}
@@ -9134,6 +9411,8 @@ snapshots:
 
   ignore@5.3.2: {}
 
+  ignore@7.0.5: {}
+
   import-fresh@3.3.1:
     dependencies:
       parent-module: 1.0.1
@@ -9151,6 +9430,10 @@ snapshots:
       wrappy: 1.0.2
 
   inherits@2.0.4: {}
+
+  ini@4.1.1: {}
+
+  interpret@3.1.1: {}
 
   ip-address@10.1.0: {}
 
@@ -9178,6 +9461,11 @@ snapshots:
     dependencies:
       is-docker: 3.0.0
 
+  is-installed-globally@1.0.0:
+    dependencies:
+      global-directory: 4.0.1
+      is-path-inside: 4.0.0
+
   is-interactive@2.0.0: {}
 
   is-node-process@1.2.0: {}
@@ -9185,6 +9473,8 @@ snapshots:
   is-number@7.0.0: {}
 
   is-obj@3.0.0: {}
+
+  is-path-inside@4.0.0: {}
 
   is-plain-obj@4.1.0: {}
 
@@ -9521,7 +9811,7 @@ snapshots:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
-  next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  next@16.2.4(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@next/env': 16.2.4
       '@swc/helpers': 0.5.15
@@ -9530,7 +9820,7 @@ snapshots:
       postcss: 8.4.31
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.5)
+      styled-jsx: 5.1.6(react@19.2.5)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.4
       '@next/swc-darwin-x64': 16.2.4
@@ -9689,7 +9979,27 @@ snapshots:
       '@oxlint-tsgolint/win32-arm64': 0.21.1
       '@oxlint-tsgolint/win32-x64': 0.21.1
 
-  oxlint@1.62.0(oxlint-tsgolint@0.21.1):
+  oxlint-tsgolint@0.22.1:
+    optionalDependencies:
+      '@oxlint-tsgolint/darwin-arm64': 0.22.1
+      '@oxlint-tsgolint/darwin-x64': 0.22.1
+      '@oxlint-tsgolint/linux-arm64': 0.22.1
+      '@oxlint-tsgolint/linux-x64': 0.22.1
+      '@oxlint-tsgolint/win32-arm64': 0.22.1
+      '@oxlint-tsgolint/win32-x64': 0.22.1
+
+  oxlint@0.18.1:
+    optionalDependencies:
+      '@oxlint/darwin-arm64': 0.18.1
+      '@oxlint/darwin-x64': 0.18.1
+      '@oxlint/linux-arm64-gnu': 0.18.1
+      '@oxlint/linux-arm64-musl': 0.18.1
+      '@oxlint/linux-x64-gnu': 0.18.1
+      '@oxlint/linux-x64-musl': 0.18.1
+      '@oxlint/win32-arm64': 0.18.1
+      '@oxlint/win32-x64': 0.18.1
+
+  oxlint@1.62.0(oxlint-tsgolint@0.22.1):
     optionalDependencies:
       '@oxlint/binding-android-arm-eabi': 1.62.0
       '@oxlint/binding-android-arm64': 1.62.0
@@ -9710,7 +10020,7 @@ snapshots:
       '@oxlint/binding-win32-arm64-msvc': 1.62.0
       '@oxlint/binding-win32-ia32-msvc': 1.62.0
       '@oxlint/binding-win32-x64-msvc': 1.62.0
-      oxlint-tsgolint: 0.21.1
+      oxlint-tsgolint: 0.22.1
 
   p-limit@3.1.0:
     dependencies:
@@ -9983,6 +10293,10 @@ snapshots:
       tiny-invariant: 1.3.3
       tslib: 2.8.1
 
+  rechoir@0.8.0:
+    dependencies:
+      resolve: 1.22.12
+
   redent@3.0.0:
     dependencies:
       indent-string: 4.0.0
@@ -9992,6 +10306,8 @@ snapshots:
 
   regexp-to-ast@0.5.0:
     optional: true
+
+  regexp-tree@0.1.27: {}
 
   remeda@2.33.4:
     optional: true
@@ -10081,6 +10397,10 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+
+  safe-regex@2.1.1:
+    dependencies:
+      regexp-tree: 0.1.27
 
   safer-buffer@2.1.2: {}
 
@@ -10348,12 +10668,10 @@ snapshots:
     dependencies:
       min-indent: 1.0.1
 
-  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.5):
+  styled-jsx@5.1.6(react@19.2.5):
     dependencies:
       client-only: 0.0.1
       react: 19.2.5
-    optionalDependencies:
-      '@babel/core': 7.29.0
 
   supports-color@7.2.0:
     dependencies:
@@ -10706,6 +11024,8 @@ snapshots:
   w3c-xmlserializer@5.0.0:
     dependencies:
       xml-name-validator: 5.0.0
+
+  watskeburt@5.0.3: {}
 
   web-streams-polyfill@3.3.3: {}
 

@@ -197,6 +197,7 @@ export function createPost(userId: string, data: CreatePostInput) {
 ## 禁止行为
 
 - 禁止在 `app/` 路由文件中写业务逻辑或复杂 JSX（下沉到 `features/`）
-- 禁止跨 feature 互相导入（共享逻辑下沉到 `lib/` / `components/`）
+- 禁止跨 feature 互相导入（共享逻辑下沉到 `lib/` / `components/`）—— 由 `pnpm lint:deps` 的 `no-cross-feature` 规则强制
+- 禁止 `features/` 反向 import `app/` —— 由 `pnpm lint:deps` 的 `no-feature-to-route` 规则强制
 - 禁止在组件或 route 中直接调用 `db` / `drizzle`（走 feature 的 queries / mutations）
 - 禁止手动修改 Better Auth 自动生成的 schema 字段

@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "lint:deps": "depcruise src",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "typecheck": "tsc -b --noEmit",
