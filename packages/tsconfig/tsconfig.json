@@ -28,7 +28,10 @@
     "isolatedDeclarations": true,
     "allowJs": false,
     "noPropertyAccessFromIndexSignature": true,
-    "erasableSyntaxOnly": true
+    "erasableSyntaxOnly": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*", "tests/**/*"],
   "exclude": ["dist", "node_modules"]

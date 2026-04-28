@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { validateCompilerOptions } from '../src/validate'
+import { validateCompilerOptions } from '@/validate'
 
 describe('validateCompilerOptions', () => {
   it('returns no warnings for valid options', () => {
