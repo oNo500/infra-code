@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
-    "@infra-x/code-quality": "^0.6.1",
+    "@infra-x/code-quality": "^0.6.2",
     "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
     "oxlint-tsgolint": "^0.22.1"

@@ -25,7 +25,7 @@
     "shadcn": "^4.5.0"
   },
   "devDependencies": {
-    "@infra-x/code-quality": "^0.6.1",
+    "@infra-x/code-quality": "^0.6.2",
     "@infra-x/typescript-config": "^2.0.0",
     "@types/bun": "latest",
     "oxfmt": "^0.47.0",
