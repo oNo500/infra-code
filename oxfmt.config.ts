@@ -3,5 +3,4 @@ import { defineConfig } from 'oxfmt'
 
 export default defineConfig({
   ...format(),
-  ignorePatterns: ['**/CHANGELOG.md', 'starters/**'],
 })

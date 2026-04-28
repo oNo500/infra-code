@@ -1,0 +1,5 @@
+# Used by oxfmt (and prettier compatibles) to skip files outside the
+# root workspace. Starters carry their own toolchain and are formatted
+# by their own CI jobs.
+starters/
+**/CHANGELOG.md
