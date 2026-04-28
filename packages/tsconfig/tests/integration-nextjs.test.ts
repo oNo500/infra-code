@@ -7,8 +7,8 @@ import {
   frameworkNextjs,
   runtimeBrowser,
   runtimeNode,
-} from '../src/atoms'
-import { renderConfig } from '../src/render'
+} from '@/atoms'
+import { renderConfig } from '@/render'
 
 const nextjsOptions = composeAtoms(
   base(),

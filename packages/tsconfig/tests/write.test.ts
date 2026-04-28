@@ -10,9 +10,9 @@ import {
   frameworkNextjs,
   runtimeBrowser,
   runtimeNode,
-} from '../src/atoms'
-import { renderConfig } from '../src/render'
-import { writeFiles } from '../src/write'
+} from '@/atoms'
+import { renderConfig } from '@/render'
+import { writeFiles } from '@/write'
 
 const nextjsOptions = composeAtoms(
   base(),

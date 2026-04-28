@@ -129,6 +129,7 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
           rules: {
             // CSS/style side-effect imports are standard in all frontend frameworks
             'import/no-unassigned-import': 'off',
+            'import/no-relative-parent-imports': 'error',
           },
         },
       ],

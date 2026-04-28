@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { mergeCompilerOptions } from '../src/merge'
+import { mergeCompilerOptions } from '@/merge'
 
 describe('mergeCompilerOptions', () => {
   it('scalar: user wins', () => {
