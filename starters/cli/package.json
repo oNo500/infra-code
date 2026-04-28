@@ -21,17 +21,17 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "citty": "^0.2.0",
-    "shadcn": "^4.3.1"
+    "citty": "^0.2.2",
+    "shadcn": "^4.5.0"
   },
   "devDependencies": {
-    "@infra-x/code-quality": "^0.5.0",
+    "@infra-x/code-quality": "^0.6.1",
     "@infra-x/typescript-config": "^2.0.0",
     "@types/bun": "latest",
     "oxfmt": "^0.47.0",
-    "oxlint": "^1.0.0",
-    "tsdown": "^0.21.9",
-    "typescript": "^6.0.0"
+    "oxlint": "^1.62.0",
+    "tsdown": "^0.21.10",
+    "typescript": "^6.0.3"
   },
   "engines": {
     "node": ">=20"
