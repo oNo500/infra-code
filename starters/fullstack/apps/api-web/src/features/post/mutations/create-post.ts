@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { db } from '@/db'
 import { post } from '@/db/schema'
 
-import type { CreatePostInput } from '../lib/validators'
+import type { CreatePostInput } from '@/features/post/lib/validators'
 
 /**
  * Create a new post. Pure business logic — no auth checks, no HTTP concerns.

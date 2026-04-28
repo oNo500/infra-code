@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { parseEnv } from '../src/env'
+import { parseEnv } from '@/env'
 
 describe('parseEnv', () => {
   it('coerces PORT to a number and defaults to 3000', () => {

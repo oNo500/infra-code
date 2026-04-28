@@ -6,8 +6,8 @@ import { Input } from '@workspace/ui/components/input'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { revalidatePosts } from '../actions/revalidate-posts'
-import { createPostSchema } from '../lib/validators'
+import { revalidatePosts } from '@/features/post/actions/revalidate-posts'
+import { createPostSchema } from '@/features/post/lib/validators'
 
 export function PostForm() {
   const router = useRouter()

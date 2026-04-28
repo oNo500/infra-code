@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { health } from '../src/routes/health'
+import { health } from '@/routes/health'
 
 interface HealthBody {
   status: string

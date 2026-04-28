@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import { UserMenu } from './user-menu'
+
 const mockPush = vi.hoisted(() => vi.fn())
 const { mockUseSession, mockSignOut } = vi.hoisted(() => ({
   mockUseSession: vi.fn(),
@@ -46,8 +48,6 @@ const fakeSession = {
     image: null,
   },
 }
-
-import { UserMenu } from './user-menu'
 
 describe('userMenu — desktop', () => {
   it('renders skeleton while pending', () => {

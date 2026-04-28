@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { greet } from '../src/commands/greet'
+import { greet } from '@/commands/greet'
 
 describe('greet command', () => {
   it('returns a greeting with the given name', () => {

@@ -25,7 +25,10 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "jsx": "react-jsx",
-    "allowArbitraryExtensions": true
+    "allowArbitraryExtensions": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*", "tests/**/*", "server.ts", "build.ts"],
   "exclude": ["node_modules", "dist"]

@@ -1,4 +1,10 @@
-import { describe, expect, it, vi, type Mock } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+import { db } from '@/db'
+
+import { createPost } from './create-post'
+
+import type { Mock } from 'vitest'
 
 // server-only throws when imported outside a Server Component — mock it for jsdom
 vi.mock('server-only', () => ({}))
@@ -9,10 +15,6 @@ vi.mock('@/db', () => ({
     insert: vi.fn(),
   },
 }))
-
-import { db } from '@/db'
-
-import { createPost } from './create-post'
 
 const mockInsert = db.insert as Mock
 
