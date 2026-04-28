@@ -1,5 +1,13 @@
 # @infra-x/code-quality
 
+## 0.5.0
+
+### Minor Changes
+
+- a70c728: Remove `boundaries()` lint preset and the `eslint-plugin-boundaries` dependency.
+
+  Architectural boundary checks are intentionally no longer part of this package. Use the native `no-restricted-imports` rule for path-based import bans, `import/no-cycle` for cycle detection, and run `dependency-cruiser` in pre-commit or CI for layered isolation, feature mutual-exclusion, transitive reachability, and orphan detection. See `ROADMAP.md` for the rationale and planned `restrictedImports()` follow-up preset.
+
 ## 0.4.1
 
 ### Patch Changes
