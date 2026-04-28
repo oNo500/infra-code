@@ -82,5 +82,5 @@ src/
 ## 禁止行为
 
 - 禁止在 `app/` 路由文件中写业务逻辑或复杂 JSX（下沉到 `features/`）
-- 禁止跨 feature 互相导入（共享逻辑下沉到 `lib/` / `components/`）
+- 禁止跨 feature 互相导入（共享逻辑下沉到 `lib/` / `components/`）—— 由 `pnpm lint:deps` 的 `no-cross-feature` 规则强制
 - 禁止预建空目录；只按需创建

@@ -12,10 +12,11 @@ pnpm dev        # 启动所有服务
 pnpm build      # 全量构建
 pnpm lint       # 代码检查
 pnpm lint:fix   # 自动修复 lint 问题
+pnpm lint:deps  # 依赖图检查（dependency-cruiser）：循环、孤儿、feature 互斥
 pnpm format     # 代码格式化
 pnpm test       # 运行所有测试
 pnpm typecheck  # 类型检查
-pnpm check      # lint:fix + format + typecheck + test（变更验证用）
+pnpm check      # lint:fix + format + typecheck + lint:deps + test（变更验证用）
 ```
 
 ## 包结构

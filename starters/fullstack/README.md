@@ -51,12 +51,20 @@ pnpm dev
 ```bash
 pnpm dev          # start all apps
 pnpm build        # build all
-pnpm check        # lint:fix + format + typecheck + test
+pnpm check        # lint:fix + format + typecheck + lint:deps + test
 pnpm test         # run all tests
 pnpm typecheck    # type check
 pnpm lint:fix     # lint + auto-fix
+pnpm lint:deps    # dependency-cruiser: cycles, orphans, feature isolation
 pnpm format       # format all files
 ```
+
+### Dependency rules
+
+- `oxlint` (`pnpm lint`) covers per-file checks, including `import/no-cycle` for editor-time feedback on circular imports.
+- `dependency-cruiser` (`pnpm lint:deps`) runs at the graph level. Each app owns a `.dependency-cruiser.mjs` enforcing:
+  - `no-cross-feature` — `src/features/<a>/**` cannot import `src/features/<b>/**`. Promote shared code to `src/lib`, `src/components` or `src/hooks` (see `.claude/rules/web.md` and `.claude/rules/api-web.md`).
+  - `no-feature-to-route` (api-web only) — `features/` cannot depend on `app/`; the direction is `app/ -> features/`.
 
 ## Theming
 

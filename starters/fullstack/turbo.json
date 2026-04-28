@@ -17,6 +17,9 @@
     "lint:fix": {
       "cache": false
     },
+    "lint:deps": {
+      "inputs": ["src/**", ".dependency-cruiser.mjs", "tsconfig.json"]
+    },
     "format": {
       "cache": false
     },
