@@ -27,6 +27,7 @@ jobs:
       - run: bun run build
       - uses: changesets/action@v1
         with:
+          version: bun run version
           publish: bunx changeset publish --provenance --access public
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
