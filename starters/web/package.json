@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.9.0",
-    "@infra-x/code-quality": "^0.6.1",
+    "@infra-x/code-quality": "^0.6.2",
     "@infra-x/typescript-config": "^2.0.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@testing-library/react": "^16.3.2",
