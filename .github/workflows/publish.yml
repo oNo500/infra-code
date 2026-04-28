@@ -28,6 +28,10 @@ jobs:
       - uses: changesets/action@v1
         with:
           version: bun run version
-          publish: bunx changeset publish --provenance --access public
+          publish: bunx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          # `--provenance` was removed from `changeset publish` in 2.31; npm
+          # reads it from the env. `--access public` is set per-package in
+          # `publishConfig.access`.
+          NPM_CONFIG_PROVENANCE: 'true'
