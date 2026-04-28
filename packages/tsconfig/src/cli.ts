@@ -286,8 +286,8 @@ const main = defineCommand({
         const result = await generate(opts)
         for (const f of result.written) console.log(`write  ${f}`)
       }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
       if (interactive) p.log.error(message)
       else console.error(message)
       process.exit(1)

@@ -95,11 +95,10 @@ export function composeAtoms(...atoms: CompilerOptions[]): CompilerOptions {
   const result: CompilerOptions = {}
   for (const atom of atoms) {
     for (const [key, value] of Object.entries(atom)) {
-      if (Array.isArray(value) && Array.isArray(result[key])) {
-        result[key] = dedupe([...(result[key] as unknown[]), ...value])
-      } else {
-        result[key] = value
-      }
+      result[key] =
+        Array.isArray(value) && Array.isArray(result[key])
+          ? dedupe([...(result[key] as unknown[]), ...value])
+          : value
     }
   }
   return result
