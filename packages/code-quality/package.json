@@ -1,6 +1,6 @@
 {
   "name": "@infra-x/code-quality",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Shared Oxlint + Oxfmt presets for infra-x projects. Lint and format, one install.",
   "license": "MIT",
   "author": "infra-x",
