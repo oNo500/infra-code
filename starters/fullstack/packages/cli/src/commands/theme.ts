@@ -16,8 +16,9 @@ import {
   PRESET_MENU_COLORS,
   PRESET_MENU_ACCENTS,
   DEFAULT_PRESET_CONFIG,
-  type PresetConfig,
 } from 'shadcn/preset'
+
+import type { PresetConfig } from 'shadcn/preset'
 
 const ROOT = resolve(import.meta.dir, '../../../..')
 const UI_DIR = resolve(ROOT, 'packages/ui')
@@ -142,9 +143,9 @@ function writeCssVars(light: CssVars, dark: CssVars): void {
   const rootBlock = varsToBlock(':root', light, 'light')
   const darkBlock = varsToBlock('.dark', dark, 'dark')
   const stripped = src
-    .replace(/:root\s*\{[^}]*\}/gs, '')
-    .replace(/\.dark\s*\{[^}]*\}/gs, '')
-    .replace(/\n{3,}/g, '\n\n')
+    .replaceAll(/:root\s*\{[^}]*\}/gs, '')
+    .replaceAll(/\.dark\s*\{[^}]*\}/gs, '')
+    .replaceAll(/\n{3,}/g, '\n\n')
     .trimEnd()
 
   writeFileSync(THEME_CSS, `${stripped}\n\n${rootBlock}\n\n${darkBlock}\n`, 'utf8')

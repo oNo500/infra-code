@@ -26,6 +26,9 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "erasableSyntaxOnly": true
+    "erasableSyntaxOnly": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

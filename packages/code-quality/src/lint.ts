@@ -127,6 +127,8 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
         'import/max-dependencies': 'off',
         // Modern React renders apostrophes correctly; legacy noise.
         'react/no-unescaped-entities': 'off',
+        // Misfires on Next.js Server Actions and placeholder async functions.
+        'require-await': 'off',
       },
       env: {
         browser: true,
@@ -174,6 +176,36 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
           files: ['**/*.config.{ts,mts,cts,js,mjs,cjs}'],
           rules: {
             'import/no-relative-parent-imports': 'off',
+          },
+        },
+        {
+          // Test files use mock setup patterns (vi.mock/vi.hoisted before
+          // imports), explicit mock signatures, and fixture data that
+          // legitimately violate strict style/safety rules.
+          files: GLOB_TESTS,
+          rules: {
+            // Mock setup pattern breaks standard import ordering
+            'import/first': 'off',
+            'import/no-duplicates': 'off',
+            'import/consistent-type-specifier-style': 'off',
+            // Mock signatures need explicit values / async without await
+            'unicorn/no-useless-undefined': 'off',
+            'typescript/no-empty-function': 'off',
+            // Modernization hints aren't useful in tests
+            'unicorn/prefer-string-replace-all': 'off',
+            'unicorn/no-array-callback-reference': 'off',
+            'unicorn/prefer-spread': 'off',
+            // Tests deliberately use non-null assertions, magic numbers, any
+            'typescript/no-non-null-assertion': 'off',
+            'no-magic-numbers': 'off',
+            'typescript/no-explicit-any': 'off',
+            'typescript/no-unsafe-assignment': 'off',
+            'typescript/no-unsafe-call': 'off',
+            'typescript/no-unsafe-member-access': 'off',
+            'typescript/no-unsafe-return': 'off',
+            'typescript/no-unsafe-argument': 'off',
+            // Index keys are fine when rendering fixture lists
+            'react/no-array-index-key': 'off',
           },
         },
       ],

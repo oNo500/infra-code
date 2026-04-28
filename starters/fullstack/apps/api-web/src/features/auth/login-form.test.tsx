@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import { LoginForm } from './login-form'
+
 const { mockSignInEmail, mockSignInSocial } = vi.hoisted(() => ({
   mockSignInEmail: vi.fn(),
   mockSignInSocial: vi.fn(),
@@ -37,8 +39,6 @@ vi.mock('@/lib/auth-client', () => ({
     },
   },
 }))
-
-import { LoginForm } from './login-form'
 
 describe('loginForm', () => {
   it('renders email, password inputs and submit button', () => {

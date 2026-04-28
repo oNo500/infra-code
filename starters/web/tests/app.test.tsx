@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test'
 
 import { render, screen } from '@testing-library/react'
 
-import { App } from '../src/app'
+import { App } from '@/app'
 
 describe('<App />', () => {
   it('renders a greeting heading', () => {
