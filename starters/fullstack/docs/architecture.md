@@ -6,13 +6,13 @@ pnpm workspaces + Turborepo monorepo。`apps/` 下是可部署的应用，`packa
 
 ## Components（模块划分）
 
-| 路径 | 说明 |
-|---|---|
-| `apps/web` | 纯前端 Next.js 应用，无数据库 |
-| `apps/api-web` | 全栈 Next.js 应用，含 PostgreSQL + Better Auth |
-| `packages/ui` | 基于 shadcn/ui 的内部共享组件库 |
-| `packages/icons` | 项目专用图标集合 |
-| `packages/eslint-config` | monorepo 统一 ESLint 配置 |
+| 路径                     | 说明                                           |
+| ------------------------ | ---------------------------------------------- |
+| `apps/web`               | 纯前端 Next.js 应用，无数据库                  |
+| `apps/api-web`           | 全栈 Next.js 应用，含 PostgreSQL + Better Auth |
+| `packages/ui`            | 基于 shadcn/ui 的内部共享组件库                |
+| `packages/icons`         | 项目专用图标集合                               |
+| `packages/eslint-config` | monorepo 统一 ESLint 配置                      |
 
 ## Project Structure
 

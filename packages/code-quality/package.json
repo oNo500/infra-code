@@ -46,14 +46,14 @@
     "eslint-plugin-drizzle": "^0.2.3",
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-storybook": "^10.2.14",
-    "oxlint-tsgolint": "^0.21.0",
+    "oxlint-tsgolint": "^0.22.0",
     "std-env": "^4.0.0"
   },
   "devDependencies": {
     "@infra-x/tsconfig": "workspace:*",
     "@types/node": "^25.3.3",
     "bumpp": "^10.4.1",
-    "oxfmt": "^0.45.0",
+    "oxfmt": "^0.47.0",
     "oxlint": "^1.59.0",
     "tsdown": "^0.21.0",
     "typescript": "^6.0.0"

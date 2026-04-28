@@ -7,16 +7,16 @@ paths:
 
 ## Tech Stack
 
-| 类别 | 技术 |
-|------|------|
-| 框架 | React 19 |
-| 组件系统 | shadcn (base-ui + radix-ui) |
-| 动画 | motion |
-| 通知 | sonner |
-| 抽屉 | vaul |
-| 样式 | Tailwind CSS v4, tailwind-merge, class-variance-authority |
-| 主题 | next-themes |
-| 类型校验 | Zod |
+| 类别     | 技术                                                      |
+| -------- | --------------------------------------------------------- |
+| 框架     | React 19                                                  |
+| 组件系统 | shadcn (base-ui + radix-ui)                               |
+| 动画     | motion                                                    |
+| 通知     | sonner                                                    |
+| 抽屉     | vaul                                                      |
+| 样式     | Tailwind CSS v4, tailwind-merge, class-variance-authority |
+| 主题     | next-themes                                               |
+| 类型校验 | Zod                                                       |
 
 ## Architecture
 
@@ -43,6 +43,7 @@ src/
 ## Exports
 
 所有导出通过 `package.json` exports 字段定义：
+
 - 组件：`@workspace/ui/components/<name>`
 - Hooks：`@workspace/ui/hooks/<name>`
 - Lib：`@workspace/ui/lib/<name>`
