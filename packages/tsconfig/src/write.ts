@@ -105,8 +105,8 @@ export function defaultSelected(changes: FieldChange[]): string[] {
 
 export async function applyWrites(
   plans: FilePlan[],
-  skip: Set<string> = new Set(),
-  merges: Map<string, string> = new Map(),
+  skip: Set<string> = new Set<string>(),
+  merges: Map<string, string> = new Map<string, string>(),
 ): Promise<WriteResult> {
   const result: WriteResult = { written: [], unchanged: [], skipped: [] }
   await Promise.all(
@@ -183,8 +183,8 @@ function parseJson(text: string): Record<string, unknown> | null {
 async function readIfExists(path: string): Promise<string | null> {
   try {
     return await readFile(path, 'utf8')
-  } catch (err) {
-    if (isErrnoException(err) && err.code === 'ENOENT') return null
-    throw err
+  } catch (error) {
+    if (isErrnoException(error) && error.code === 'ENOENT') return null
+    throw error
   }
 }

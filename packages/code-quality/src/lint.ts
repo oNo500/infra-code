@@ -106,6 +106,27 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
       categories: {
         correctness: 'error',
         suspicious: 'error',
+        perf: 'error',
+        pedantic: 'warn',
+      },
+      rules: {
+        // Shape-only check; necessary in interactive CLI and sequential workflows.
+        'no-await-in-loop': 'off',
+        // High-noise; readonly intent better expressed via `const generics` or call-site.
+        'typescript/prefer-readonly-parameter-types': 'off',
+        // Turns `if (str)` into ceremony for marginal safety gain.
+        'typescript/strict-boolean-expressions': 'off',
+        // File/function size is a reviewer call, not a lint rule.
+        'max-lines': 'off',
+        'max-lines-per-function': 'off',
+        // Misfires on `/* @__PURE__ */` and similar bundler annotations.
+        'no-inline-comments': 'off',
+        // TODO/FIXME triage belongs in the issue tracker.
+        'no-warning-comments': 'off',
+        // Default cap of 10 is too tight for modern React/Next component files.
+        'import/max-dependencies': 'off',
+        // Modern React renders apostrophes correctly; legacy noise.
+        'react/no-unescaped-entities': 'off',
       },
       env: {
         browser: true,
@@ -122,6 +143,16 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
             'typescript/consistent-type-definitions': 'off',
             'typescript/consistent-type-imports': 'error',
             'no-unused-vars': 'off',
+            'typescript/array-type': 'error',
+            'typescript/consistent-generic-constructors': 'error',
+            'typescript/consistent-indexed-object-style': 'error',
+            'typescript/consistent-type-assertions': 'error',
+            'typescript/ban-tslint-comment': 'error',
+            'typescript/no-empty-interface': 'error',
+            'typescript/no-inferrable-types': 'error',
+            'typescript/prefer-for-of': 'error',
+            'typescript/prefer-function-type': 'error',
+            'typescript/unified-signatures': 'error',
           },
         },
         {
@@ -130,6 +161,19 @@ export function base(overrides?: Partial<OxlintConfig>): OxlintConfig {
             // CSS/style side-effect imports are standard in all frontend frameworks
             'import/no-unassigned-import': 'off',
             'import/no-relative-parent-imports': 'error',
+            'import/first': 'error',
+            'import/no-duplicates': 'error',
+            'import/consistent-type-specifier-style': 'error',
+            'import/no-mutable-exports': 'error',
+            'import/no-named-default': 'error',
+          },
+        },
+        {
+          // Config files commonly import shared roots via `../../config.ts`
+          // in monorepos — intended pattern, not a smell.
+          files: ['**/*.config.{ts,mts,cts,js,mjs,cjs}'],
+          rules: {
+            'import/no-relative-parent-imports': 'off',
           },
         },
       ],
@@ -161,6 +205,22 @@ export function unicorn(overrides?: Partial<OxlintConfig>): OxlintConfig {
       plugins: ['unicorn'],
       rules: {
         'unicorn/no-null': 'off',
+        'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+        'unicorn/catch-error-name': 'error',
+        'unicorn/error-message': 'error',
+        'unicorn/prefer-optional-catch-binding': 'error',
+        'unicorn/no-zero-fractions': 'error',
+        'unicorn/number-literal-case': 'error',
+        'unicorn/numeric-separators-style': 'error',
+        'unicorn/prefer-includes': 'error',
+        'unicorn/prefer-spread': 'error',
+        'unicorn/prefer-ternary': 'error',
+        'unicorn/prefer-string-trim-start-end': 'error',
+        'unicorn/prefer-structured-clone': 'error',
+        'unicorn/prefer-default-parameters': 'error',
+        'unicorn/no-console-spaces': 'error',
+        'unicorn/throw-new-error': 'error',
+        'unicorn/require-array-join-separator': 'error',
       },
     },
     overrides,
@@ -205,6 +265,15 @@ export function promise(overrides?: Partial<OxlintConfig>): OxlintConfig {
 // Frameworks
 // ============================================================================
 
+const reactStyleRules = {
+  'react/jsx-pascal-case': 'error',
+  'react/jsx-boolean-value': 'error',
+  'react/jsx-curly-brace-presence': 'error',
+  'react/jsx-fragments': 'error',
+  'react/self-closing-comp': 'error',
+  'react/hook-use-state': 'error',
+} as const
+
 /** React lint preset — enables native react + react-hooks plugin. */
 export function react(overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset(
@@ -213,6 +282,7 @@ export function react(overrides?: Partial<OxlintConfig>): OxlintConfig {
       rules: {
         // Automatic JSX runtime (React 17+) does not require explicit React import
         'react/react-in-jsx-scope': 'off',
+        ...reactStyleRules,
       },
     },
     overrides,
@@ -227,6 +297,7 @@ export function reactVite(overrides?: Partial<OxlintConfig>): OxlintConfig {
       jsPlugins: resolvePlugins(['eslint-plugin-react-refresh']),
       rules: {
         'react/react-in-jsx-scope': 'off',
+        ...reactStyleRules,
       },
     },
     overrides,
