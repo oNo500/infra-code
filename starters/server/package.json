@@ -24,7 +24,7 @@
     "@infra-x/typescript-config": "^2.0.0",
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.10",
-    "oxfmt": "^0.47.0",
+    "oxfmt": "^0.48.0",
     "oxlint": "^1.62.0",
     "typescript": "^6.0.3"
   }
