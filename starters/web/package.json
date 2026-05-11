@@ -27,7 +27,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "bun-plugin-tailwind": "^0.1.2",
-    "oxfmt": "^0.48.0",
+    "oxfmt": "^0.49.0",
     "oxlint": "^1.62.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3"
