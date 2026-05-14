@@ -9,7 +9,6 @@
 /* Custom styles */
 @import './prose.css';
 @import './squircle.css';
-/* @import "./custom-utilities.css"; */
 
 /* View Transitions */
 @import './theme-transition.css';
@@ -27,8 +26,9 @@
   body {
     scrollbar-gutter: stable;
   }
-  html {
-    @apply font-sans;
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }
 

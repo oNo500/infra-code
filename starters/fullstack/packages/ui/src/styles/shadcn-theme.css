@@ -3,6 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* default ref: https://ui.shadcn.com/docs/theming#default-theme-css */
+
 @theme inline {
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -55,10 +57,6 @@
   }
   html {
     @apply font-sans;
-  }
- button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
   }
 }
 
