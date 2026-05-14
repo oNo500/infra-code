@@ -14,7 +14,6 @@ bunx giget@latest gh:oNo500/infra-code/starters/fullstack my-app
 - `apps/api-web` (:3001) — Next.js full-stack, PostgreSQL + Better Auth
 - `packages/ui` — shared component library, shadcn/ui
 - `packages/icons` — shared icon set
-- `packages/cli` — internal CLI tools (`pnpm theme`, …)
 
 ## Philosophy
 
@@ -65,25 +64,3 @@ pnpm format       # format all files
 - `dependency-cruiser` (`pnpm lint:deps`) runs at the graph level. Each app owns a `.dependency-cruiser.mjs` enforcing:
   - `no-cross-feature` — `src/features/<a>/**` cannot import `src/features/<b>/**`. Promote shared code to `src/lib`, `src/components` or `src/hooks` (see `.claude/rules/web.md` and `.claude/rules/api-web.md`).
   - `no-feature-to-route` (api-web only) — `features/` cannot depend on `app/`; the direction is `app/ -> features/`.
-
-## Theming
-
-The `packages/cli` provides a `theme` command to switch the shadcn theme across the entire monorepo — style, accent color, base color, radius, fonts, and more.
-
-```bash
-# interactive picker
-pnpm theme
-
-# apply a saved preset code directly
-pnpm theme --preset <code>
-```
-
-The command:
-
-1. Fetches CSS variables (including accent color) from the shadcn `/init` API
-2. Writes `:root` / `.dark` blocks in `packages/ui/src/styles/shadcn-theme.css`
-3. Updates `style` and `tailwind.baseColor` in all `components.json` files
-4. Re-runs `shadcn add` to regenerate component files matching the new style
-
-> [!NOTE]
-> `theme` and `chartColor` are stored in `packages/ui/.theme-config.json` — they are not valid fields in `components.json` and must live separately.

@@ -11,8 +11,7 @@
     "format:check": "turbo run format:check",
     "test": "turbo run test --continue",
     "typecheck": "turbo run typecheck",
-    "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm lint:deps && pnpm test",
-    "theme": "bun packages/cli/src/index.ts theme"
+    "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm lint:deps && pnpm test"
   },
   "devDependencies": {
     "@infra-x/code-quality": "^0.6.2",
