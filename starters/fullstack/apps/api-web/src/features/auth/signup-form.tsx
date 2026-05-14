@@ -13,6 +13,7 @@ import { Input } from '@workspace/ui/components/input'
 import { cn } from '@workspace/ui/lib/utils'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Logo } from '@/components/logo'
 import { appPaths } from '@/config/app-paths'
@@ -21,13 +22,21 @@ import { authClient } from '@/lib/auth-client'
 
 export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [githubLoading, setGithubLoading] = useState(false)
 
-  function handleGitHubSignIn() {
+  async function handleGitHubSignIn() {
     setGithubLoading(true)
-    void authClient.signIn.social({ provider: 'github' })
+    try {
+      const { error } = await authClient.signIn.social({ provider: 'github' })
+      if (error) {
+        toast.error(error.message || 'GitHub sign-in failed')
+      }
+    } catch {
+      toast.error('Unable to reach the auth server')
+    } finally {
+      setGithubLoading(false)
+    }
   }
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
@@ -37,19 +46,19 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
     const email = (form.elements.namedItem('email') as HTMLInputElement).value
     const password = (form.elements.namedItem('password') as HTMLInputElement).value
 
-    setError(null)
     setLoading(true)
-
-    const { error: signUpError } = await authClient.signUp.email({ name, email, password })
-
-    setLoading(false)
-
-    if (signUpError) {
-      setError(signUpError.message ?? 'Signup failed')
-      return
+    try {
+      const { error } = await authClient.signUp.email({ name, email, password })
+      if (error) {
+        toast.error(error.message || 'Signup failed')
+        return
+      }
+      router.push(appPaths.home.href)
+    } catch {
+      toast.error('Unable to reach the auth server')
+    } finally {
+      setLoading(false)
     }
-
-    router.push(appPaths.home.href)
   }
 
   return (
@@ -81,7 +90,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <Input id="password" name="password" type="password" required />
           </Field>
-          {error && <FieldDescription className="text-destructive">{error}</FieldDescription>}
           <Field>
             <Button type="submit" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}

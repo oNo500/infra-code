@@ -66,6 +66,16 @@ describe('userMenu — desktop', () => {
     expect(loginBtn).toHaveAttribute('href', '/login')
   })
 
+  it('renders session unavailable when useSession errors', () => {
+    mockUseSession.mockReturnValue({
+      data: null,
+      isPending: false,
+      error: { message: 'Network error', status: 500, statusText: 'Internal Server Error' },
+    })
+    render(<UserMenu variant="desktop" />)
+    expect(screen.getByRole('button', { name: /session unavailable/i })).toBeDisabled()
+  })
+
   it('renders user name and email when authenticated', async () => {
     mockUseSession.mockReturnValue({ data: fakeSession, isPending: false })
     render(<UserMenu variant="desktop" />)
@@ -77,7 +87,7 @@ describe('userMenu — desktop', () => {
 
   it('calls signOut and redirects to login on sign out', async () => {
     mockUseSession.mockReturnValue({ data: fakeSession, isPending: false })
-    mockSignOut.mockResolvedValue(undefined)
+    mockSignOut.mockResolvedValue({ data: null, error: null })
     render(<UserMenu variant="desktop" />)
 
     await userEvent.click(screen.getByRole('button', { name: /user menu/i }))

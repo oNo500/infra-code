@@ -12,22 +12,39 @@ import {
 import { Skeleton } from '@workspace/ui/components/skeleton'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 import { appPaths } from '@/config/app-paths'
 import { authClient } from '@/lib/auth-client'
 
 export function UserMenu({ variant }: { variant: 'desktop' | 'mobile' }) {
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending, error: sessionError } = authClient.useSession()
   const router = useRouter()
 
   async function handleSignOut() {
-    await authClient.signOut()
-    router.push(appPaths.auth.login.getHref())
+    try {
+      const { error } = await authClient.signOut()
+      if (error) {
+        toast.error(error.message || 'Sign out failed')
+        return
+      }
+      router.push(appPaths.auth.login.getHref())
+    } catch {
+      toast.error('Unable to reach the auth server')
+    }
   }
 
   if (variant === 'mobile') {
     if (isPending) {
       return <Skeleton className="h-9 w-full rounded-md" />
+    }
+
+    if (sessionError) {
+      return (
+        <Button variant="outline" size="sm" disabled className="w-full">
+          Session unavailable
+        </Button>
+      )
     }
 
     if (session) {
@@ -66,6 +83,14 @@ export function UserMenu({ variant }: { variant: 'desktop' | 'mobile' }) {
 
   if (isPending) {
     return <Skeleton className="size-7 rounded-full" />
+  }
+
+  if (sessionError) {
+    return (
+      <Button variant="outline" size="sm" disabled>
+        Session unavailable
+      </Button>
+    )
   }
 
   if (!session) {

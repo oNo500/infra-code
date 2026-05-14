@@ -4,9 +4,14 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { LoginForm } from './login-form'
 
-const { mockSignInEmail, mockSignInSocial } = vi.hoisted(() => ({
+const { mockSignInEmail, mockSignInSocial, mockToastError } = vi.hoisted(() => ({
   mockSignInEmail: vi.fn(),
   mockSignInSocial: vi.fn(),
+  mockToastError: vi.fn(),
+}))
+
+vi.mock('sonner', () => ({
+  toast: { error: mockToastError },
 }))
 
 vi.mock('next/navigation', () => ({
@@ -48,26 +53,43 @@ describe('loginForm', () => {
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
   })
 
-  it('shows error message when login fails', async () => {
-    mockSignInEmail.mockResolvedValue({ error: { message: 'Invalid credentials' } })
+  it('toasts error when login fails', async () => {
+    mockSignInEmail.mockResolvedValue({ data: null, error: { message: 'Invalid credentials' } })
     render(<LoginForm />)
 
     await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com')
     await userEvent.type(screen.getByLabelText(/password/i), 'wrong')
     await userEvent.click(screen.getByRole('button', { name: /login/i }))
 
-    expect(await screen.findByText('Invalid credentials')).toBeInTheDocument()
+    await vi.waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith('Invalid credentials')
+    })
   })
 
-  it('shows fallback error when message is missing', async () => {
-    mockSignInEmail.mockResolvedValue({ error: {} })
+  it('toasts fallback error when message is missing', async () => {
+    mockSignInEmail.mockResolvedValue({ data: null, error: {} })
     render(<LoginForm />)
 
     await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com')
     await userEvent.type(screen.getByLabelText(/password/i), 'wrong')
     await userEvent.click(screen.getByRole('button', { name: /login/i }))
 
-    expect(await screen.findByText('Login failed')).toBeInTheDocument()
+    await vi.waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith('Login failed')
+    })
+  })
+
+  it('toasts network error when fetch throws', async () => {
+    mockSignInEmail.mockRejectedValue(new TypeError('Failed to fetch'))
+    render(<LoginForm />)
+
+    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com')
+    await userEvent.type(screen.getByLabelText(/password/i), 'pass')
+    await userEvent.click(screen.getByRole('button', { name: /login/i }))
+
+    await vi.waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith('Unable to reach the auth server')
+    })
   })
 
   it('disables submit button while submitting', async () => {
