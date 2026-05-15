@@ -28,7 +28,7 @@
     "@infra-x/code-quality": "^0.6.2",
     "@infra-x/typescript-config": "^2.0.0",
     "@types/bun": "latest",
-    "oxfmt": "^0.49.0",
+    "oxfmt": "^0.50.0",
     "oxlint": "^1.62.0",
     "tsdown": "^0.22.0",
     "typescript": "^6.0.3"
