@@ -22,7 +22,7 @@
     "taze": "^19.11.0",
     "turbo": "^2.9.6"
   },
-  "packageManager": "pnpm@10.34.3",
+  "packageManager": "pnpm@11.6.0",
   "pnpm": {
     "overrides": {
       "@hono/node-server": ">=2.0.0",
