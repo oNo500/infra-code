@@ -30,10 +30,10 @@ Fetched via [`giget`](https://github.com/unjs/giget). Each starter is self-conta
 | [`fullstack`](./starters/fullstack) | Production-grade monorepo | pnpm · Turborepo · Next.js 16 · Drizzle · Better Auth · shadcn/ui |
 
 ```bash
-bunx giget@latest gh:oNo500/infra-code/starters/cli my-cli
-bunx giget@latest gh:oNo500/infra-code/starters/server my-api
-bunx giget@latest gh:oNo500/infra-code/starters/web my-ui
-bunx giget@latest gh:oNo500/infra-code/starters/fullstack my-app
+bunx giget@latest gh:oNo500/infra-code/starters/cli#master my-cli
+bunx giget@latest gh:oNo500/infra-code/starters/server#master my-api
+bunx giget@latest gh:oNo500/infra-code/starters/web#master my-ui
+bunx giget@latest gh:oNo500/infra-code/starters/fullstack#master my-app
 ```
 
 See each starter's own README for specific scripts and constraints.
