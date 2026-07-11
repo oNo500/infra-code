@@ -20,6 +20,16 @@ git push origin feat/your-feature
 # open PR → CI must pass → merge to master
 ```
 
+## Security Updates
+
+Fix dependency alerts with targeted updates, one alert (or one package) per PR:
+
+- Direct dependency: `pnpm up <pkg>` to the patched version
+- Transitive dependency: `pnpm audit --fix` (writes a `pnpm.overrides` entry; remove it once upstream catches up)
+- Pinned by upstream (e.g. exact versions inside `next` or `drizzle-kit`): wait for the upstream release — do not force an override
+
+Do **not** regenerate the whole lockfile to clear alerts: it buries the fix in an unreviewable diff and accepts untargeted upgrades across the tree.
+
 ## Releasing
 
 This project uses [Changesets](https://github.com/changesets/changesets) for version management.
