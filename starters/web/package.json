@@ -30,6 +30,6 @@
     "oxfmt": "^0.55.0",
     "oxlint": "^1.62.0",
     "tailwindcss": "^4.2.4",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.0"
   }
 }
