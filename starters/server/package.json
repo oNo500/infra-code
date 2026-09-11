@@ -26,6 +26,6 @@
     "drizzle-kit": "^0.31.10",
     "oxfmt": "^0.55.0",
     "oxlint": "^1.62.0",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.0"
   }
 }
