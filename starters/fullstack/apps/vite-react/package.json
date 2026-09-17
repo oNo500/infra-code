@@ -18,13 +18,16 @@
     "check": "pnpm format:check && pnpm lint && pnpm lint:deps && pnpm typecheck && pnpm test"
   },
   "dependencies": {
+    "@infra-x/fwrap": "0.1.1",
+    "@t3-oss/env-core": "0.13.11",
     "@workspace/ui": "workspace:*",
     "lucide-react": "^1.46.0",
     "next-themes": "^0.4.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^8.3.1",
-    "sonner": "^2.0.8"
+    "sonner": "^2.0.8",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

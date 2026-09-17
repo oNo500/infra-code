@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import * as React from 'react'
 
+import { appPaths } from '@/config/app-paths'
 import { NavMain } from '@/features/navigation/nav-main'
 import { NavProjects } from '@/features/navigation/nav-projects'
 import { NavUser } from '@/features/navigation/nav-user'
@@ -46,8 +47,8 @@ const data = {
     },
   ],
   navMain: [
-    { title: 'Home', url: '/', icon: <HomeIcon /> },
-    { title: 'About', url: '/about', icon: <InfoIcon /> },
+    { title: 'Home', url: appPaths.home.href, icon: <HomeIcon /> },
+    { title: 'About', url: appPaths.about.href, icon: <InfoIcon /> },
     {
       title: 'Documentation',
       url: 'https://ui.shadcn.com/docs',

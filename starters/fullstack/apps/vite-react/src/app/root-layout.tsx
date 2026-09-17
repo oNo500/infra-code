@@ -10,12 +10,19 @@ import { Separator } from '@workspace/ui/components/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@workspace/ui/components/sidebar'
 import { Link, Outlet, useLocation } from 'react-router'
 
+import { appPaths } from '@/config/app-paths'
+import { env } from '@/config/env'
 import { AppSidebar } from '@/features/navigation/app-sidebar'
 import { ThemeToggle } from '@/features/theme/theme-toggle'
 
 export default function RootLayout() {
   const { pathname } = useLocation()
-  const title = pathname === '/' ? 'Home' : pathname === '/about' ? 'About' : 'Not found'
+  const title =
+    pathname === appPaths.home.href
+      ? 'Home'
+      : pathname === appPaths.about.href
+        ? 'About'
+        : 'Not found'
 
   return (
     <SidebarProvider>
@@ -30,7 +37,9 @@ export default function RootLayout() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink render={<Link to="/" />}>Vite React</BreadcrumbLink>
+                <BreadcrumbLink render={<Link to={appPaths.home.href} />}>
+                  {env.VITE_APP_NAME}
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>

@@ -38,6 +38,7 @@ CLI 会根据别名将共享组件写入 `packages/ui`。共享组件及主题�
 
 ## 路由
 
+- `src/config/app-paths.ts` 集中维护页面路径，路由树、侧栏、面包屑和返回链接共同引用。
 - `src/app/routes.ts` 定义路由树；在 `children` 中添加页面路由。
 - `src/app/router.ts` 创建浏览器路由实例，`src/main.tsx` 挂载 `RouterProvider`。
 - `src/app/root-layout.tsx` 提供公共导航和 `Outlet` 页面出口。
@@ -48,6 +49,41 @@ CLI 会根据别名将共享组件写入 `packages/ui`。共享组件及主题�
 路由采用浏览器 History URL。生产环境静态托管需要将未匹配的页面路径回退到 `index.html`，才能直接访问或刷新 `/about` 等子路由。Vite 开发和预览服务器已提供 SPA 回退。
 
 参考 [React Router Data Mode](https://reactrouter.com/start/data/installation)。
+
+## 环境变量
+
+将 `.env.example` 复制为本应用目录下的 `.env.local`，修改后重启开发服务器。
+
+- `VITE_APP_NAME`：应用名称，默认 `Vite React`，显示在页头面包屑中。
+- `VITE_API_URL`：可选的绝对 HTTP(S) API 地址，例如 `https://api.example.com/v1`。留空时请求发送到当前页面的 origin。
+
+`src/config/env.ts` 使用 `@t3-oss/env-core` 和 Zod 校验 `import.meta.env`；空字符串按未配置处理。应用启动时发现非法配置会报错。Vite 在构建时替换这些值，修改部署配置后需要重新构建；`vite build` 本身不执行浏览器中的运行时校验。`VITE_` 变量会进入浏览器代码，只放公开配置。
+
+```ts
+import { env } from '@/config/env'
+```
+
+## HTTP 请求
+
+`src/lib/fetch-client.ts` 基于 `@infra-x/fwrap`，提供可调用的 `fetchClient` 和 `.get()`、`.post()`、`.put()`、`.patch()`、`.delete()`、`.head()` 方法。
+
+```ts
+import { fetchClient } from '@/lib/fetch-client'
+
+const { data, error } = await fetchClient.get<{ id: string; title: string }[]>('/items')
+if (error) throw error // 交给路由错误页，或在功能代码中显示通知。
+return data
+```
+
+- 默认超时为 30 秒。GET、PUT、HEAD、DELETE、OPTIONS、TRACE 在收到 408、413、429、500、502、503、504 时最多重试两次；POST/PATCH、超时和普通网络错误默认不重试。
+- 请求返回 `{ data, response, error }`，必须检查 `error`。这层封装不会自动弹 Toast 或跳转登录页。
+- API 地址包含 `/v1` 时，`get('/items')` 请求 `/v1/items`。未配置 API 地址时，`get('/api/items')` 请求当前站点的 `/api/items`；后端或部署代理需要实际提供该接口。
+- JSON 写入使用 `fetchClient.post('/items', { body: { title: 'Example' } })`。可按次传入 `timeout`、`retry`、`signal`、`headers` 等选项。
+- 数字 `retry` 只调整默认允许方法的重试次数（`0` 禁用重试）；对象形式按其 `methods` 决定是否重试，方法名不区分大小写。只有显式将 POST/PATCH 加入该列表才会重试写入。
+- 默认使用浏览器的同源凭据策略；跨域 Cookie 认证需在确定后端后显式配置 `credentials: 'include'` 及服务端 CORS。
+- 每次请求独立创建 fwrap 实例，隔离 0.1.1 的重试计数；默认重试按方法在此封装选择。此封装不提供 `.extend()`，也不包含 Next.js 服务端 Cookie 转发与缓存选项。
+
+功能专属请求放在 `features/<feature>` 内，通用传输配置放在 `lib/fetch-client.ts`。
 
 ## Lint
 
@@ -60,6 +96,10 @@ CLI 会根据别名将共享组件写入 `packages/ui`。共享组件及主题�
 ```text
 src/
   app/                     # 应用组装：路由、根布局、404 和路由错误页
+  config/
+    app-paths.ts           # 页面路径常量
+    env.ts                 # 浏览器环境变量校验
+  lib/fetch-client.ts      # HTTP 请求入口
   features/
     home/                  # 首页组件、样式、图片和单元测试
     about/                 # 关于页面

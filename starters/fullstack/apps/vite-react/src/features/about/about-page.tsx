@@ -1,6 +1,8 @@
 import { buttonVariants } from '@workspace/ui/components/button'
 import { Link } from 'react-router'
 
+import { appPaths } from '@/config/app-paths'
+
 export default function AboutPage() {
   return (
     <section className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-12">
@@ -8,7 +10,7 @@ export default function AboutPage() {
       <p className="max-w-xl text-muted-foreground">
         A React starter built with Vite, Tailwind CSS, shadcn/ui, and React Router.
       </p>
-      <Link to="/" className={buttonVariants({ variant: 'outline' })}>
+      <Link to={appPaths.home.href} className={buttonVariants({ variant: 'outline' })}>
         Back to home
       </Link>
     </section>
