@@ -1,10 +1,12 @@
+import { Button } from '@workspace/ui/components/button'
 import { useState } from 'react'
+
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
-import './App.css'
+import './home-page.css'
 
-function App() {
+function HomePage() {
   const [count, setCount] = useState(0)
 
   return (
@@ -18,16 +20,16 @@ function App() {
         <div>
           <h1>Get started</h1>
           <p>
-            Edit <code>src/app.tsx</code> and save to test <code>HMR</code>
+            Edit <code>src/features/home/home-page.tsx</code> and save to test <code>HMR</code>
           </p>
         </div>
-        <button
+        <Button
           type="button"
-          className="counter"
+          className="mb-6"
           onClick={() => setCount((previousCount) => previousCount + 1)}
         >
           Count is {count}
-        </button>
+        </Button>
       </section>
 
       <div className="ticks" />
@@ -63,11 +65,7 @@ function App() {
           <ul>
             <li>
               <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
+                <svg className="button-icon" role="presentation" aria-hidden="true">
                   <use href="/icons.svg#github-icon" />
                 </svg>
                 GitHub
@@ -75,11 +73,7 @@ function App() {
             </li>
             <li>
               <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
+                <svg className="button-icon" role="presentation" aria-hidden="true">
                   <use href="/icons.svg#discord-icon" />
                 </svg>
                 Discord
@@ -87,11 +81,7 @@ function App() {
             </li>
             <li>
               <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
+                <svg className="button-icon" role="presentation" aria-hidden="true">
                   <use href="/icons.svg#x-icon" />
                 </svg>
                 X.com
@@ -99,11 +89,7 @@ function App() {
             </li>
             <li>
               <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
+                <svg className="button-icon" role="presentation" aria-hidden="true">
                   <use href="/icons.svg#bluesky-icon" />
                 </svg>
                 Bluesky
@@ -119,4 +105,4 @@ function App() {
   )
 }
 
-export default App
+export default HomePage
