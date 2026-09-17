@@ -3,13 +3,18 @@ import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, describe, expect, it } from 'vitest'
 
+import { AppProvider } from '@/app/providers'
 import { routes } from '@/app/routes'
 
 let router: ReturnType<typeof createMemoryRouter>
 
 function renderRoute(path = '/') {
   router = createMemoryRouter(routes, { initialEntries: [path] })
-  return render(<RouterProvider router={router} />)
+  return render(
+    <AppProvider>
+      <RouterProvider router={router} />
+    </AppProvider>,
+  )
 }
 
 afterEach(() => router?.dispose())

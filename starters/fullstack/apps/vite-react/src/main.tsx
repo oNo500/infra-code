@@ -3,10 +3,13 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router/dom'
 
 import './styles/globals.css'
+import { AppProvider } from '@/app/providers'
 import { router } from '@/app/router'
 
 createRoot(document.querySelector('#root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AppProvider>
+      <RouterProvider router={router} />
+    </AppProvider>
   </StrictMode>,
 )

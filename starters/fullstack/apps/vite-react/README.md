@@ -94,3 +94,40 @@ pnpm --filter vite-react typecheck
 ```
 
 工作区根目录的 `pnpm test` 也会通过 Turbo 执行本应用测试。
+
+## 主题与通知
+
+- `src/app/providers.tsx` 统一挂载主题、Tooltip 和 Toast；应用入口与集成测试复用这一层。
+- `src/features/theme` 提供主题 Provider 和页头切换按钮。首次访问跟随系统，手动切换后保存到 `localStorage`。
+- 按 `D` 切换亮暗主题；输入框、可编辑区域、输入法组合输入和组合快捷键不会触发切换。
+- Toast 复用 `@workspace/ui/components/sonner`，跟随主题并支持关闭。首页的 `Show notification` 按钮提供示例。
+
+在功能代码中发送通知：
+
+```tsx
+import { toast } from 'sonner'
+
+toast.success('Saved')
+toast.error('Unable to save')
+const notification = toast.loading('Saving…')
+// 请求完成后更新同一条通知。
+toast.success('Saved', { id: notification })
+```
+
+## 工程检查与依赖边界
+
+在工作区根目录执行：
+
+```sh
+pnpm --filter vite-react lint:fix
+pnpm --filter vite-react format
+pnpm --filter vite-react format:check
+pnpm --filter vite-react lint:deps
+pnpm --filter vite-react check
+```
+
+`check` 顺序执行格式检查、lint、依赖边界检查、类型检查和测试，不自动修改文件。生产构建单独执行 `pnpm --filter vite-react build`。
+
+`.dependency-cruiser.mjs` 沿用 `api-web` 的规则：feature 之间不能直接引用，feature 不能反向引用 `app`。跨功能组合放在 `app`，可复用能力放在 `lib`、`components`、`hooks` 或共享包中。
+
+测试环境使用 jsdom 的 `localStorage`，避免 Node 原生 Storage 干扰；指针捕获采用最小适配，仅支持点击测试，不覆盖拖拽手势。

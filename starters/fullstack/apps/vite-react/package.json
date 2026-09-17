@@ -10,14 +10,21 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "lint:fix": "oxlint --fix",
+    "lint:deps": "depcruise src",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "check": "pnpm format:check && pnpm lint && pnpm lint:deps && pnpm typecheck && pnpm test"
   },
   "dependencies": {
     "@workspace/ui": "workspace:*",
     "lucide-react": "^1.46.0",
+    "next-themes": "^0.4.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router": "^8.3.1"
+    "react-router": "^8.3.1",
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

@@ -1,5 +1,6 @@
 import { Button } from '@workspace/ui/components/button'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
@@ -23,13 +24,18 @@ function HomePage() {
             Edit <code>src/features/home/home-page.tsx</code> and save to test <code>HMR</code>
           </p>
         </div>
-        <Button
-          type="button"
-          className="mb-6"
-          onClick={() => setCount((previousCount) => previousCount + 1)}
-        >
-          Count is {count}
-        </Button>
+        <div className="mb-6 flex flex-wrap justify-center gap-2">
+          <Button type="button" onClick={() => setCount((previousCount) => previousCount + 1)}>
+            Count is {count}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => toast.success('Notifications are ready')}
+          >
+            Show notification
+          </Button>
+        </div>
       </section>
 
       <div className="ticks" />
