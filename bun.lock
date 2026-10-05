@@ -6,7 +6,7 @@
       "name": "infra-code",
       "devDependencies": {
         "@changesets/cli": "^2.31.0",
-        "@infra-x/code-quality": "^0.6.2",
+        "@infra-x/code-quality": "workspace:*",
         "oxfmt": "^0.55.0",
         "oxlint": "^1.62.0",
         "oxlint-tsgolint": "^0.23.0",
@@ -14,7 +14,7 @@
     },
     "packages/code-quality": {
       "name": "@infra-x/code-quality",
-      "version": "0.6.2",
+      "version": "0.7.0",
       "dependencies": {
         "@darraghor/eslint-plugin-nestjs-typed": "^7.1.28",
         "defu": "^6.1.7",
@@ -49,7 +49,7 @@
     },
     "packages/tsconfig": {
       "name": "@infra-x/tsconfig",
-      "version": "0.0.1",
+      "version": "0.1.0",
       "bin": {
         "tsconfig": "./dist/cli.mjs",
       },

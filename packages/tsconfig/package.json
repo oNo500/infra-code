@@ -1,6 +1,6 @@
 {
   "name": "@infra-x/tsconfig",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Atom-based TypeScript config generator CLI. Replaces @infra-x/typescript-config.",
   "license": "MIT",
   "author": "infra-x",
