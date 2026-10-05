@@ -17,6 +17,7 @@ export function renderConfig(input: RenderInput): RenderedConfig {
 
   const files: RenderedFile[] = [
     renderFile('tsconfig.json', input.compilerOptions, {
+      files: input.files,
       include: input.include,
       exclude: input.exclude,
       references: input.references,

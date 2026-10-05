@@ -40,7 +40,8 @@ export function normalizeCompilerOptions(opts: CompilerOptions): CompilerOptions
   for (const [key, value] of Object.entries(opts)) {
     if (isArrayField(value)) {
       const arr = applyArrayField([], value)
-      if (arr.length > 0) result[key] = arr
+      // Unlike omission, an empty types list disables automatic globals in TS 5.
+      if (arr.length > 0 || key === 'types') result[key] = arr
     } else {
       result[key] = value
     }

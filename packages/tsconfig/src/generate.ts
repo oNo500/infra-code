@@ -1,3 +1,5 @@
+import { lstat } from 'node:fs/promises'
+
 import {
   base,
   buildBundler,
@@ -14,10 +16,12 @@ import {
   runtimeEdge,
   runtimeNode,
 } from './atoms'
+import { electronViteConfig } from './electron-vite'
 import { renderConfig } from './render'
-import { splitNames } from './utils'
+import { isErrnoException, splitNames } from './utils'
 import { applyWrites, planWrites, writeFiles } from './write'
 
+import type { ElectronFramework } from './electron-vite'
 import type { CompilerOptions, RenderInput, ViewInput as RenderViewInput } from './types'
 import type { FilePlan, WriteResult } from './write'
 
@@ -45,11 +49,48 @@ export interface GenOptions {
   paths?: Record<string, readonly string[]>
 }
 
-export async function generate(opts: GenOptions): Promise<WriteResult> {
+export interface ElectronViteOptions {
+  cwd: string
+  preset: 'electron-vite'
+  framework?: ElectronFramework
+}
+
+export async function generate(opts: GenOptions | ElectronViteOptions): Promise<WriteResult> {
+  if ('preset' in opts) {
+    const plans = await planGenerate(opts)
+    const conflicts: string[] = []
+    for (const plan of plans) {
+      if (plan.kind === 'changed') conflicts.push(plan.filename)
+      if (plan.kind !== 'new') continue
+      // planWrites treats unparseable files as new. Existing files are never recipe migrations.
+      try {
+        await lstat(plan.absPath)
+        conflicts.push(plan.filename)
+      } catch (error) {
+        if (!isErrnoException(error) || error.code !== 'ENOENT') throw error
+      }
+    }
+    if (conflicts.length > 0) {
+      throw new Error(
+        `electron-vite preset cannot overwrite or migrate existing files: ${conflicts.join(', ')}. Review them manually or generate in a new directory. No files were written.`,
+      )
+    }
+    return applyWrites(plans)
+  }
   return writeFiles(renderConfig(buildRenderInput(opts)), opts.cwd)
 }
 
-export async function planGenerate(opts: GenOptions): Promise<FilePlan[]> {
+export async function planGenerate(opts: GenOptions | ElectronViteOptions): Promise<FilePlan[]> {
+  if ('preset' in opts) {
+    if (opts.preset !== 'electron-vite') throw new Error(`Unknown preset: ${String(opts.preset)}`)
+    const conflicts = Object.keys(opts).filter(
+      (key) => !['cwd', 'preset', 'framework'].includes(key),
+    )
+    if (conflicts.length > 0) {
+      throw new Error(`electron-vite preset cannot be combined with ${conflicts.join(', ')}`)
+    }
+    return planWrites(electronViteConfig(opts.framework), opts.cwd)
+  }
   return planWrites(renderConfig(buildRenderInput(opts)), opts.cwd)
 }
 

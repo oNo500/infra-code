@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'bun:test'
 
-import { mergeCompilerOptions } from '@/merge'
+import { mergeCompilerOptions, normalizeCompilerOptions } from '@/merge'
+
+import type { CompilerOptions } from '@/types'
 
 describe('mergeCompilerOptions', () => {
   it('scalar: user wins', () => {
@@ -74,5 +76,25 @@ describe('mergeCompilerOptions', () => {
   it('ArrayControl append with no value: appends nothing', () => {
     const r = mergeCompilerOptions({ types: ['node'] }, { types: { merge: 'append' } })
     expect(r.types).toEqual(['node'])
+  })
+})
+
+describe('normalizeCompilerOptions', () => {
+  it.each<CompilerOptions>([
+    { types: [] },
+    { types: 'none' },
+    { types: { merge: 'none' } },
+    { types: { merge: 'replace', value: [] } },
+  ])('preserves explicit empty types instead of restoring implicit global types: %j', (opts) => {
+    expect(normalizeCompilerOptions(opts)).toEqual({ types: [] })
+  })
+
+  it('does not introduce a types restriction when the caller omitted it', () => {
+    expect(normalizeCompilerOptions({ strict: true })).toEqual({ strict: true })
+  })
+
+  it('preserves explicit clearing after merging a Node configuration', () => {
+    const opts = mergeCompilerOptions({ types: ['node'] }, { types: 'none' })
+    expect(normalizeCompilerOptions(opts)).toEqual({ types: [] })
   })
 })

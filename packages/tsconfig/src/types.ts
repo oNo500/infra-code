@@ -101,6 +101,7 @@ export interface ViewInput {
 
 export interface RenderInput {
   compilerOptions: CompilerOptions
+  files?: readonly string[]
   include?: readonly string[]
   exclude?: readonly string[]
   views?: ViewInput[]

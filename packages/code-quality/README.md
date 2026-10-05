@@ -37,7 +37,7 @@ export default defineConfig({
 ```
 
 > [!IMPORTANT]
-> Overrides use deep merge via `defu` — `rules`, `plugins`, `settings` etc. are **merged** (user values take priority). But `files` is **replaced** entirely — if you pass `files`, it overrides the preset default, not appends to it.
+> Most presets use deep merge via `defu` — user values take priority. File scope options **replace** their defaults. `electron()` replaces each rule by rule name and appends user `overrides` after its process defaults, so later file overrides win.
 
 ### Available presets
 
@@ -52,10 +52,11 @@ export default defineConfig({
 
 #### Node.js
 
-| Preset      | Description                       |
-| ----------- | --------------------------------- |
-| `node()`    | Node.js specific rules            |
-| `promise()` | Promise best practices (16 rules) |
+| Preset       | Description                                    |
+| ------------ | ---------------------------------------------- |
+| `node()`     | Node.js specific rules                         |
+| `electron()` | Main, preload, and renderer process boundaries |
+| `promise()`  | Promise best practices (16 rules)              |
 
 #### Frameworks
 
@@ -120,7 +121,7 @@ export default defineConfig({
 ```
 
 > [!NOTE]
-> Architectural boundary checks are intentionally **not** part of this package. For path-based import bans use the native `no-restricted-imports` rule; for cycle detection use `import/no-cycle`; for layer/feature isolation, traversal reachability, or orphan detection run [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser) in pre-commit or CI instead of inside lint.
+> General layer and module architecture checks are outside this package; `electron()` only supplies process boundaries. For path-based import bans use the native `no-restricted-imports` rule; for cycle detection use `import/no-cycle`; for layer/feature isolation, traversal reachability, or orphan detection run [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser) in pre-commit or CI instead of inside lint.
 
 > [!WARNING]
 > **NestJS projects** must disable `typescript/consistent-type-imports` — NestJS DI uses runtime class references in constructor params, and without type-aware linting this rule incorrectly converts them to `import type`, breaking DI at runtime.
@@ -139,6 +140,99 @@ export default defineConfig({
 >   ],
 > })
 > ```
+
+### Electron
+
+Use `base()` followed by `electron()`, and copy its ignore patterns to the root config. Files outside the process and shared declaration scopes keep the base environment.
+
+```ts
+import { base, electron } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
+
+const processConfig = electron()
+
+export default defineConfig({
+  extends: [base(), processConfig],
+  ignorePatterns: processConfig.ignorePatterns,
+})
+```
+
+| Scope option    | Default                                       | Environment and boundaries                                                                                                           |
+| --------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `mainFiles`     | `['src/main/**']`                             | Node enabled, browser disabled; TypeScript, Import, and Node plugins.                                                                |
+| `preloadFiles`  | `['src/preload/**']`                          | Browser enabled, Node disabled; only `require`, `process`, and `global` added as globals; all Node builtins restricted.              |
+| `rendererFiles` | `['src/renderer/**', 'src/shared/**/*.d.ts']` | Browser enabled, Node disabled; Node globals, Node builtins, and Electron imports restricted. Shared runtime source is not included. |
+
+Each file option replaces its default array. For example, `electron({ mainFiles: ['electron/main/**'] })` stops matching `src/main/**`.
+
+Oxlint does not inherit `ignorePatterns` through `extends`. The root field above retains generated-file ignores while including renderer and shared bridge declarations. Copying `base().ignorePatterns` instead would skip all `.d.ts` files. Custom `rendererFiles` also replace the shared declaration scope; include your bridge declarations explicitly.
+
+Preload is a conservative baseline, not an Electron module whitelist. Its `require` and `process` globals do not imply full Node APIs. Available modules and additional globals vary with the Electron version and sandbox configuration [1]. A project with confirmed full Node access can explicitly customize preload:
+
+```ts
+electron({
+  overrides: [
+    {
+      files: ['src/preload/**'],
+      env: { browser: true, node: true },
+      rules: {
+        'import/no-nodejs-modules': 'off',
+        'no-restricted-globals': 'off',
+      },
+    },
+  ],
+})
+```
+
+Renderer checks cover static imports and re-exports, `require`, literal dynamic imports, and template imports without substitutions, including `electron/*`. The small bundled JS plugin fills the dynamic Electron import gap in Oxlint 1.59–1.62 [2]. Computed module names and API aliases require a separate review. Electron type-only imports are also restricted: its declarations reference Node types, so use an independent bridge interface in renderer. Projects that need Electron types can explicitly replace `no-restricted-imports` in a later renderer override.
+
+The base preset also bans relative parent imports. Use a project alias for shared bridge types, or a precise exception on a type-only declaration import:
+
+```ts
+// src/renderer/bridge.d.ts
+// oxlint-disable-next-line import/no-relative-parent-imports -- Shared bridge declaration has no runtime imports.
+import type { AppBridge } from '../shared/bridge'
+
+declare global {
+  interface Window {
+    bridge: AppBridge
+  }
+}
+```
+
+The same base policy applies when preload imports shared bridge types; use its alias or its own type-only exception.
+
+`electron({ rules: { ... } })` replaces matching rules across all three scopes; rule option arrays are replaced in full. Put process-specific exceptions in `overrides`, which run after the defaults.
+
+For React, scope the existing `react()` or `reactVite()` preset to renderer and include the complete native plugin list:
+
+```ts
+import { base, electron, reactVite } from '@infra-x/code-quality/lint'
+import { defineConfig } from 'oxlint'
+
+const rendererFiles = ['src/renderer/**']
+const rendererReact = reactVite()
+const processConfig = electron({
+  rendererFiles: [...rendererFiles, 'src/shared/**/*.d.ts'],
+  overrides: [
+    {
+      files: rendererFiles,
+      plugins: ['typescript', 'import', ...(rendererReact.plugins ?? [])],
+      jsPlugins: rendererReact.jsPlugins,
+      rules: rendererReact.rules,
+    },
+  ],
+})
+
+export default defineConfig({
+  extends: [base(), processConfig],
+  ignorePatterns: processConfig.ignorePatterns,
+})
+```
+
+Copy only override-compatible fields (`plugins`, `jsPlugins`, `rules`, `env`, `globals`); do not spread a whole preset into an override. `extends`, `categories`, and `settings` belong at the root.
+
+This preset does not configure `BrowserWindow`, validate IPC payloads, or guarantee Electron runtime security. Review sandboxing, context isolation, and the bridge API separately [3].
 
 ### Type-aware linting
 
@@ -295,3 +389,9 @@ export default defineConfig({
 ## License
 
 MIT
+
+## Sources
+
+1. [Electron: Process Sandboxing](https://www.electronjs.org/docs/latest/tutorial/sandbox)
+2. [Oxlint: Writing JS Plugins](https://oxc.rs/docs/guide/usage/linter/writing-js-plugins.html)
+3. [Electron: Security](https://www.electronjs.org/docs/latest/tutorial/security)

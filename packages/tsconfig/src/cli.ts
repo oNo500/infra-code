@@ -6,6 +6,7 @@ import { applyWrites, generate, parsePathsArg, planGenerate } from './generate'
 import { splitNames } from './utils'
 import { defaultSelected, mergeWithChanges } from './write'
 
+import type { ElectronFramework } from './electron-vite'
 import type { Framework, GenOptions, ModuleMode, Runtime, Testing, ViewSpec } from './generate'
 import type { FieldChange } from './write'
 
@@ -67,6 +68,7 @@ const main = defineCommand({
   },
   args: {
     cwd: { type: 'string', description: 'Working directory', default: '.' },
+    preset: { type: 'string', description: 'Project preset: electron-vite' },
     runtime: { type: 'string', description: 'Comma-separated runtimes: node,bun,browser,edge' },
     module: { type: 'string', description: 'Module mode: bundler or nodenext' },
     framework: { type: 'string', description: 'Framework: none, react, nextjs, nestjs' },
@@ -81,8 +83,65 @@ const main = defineCommand({
     references: { type: 'string', description: 'Cross-package references: ../shared,../ui' },
     paths: { type: 'string', description: 'Path aliases: @/*=./src/*' },
   },
-  async run({ args }) {
+  async run({ args, rawArgs }) {
     const cwd = args.cwd
+    if (rawArgs.some((arg) => arg === '--preset' || arg.startsWith('--preset='))) {
+      try {
+        if (args.preset !== 'electron-vite') {
+          throw new Error(`Unknown preset: ${String(args.preset)}. Available: electron-vite`)
+        }
+        const conflictNames = new Set([
+          'runtime',
+          'module',
+          'view',
+          'lib',
+          'testing',
+          'erasable',
+          'references',
+          'paths',
+        ])
+        const conflicts = rawArgs.filter(
+          (arg) =>
+            arg.startsWith('--') &&
+            conflictNames.has(arg.split('=')[0]!.replace(/^--(?:no-)?/, '')),
+        )
+        if (conflicts.length > 0) {
+          throw new Error(`--preset electron-vite cannot be combined with ${conflicts.join(', ')}`)
+        }
+        const allowedFlags = new Set([
+          '--cwd',
+          '--preset',
+          '--framework',
+          '--help',
+          '-h',
+          '--version',
+          '-v',
+        ])
+        const unknownFlags = rawArgs.filter(
+          (arg) => arg.startsWith('-') && !allowedFlags.has(arg.split('=')[0]!),
+        )
+        if (unknownFlags.length > 0) {
+          throw new Error(`Unknown option for --preset electron-vite: ${unknownFlags.join(', ')}`)
+        }
+        if (
+          args.framework !== undefined &&
+          args.framework !== 'none' &&
+          args.framework !== 'react'
+        ) {
+          throw new Error('electron-vite framework must be none or react')
+        }
+        const result = await generate({
+          cwd,
+          preset: 'electron-vite',
+          framework: args.framework as ElectronFramework | undefined,
+        })
+        for (const filename of result.written) console.log(`write  ${filename}`)
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error))
+        process.exit(1)
+      }
+      return
+    }
     const isTty = process.stdout.isTTY ?? false
     const hasArgs = Boolean(args.runtime || args.module || args.framework)
     const interactive = isTty && !hasArgs
