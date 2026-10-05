@@ -108,8 +108,8 @@ describe('generate', () => {
     const json = readJson(cwd, 'tsconfig.json')
     const opts = json['compilerOptions'] as Record<string, unknown>
     expect(opts['isolatedDeclarations']).toBe(true)
-    // declaration is owned by buildTscEmit, not projectLib — bundler handles .d.ts via its own dts option
-    expect(opts['declaration']).toBeUndefined()
+    // projectLib enables declaration together with isolatedDeclarations, even in noEmit mode.
+    expect(opts['declaration']).toBe(true)
   })
 
   it('writes one extra file per view', async () => {

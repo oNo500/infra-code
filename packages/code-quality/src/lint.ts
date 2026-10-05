@@ -1,7 +1,8 @@
 /**
  * Oxlint lint presets
  *
- * Every preset is a function that accepts optional overrides, merged via `defu`.
+ * Preset functions accept optional overrides. Most merge via `defu`;
+ * Electron applies shared rules to its scopes and appends file overrides last.
  * User overrides take priority over preset defaults.
  *
  * @example
@@ -17,13 +18,14 @@
  */
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import { defu } from 'defu'
 import { defineConfig } from 'oxlint'
 
 import { GLOB_JSX, GLOB_SRC, GLOB_TESTS, GLOB_TS, isInEditorEnv } from './utils'
 
-import type { ExternalPluginEntry, OxlintConfig } from 'oxlint'
+import type { ExternalPluginEntry, OxlintConfig, OxlintOverride } from 'oxlint'
 
 // ============================================================================
 // Ignore patterns
@@ -286,6 +288,104 @@ export function depend(overrides?: Partial<OxlintConfig>): OxlintConfig {
 /** Node.js lint preset — enables native node plugin. */
 export function node(overrides?: Partial<OxlintConfig>): OxlintConfig {
   return preset({ plugins: ['node'] }, overrides)
+}
+
+export interface ElectronOptions extends Partial<OxlintConfig> {
+  /** Main-process globs. Replaces the default `src/main/**`. */
+  mainFiles?: string[]
+  /** Preload globs. Replaces the default `src/preload/**`. */
+  preloadFiles?: string[]
+  /** Renderer globs, including shared declarations. Replaces both default scopes. */
+  rendererFiles?: string[]
+}
+
+const PRELOAD_RESTRICTED_GLOBALS = [
+  '__dirname',
+  '__filename',
+  'exports',
+  'module',
+  'Buffer',
+  'setImmediate',
+  'clearImmediate',
+]
+const PRELOAD_GLOBALS = ['process', 'require', 'global']
+
+function resolveElectronPlugin(): string {
+  const extension = import.meta.url.endsWith('.ts') ? 'ts' : 'mjs'
+  return fileURLToPath(new URL(`./electron-plugin.${extension}`, import.meta.url))
+}
+
+/**
+ * Electron process boundaries: Node main, browser renderer, conservative preload.
+ * Shared rules replace defaults by rule name; explicit overrides run last.
+ * This is a lint boundary, not a guarantee of Electron runtime security.
+ */
+export function electron(options: ElectronOptions = {}): OxlintConfig {
+  const {
+    mainFiles = ['src/main/**'],
+    preloadFiles = ['src/preload/**'],
+    rendererFiles = ['src/renderer/**', 'src/shared/**/*.d.ts'],
+    ignorePatterns = [],
+    rules,
+    overrides = [],
+    ...config
+  } = options
+  const defaultIgnores = [...DEFAULT_IGNORES, ...loadGitignorePatterns()]
+
+  const processOverrides: OxlintOverride[] = [
+    {
+      files: mainFiles,
+      env: { browser: false, node: true },
+      plugins: ['typescript', 'import', 'node'],
+      rules: { 'no-undef': 'error', ...rules },
+    },
+    {
+      files: preloadFiles,
+      env: { browser: true, node: false },
+      plugins: ['typescript', 'import'],
+      globals: Object.fromEntries(PRELOAD_GLOBALS.map((name) => [name, 'readonly'])),
+      rules: {
+        'no-undef': 'error',
+        'no-restricted-globals': ['error', ...PRELOAD_RESTRICTED_GLOBALS],
+        'import/no-nodejs-modules': 'error',
+        ...rules,
+      },
+    },
+    {
+      files: rendererFiles,
+      env: { browser: true, node: false },
+      plugins: ['typescript', 'import'],
+      jsPlugins: [{ name: 'infra-electron', specifier: resolveElectronPlugin() }],
+      rules: {
+        'no-undef': 'error',
+        'no-restricted-globals': ['error', ...PRELOAD_RESTRICTED_GLOBALS, ...PRELOAD_GLOBALS],
+        'import/no-nodejs-modules': 'error',
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: ['electron'],
+            patterns: ['electron/*'],
+          },
+        ],
+        'infra-electron/no-electron-runtime': 'error',
+        ...rules,
+      },
+    },
+  ]
+
+  return defineConfig({
+    ...config,
+    rules,
+    // Oxlint does not inherit ignorePatterns through extends. Copy this field to
+    // the root config to lint bridge declarations while retaining generated-file ignores.
+    ignorePatterns: [
+      ...defaultIgnores,
+      ...rendererFiles.filter((files) => !files.startsWith('!')).map((files) => `!${files}`),
+      ...defaultIgnores.filter((pattern) => pattern !== '**/*.d.ts'),
+      ...ignorePatterns,
+    ],
+    overrides: [...processOverrides, ...overrides],
+  })
 }
 
 /** Promise lint preset — enables native promise plugin (16 rules). */

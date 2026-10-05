@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "bun"],
+    "declaration": false,
+    "isolatedDeclarations": false,
+    "tsBuildInfoFile": "../node_modules/.cache/tsconfig-tests.tsbuildinfo"
+  },
+  "include": ["./**/*.ts", "../src"]
+}
