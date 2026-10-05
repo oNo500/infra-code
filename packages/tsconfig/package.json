@@ -27,7 +27,7 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "bun run build && bun test",
     "release": "bumpp",
     "prepublishOnly": "bun run build"
   },
@@ -37,6 +37,7 @@
     "diff": "^9.0.0"
   },
   "devDependencies": {
+    "@infra-x/tsconfig-presets": "file:./vendor/infra-x-tsconfig-presets-0.0.0-d77cbba65ad7.tgz",
     "@types/bun": "latest",
     "@types/diff": "^8.0.0",
     "@types/node": "^25.0.0",

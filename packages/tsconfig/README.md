@@ -3,7 +3,34 @@
 Atom-based TypeScript config generator. Successor to `@infra-x/typescript-config`.
 
 > [!NOTE]
-> **0.0.0, pre-1.0 development.** API may change.
+> **Pre-1.0 development.** API may change. 本次共享预设接入尚未发布；以下本地流程使用当前源码构建的生成器。
+
+## 本地接入与直接生成
+
+配置内容、数组合并和 Electron 输入由 `@infra-x/tsconfig-presets` 维护；本包负责 CLI、渲染、可选 TypeScript 校验和文件写入。原 API 与命令参数保留。
+
+新预设包尚未发布，当前使用源码内的固定 tarball 开发快照。单独检出 `infra-code` 即可安装和构建，使用 Node 24+ 和 Bun。从 `infra-code` 根目录准备：
+
+```sh
+bun install --frozen-lockfile
+bun run --cwd packages/tsconfig build
+```
+
+从目标应用根目录直接生成：
+
+```sh
+# React 前端：生成 tsconfig.json
+node /绝对路径/infra-code/packages/tsconfig/dist/cli.mjs --runtime browser --module bundler --framework react
+
+# Electron + React：生成根、Node、renderer 三份配置
+node /绝对路径/infra-code/packages/tsconfig/dist/cli.mjs --preset electron-vite --framework react
+```
+
+`/绝对路径/infra-code` 替换为实际仓库路径；也可用 `--cwd /绝对路径/应用` 指定目标。生成器不安装应用依赖，目标应用自行提供 TypeScript 和相应框架、运行时类型。
+
+构建内联共享预设及其公开类型，生成器 tarball 的消费者不需要本地 `presets` 仓库。可用 `npm pack --ignore-scripts` 打包已经构建的 `packages/tsconfig`，在应用中安装该 `.tgz` 后，通过 `bunx --no-install tsconfig ...` 运行本地命令。修改共享预设时按 [快照同步说明](vendor/README.md) 更新开发依赖；预设发布后可切换为其实际发布版本。
+
+普通生成沿用原更新策略；Electron 相同配置重复执行不写入，有文件冲突时整组拒绝写入。生成结果应进入项目 Git，升级生成器后重新执行原命令并审阅差异。
 
 ## Why
 
@@ -61,11 +88,12 @@ const compilerOptions = composeAtoms(base(), runtimeNode(), buildBundler())
 
 ## Merge semantics
 
-| Field kind                        | Default behavior | Override           |
-| --------------------------------- | ---------------- | ------------------ |
-| Scalar (`strict`, `target`)       | Last atom wins   | —                  |
-| Object (`paths`)                  | Deep merge       | —                  |
-| Array (`types`, `lib`, `plugins`) | Append + dedupe  | Use `ArrayControl` |
+| API                    | Scalars        | Objects                                | Arrays                    |
+| ---------------------- | -------------- | -------------------------------------- | ------------------------- |
+| `composeAtoms`         | Last atom wins | Whole object replacement               | Append + dedupe           |
+| `mergeCompilerOptions` | Override wins  | One-level merge, matching keys replace | Append + dedupe; controls |
+
+Array controls apply only to `lib`, `types` and `plugins`. Scalar `module: 'none'` and a path alias named `merge` retain their ordinary values. Compiler version compatibility is checked separately. These functions do not modify caller inputs.
 
 When the default is wrong, use an `ArrayControl` object in `compilerOptions`:
 

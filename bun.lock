@@ -59,6 +59,7 @@
         "diff": "^9.0.0",
       },
       "devDependencies": {
+        "@infra-x/tsconfig-presets": "file:./vendor/infra-x-tsconfig-presets-0.0.0-d77cbba65ad7.tgz",
         "@types/bun": "latest",
         "@types/diff": "^8.0.0",
         "@types/node": "^25.0.0",
@@ -225,6 +226,8 @@
     "@infra-x/code-quality": ["@infra-x/code-quality@workspace:packages/code-quality"],
 
     "@infra-x/tsconfig": ["@infra-x/tsconfig@workspace:packages/tsconfig"],
+
+    "@infra-x/tsconfig-presets": ["@infra-x/tsconfig-presets@./vendor/infra-x-tsconfig-presets-0.0.0-d77cbba65ad7.tgz", {}, "sha512-lCN5KVXOYURNuqPTwcw9S6BXOl8UwbHL3PEzGvAyIOgYU253bq4spwn80DywjPseXZcx4wsmrqiXPt4w4PvAeA=="],
 
     "@infra-x/typescript-config": ["@infra-x/typescript-config@workspace:packages/typescript-config"],
 

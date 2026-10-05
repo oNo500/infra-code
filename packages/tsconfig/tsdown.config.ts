@@ -7,6 +7,7 @@ export default defineConfig({
   },
   format: ['esm'],
   platform: 'node',
+  deps: { alwaysBundle: ['@infra-x/tsconfig-presets'] },
   target: 'node20',
   dts: true,
   clean: true,
