@@ -1,8 +1,0 @@
-{
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Runtime: Node",
-  "compilerOptions": {
-    "types": ["node"],
-    "lib": ["esnext"]
-  }
-}

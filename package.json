@@ -1,25 +1,17 @@
 {
   "name": "infra-code",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "type": "module",
   "scripts": {
-    "build": "bun --filter='*' run build",
-    "typecheck": "bun --filter='*' run typecheck",
     "lint": "oxlint --disable-nested-config",
     "lint:fix": "oxlint --disable-nested-config --fix",
     "format": "oxfmt --write .",
-    "format:check": "oxfmt --check .",
-    "version": "bunx changeset version && bun install --no-frozen-lockfile",
-    "release": "bunx changeset publish"
+    "format:check": "oxfmt --check ."
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
-    "@infra-x/code-quality": "workspace:*",
+    "@infra-x/oxfmt-presets": "file:./vendor/infra-x-oxfmt-presets-0.0.0-59890cf9225d.tgz",
+    "@infra-x/oxlint-presets": "file:./vendor/infra-x-oxlint-presets-0.0.0-6c4c7e5d2551.tgz",
     "oxfmt": "^0.55.0",
-    "oxlint": "^1.62.0",
-    "oxlint-tsgolint": "^0.23.0"
+    "oxlint": "^1.62.0"
   }
 }

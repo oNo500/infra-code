@@ -1,4 +1,4 @@
-import { react, nextjs, vitest } from '@infra-x/code-quality/lint'
+import { react, nextjs, vitest } from '@infra-x/oxlint-presets'
 import { defineConfig } from 'oxlint'
 
 import rootConfig from '../../oxlint.config.ts'

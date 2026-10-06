@@ -7,5 +7,8 @@ allowBuilds:
   msw: true
   sharp: true
 
+minimumReleaseAgeExclude:
+  - '@darraghor/eslint-plugin-nestjs-typed@7.5.8'
+
 publicHoistPattern:
   - '*eslint*'

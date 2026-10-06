@@ -1,63 +1,45 @@
 # infra-code
 
-Personal infrastructure for TypeScript projects: shared lint/format/TS presets (published to npm under `@infra-x/*`) and project starters.
-
-## Packages
-
-Published to npm.
-
-| Package                                                      | Purpose                                                                             |
-| ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| [`@infra-x/code-quality`](./packages/code-quality)           | Composable oxlint + oxfmt presets                                                   |
-| [`@infra-x/tsconfig`](./packages/tsconfig)                   | DSL-based `tsconfig.json` generator (replaces `typescript-config`)                  |
-| [`@infra-x/typescript-config`](./packages/typescript-config) | Legacy recipes — **superseded by `@infra-x/tsconfig`**, kept for existing consumers |
-
-```bash
-npm install -D @infra-x/code-quality @infra-x/tsconfig
-```
-
-All packages run on Node 20+ and Bun.
+Self-contained TypeScript project starters. Shared TypeScript, Oxlint and Oxfmt presets are maintained in the separate `presets` repository.
 
 ## Starters
 
-Fetched via [`giget`](https://github.com/unjs/giget). Each starter is self-contained with its own lockfile and toolchain.
+Each starter has its own dependencies, lockfile and toolchain.
 
-| Starter                             | For                       | Stack                                                             |
-| ----------------------------------- | ------------------------- | ----------------------------------------------------------------- |
-| [`cli`](./starters/cli)             | Publishable CLI tools     | Bun dev · Node publish · citty · tsdown                           |
-| [`server`](./starters/server)       | HTTP services             | Bun · Hono · zod · Drizzle · `bun:sqlite`                         |
-| [`web`](./starters/web)             | Quick prototype UIs       | Bun full-stack · React 19 · Tailwind v4                           |
-| [`fullstack`](./starters/fullstack) | Production-grade monorepo | pnpm · Turborepo · Next.js 16 · Drizzle · Better Auth · shadcn/ui |
+| Starter              | For                   | Stack                                                          |
+| -------------------- | --------------------- | -------------------------------------------------------------- |
+| `starters/cli`       | Publishable CLI tools | Bun dev · Node publish · citty · tsdown                        |
+| `starters/server`    | HTTP services         | Bun · Hono · zod · Drizzle · `bun:sqlite`                      |
+| `starters/web`       | Quick prototype UIs   | Bun full-stack · React 19 · Tailwind v4                        |
+| `starters/fullstack` | Production monorepos  | pnpm · Turborepo · Next.js · Drizzle · Better Auth · shadcn/ui |
 
-```bash
+Fetch a starter with `giget`:
+
+```sh
 bunx giget@latest gh:oNo500/infra-code/starters/cli#master my-cli
 bunx giget@latest gh:oNo500/infra-code/starters/server#master my-api
 bunx giget@latest gh:oNo500/infra-code/starters/web#master my-ui
 bunx giget@latest gh:oNo500/infra-code/starters/fullstack#master my-app
 ```
 
-See each starter's own README for specific scripts and constraints.
+See each starter's README for its commands and requirements.
 
 ## Development
 
-This repository is Bun-driven end to end.
+Root commands maintain repository tooling; starters are independent projects.
 
-```bash
-bun install                           # install packages/* deps at the root
-bun run build                         # bun --filter='*' run build
-bun run typecheck
+```sh
+bun install --frozen-lockfile
 bun run lint
-bun run format
+bun run format:check
 ```
 
-- **Packages** live under `packages/*` and are part of the root Bun workspace. They must stay Node-compatible — source code imports `node:*` only; `tsconfig.json` uses `"types": ["node"]` to block `Bun.*` usage at compile time.
-- **Starters** live under `starters/*` and are **not** part of the workspace. Each carries its own lockfile and toolchain — `bun install` for bun-based starters (`cli` / `server` / `web`), `pnpm install` for `fullstack`. See each starter's README.
-- **Releases** use [changesets](https://github.com/changesets/changesets). Run `bunx changeset` to record a bump, commit the file, and push to `master`. CI opens a "Version Packages" PR; merging it publishes to npm. Don't run `bunx changeset version` locally — see [CONTRIBUTING.md](./CONTRIBUTING.md#releasing).
+For `cli`, `server` and `web`, run `bun install --frozen-lockfile` and the relevant checks inside the starter. For `fullstack`, use `pnpm install --frozen-lockfile` and its workspace commands. Root installation does not install starter dependencies.
 
-## History
+Oxlint and Oxfmt use separate preset packages. Until those packages are published, each project carries fixed tarball dependencies in `vendor/` so standalone downloads remain installable. Each vendor README describes snapshot updates. TypeScript configurations are committed in each project.
 
-- The `@infra-x/eslint-config`, `@infra-x/eslint-config-test`, and `@infra-x/create-eslint-config` packages were retired in favour of `@infra-x/code-quality`. Their last working source is archived at git tag `archive/eslint-config-v0.1.13`; published versions remain available on npm.
+This repository no longer builds or publishes shared configuration packages. Repository CI checks root tooling; starter CI checks the individual projects.
 
 ## License
 
-MIT — see [`LICENSE`](./LICENSE).
+MIT — see `LICENSE`.

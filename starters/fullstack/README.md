@@ -30,8 +30,8 @@ bunx giget@latest gh:oNo500/infra-code/starters/fullstack my-app
 - **@t3-oss/env-nextjs + Zod** — env validated at build time, not runtime
 - **shadcn/ui via @workspace/ui** — owned components, not a black-box library
 - **Vitest + Testing Library** — fast, co-located, browser-like
-- **oxlint + oxfmt via `@infra-x/code-quality`** — 10-100x faster than ESLint/Prettier
-- **TypeScript presets via `@infra-x/typescript-config`** — composable recipes + atoms
+- **oxlint + oxfmt** — separate lint and format presets
+- **TypeScript** — project-local compiler configurations
 
 ## Quick Start
 

@@ -2,51 +2,24 @@
 
 ## Development
 
-```bash
+```sh
 git clone https://github.com/oNo500/infra-code.git
 cd infra-code
-bun install
-bun run build
+bun install --frozen-lockfile
+bun run lint
+bun run format:check
 ```
+
+Starters are independent projects. Install and check them from their own directories: Bun for `cli`, `server` and `web`; pnpm for `fullstack`. Run the affected project's typecheck, lint, tests and build when available.
 
 ## Workflow
 
-All changes go through a feature branch and PR:
+Use a feature branch and PR targeting `master`. CI must pass before merging. Shared preset development and package releases belong to the separate `presets` repository; this repository has no package release workflow.
 
-```bash
-git checkout -b feat/your-feature
-# make changes
-git push origin feat/your-feature
-# open PR → CI must pass → merge to master
-```
+## Preset snapshots
 
-## Security Updates
+Root and starter `vendor/` directories contain fixed Oxlint and Oxfmt tarballs. Update them from the `presets` build, use a new content-hashed filename, and update each affected manifest and lockfile together. Check standalone installation and actual tool commands after an update.
 
-Fix dependency alerts with targeted updates, one alert (or one package) per PR:
+## Security updates
 
-- Direct dependency: `pnpm up <pkg>` to the patched version
-- Transitive dependency: `pnpm audit --fix` (writes a `pnpm.overrides` entry; remove it once upstream catches up)
-- Pinned by upstream (e.g. exact versions inside `next` or `drizzle-kit`): wait for the upstream release — do not force an override
-
-Do **not** regenerate the whole lockfile to clear alerts: it buries the fix in an unreviewable diff and accepts untargeted upgrades across the tree.
-
-## Releasing
-
-This project uses [Changesets](https://github.com/changesets/changesets) for version management.
-
-When your change warrants a version bump, run:
-
-```bash
-bunx changeset
-```
-
-Select the affected packages, choose the change type (`patch` / `minor` / `major`), and write a short description. Commit the generated `.changeset/*.md` file along with your code changes.
-
-After merging to `master`:
-
-1. Changesets action automatically opens a **"Version Packages"** PR
-2. Review the version bumps and changelog
-3. Merge the PR → packages are published to npm and git tags are created
-
-> [!IMPORTANT]
-> Do **not** run `bunx changeset version` locally. Version bumps and publishing are handled by the CI PR flow described above.
+Make targeted updates and preserve unrelated dependency versions. Use the affected project's package manager. Do not regenerate whole lockfiles to clear individual alerts or force overrides for versions pinned by upstream.

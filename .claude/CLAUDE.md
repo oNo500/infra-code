@@ -1,73 +1,41 @@
-# CLAUDE.md
+# Repository guidance
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Layout
+
+This repository contains self-contained project starters and root maintenance tooling. Shared presets are maintained in the separate `presets` repository. There is no root workspace or shared-package publishing workflow.
+
+- `starters/cli`: Node-compatible CLI tools, developed with Bun.
+- `starters/server`: Bun HTTP services with Hono, Drizzle and SQLite.
+- `starters/web`: Bun full-stack React prototypes.
+- `starters/fullstack`: pnpm and Turborepo applications and shared UI packages.
+
+Root installation does not install starter dependencies. Each starter has its own manifest, lockfile and tool configuration.
 
 ## Commands
 
-Run from the repo root (operates on `packages/*` workspace):
+At the root:
 
-```bash
-bun install          # install workspace deps (packages/* only — see Architecture)
-bun run build        # build workspace packages (fans out via bun --filter='*')
-bun run typecheck    # type-check workspace packages
-bun run lint         # oxlint with root config (--disable-nested-config)
-bun run lint:fix     # oxlint --fix
-bun run format       # oxfmt --write .
-bun run format:check # oxfmt --check . (CI uses this)
-bunx changeset       # record an intent-to-bump; commit the generated .changeset/*.md
+```sh
+bun install --frozen-lockfile
+bun run lint
+bun run lint:fix
+bun run format
+bun run format:check
 ```
 
-> [!NOTE]
-> `typescript-config` has no `build`/`typecheck` script (it ships raw JSON); `bun --filter` simply skips packages without the target script.
+Use Bun inside `cli`, `server` and `web`; use pnpm inside `fullstack`. Run typecheck, lint, tests and build for affected starters. Root lint skips starters because they have independent configurations.
 
-Root also exposes `"release": "bunx changeset publish"` — **this is for CI only**, never run it locally.
+## Presets
 
-## Architecture
+Lint and format configurations consume separate preset packages through fixed `vendor/` tarballs until registry releases are available. Update archives, content-hashed paths and lockfiles together. Preserve standalone starter installation. TypeScript configurations live directly in each project.
 
-Bun workspaces monorepo (no Turborepo). Two areas with different semantics:
+## Workflow
 
-- `packages/*` — **in** the root workspace (`workspaces: ["packages/*"]`), published to npm under `@infra-x/*`
-  - `packages/code-quality` — composable oxlint + oxfmt presets (built with `tsdown`)
-  - `packages/tsconfig` — DSL-based `tsconfig.json` generator with CLI (built with `tsdown`)
-  - `packages/typescript-config` — legacy presets, **superseded by `@infra-x/tsconfig`** (no build step, kept for existing consumers)
-- `starters/*` — **not** in the workspace. Each starter carries its own lockfile and toolchain, and is fetched standalone via `giget`
-  - `starters/cli` — publishable CLI tools (bun + citty + tsdown)
-  - `starters/server` — Bun HTTP services (Hono + Drizzle + `bun:sqlite`)
-  - `starters/web` — Bun full-stack UI prototypes (React 19 + Tailwind v4)
-  - `starters/fullstack` — pnpm + Turborepo monorepo (Next.js 16 + Drizzle + Better Auth + shadcn/ui)
-
-> [!IMPORTANT]
-> Root `bun install` does **not** touch `starters/*`. To work on a starter, `cd starters/<name>` and use its own package manager — `bun install` for bun-based starters, `pnpm install` for `fullstack`. See each starter's README.
-
-## Tooling
-
-- Root `oxlint.config.ts` / `oxfmt.config.ts` apply to `packages/*`. Each starter carries its own config files.
-- Packages must stay **Node-compatible**: source imports `node:*` only, and `tsconfig.json` uses `"types": ["node"]` to block `Bun.*` at compile time. Starters are free to use `Bun.*`.
-- oxlint runs with `--disable-nested-config` at the root; `typeAware: true` is set, so each package's `tsconfig.json` is auto-detected.
-
-## Git Workflow
-
-- Default branch: `master` (PR target)
-- Create a changeset alongside code changes when a version bump is needed
-
-### Release flow (changesets)
-
-`publish.yml` uses `changesets/action@v1` with only a `publish:` command (no `version:`), which means the action runs in its default two-phase mode:
-
-1. Create a changeset: `bunx changeset` (or write `.changeset/<name>.md` manually)
-2. Commit the changeset file with your code changes and push to `master`
-3. `changesets/action` sees the pending changeset and opens (or updates) a **"Version Packages" PR** from branch `changeset-release/master` — this PR bumps versions and updates CHANGELOG
-4. Merge that PR → the next run has no pending changesets, so the action executes `bunx changeset publish --provenance --access public` to npm
-
-> [!IMPORTANT]
-> Do **not** run `bunx changeset version` or `bun run release` locally. Both are CI-owned steps; running them locally will produce commits that conflict with the "Version Packages" PR.
+Use a feature branch and PR targeting `master`. Do not publish shared packages from this repository. Do not modify unrelated files or regenerate lockfiles for unrelated upgrades. Preserve existing untracked files.
 
 ## Principles
 
-- **No emoji**: Do not use emoji in code unless explicitly requested
-- **Minimal implementation**: Follow MVP — do not extend beyond what is needed
-- When the user describes something in casual/colloquial terms, suggest the proper technical terminology or workflow to help them learn and find solutions faster
-
-## Development Stage
-
-This project is in active development — no need to consider backward compatibility. Avoid compatibility shims or redundant code. Full refactors are welcome to achieve the optimal solution.
+- No emoji in code unless requested.
+- Keep implementations minimal.
+- No unnecessary compatibility shims.
+- CLI starter output must run on Node; use `node:*` rather than Bun-only APIs there.

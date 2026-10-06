@@ -6,7 +6,7 @@ Bun CLI starter, published as Node-compatible ESM.
 
 - **Args**: [citty](https://github.com/unjs/citty)
 - **Bundler**: [tsdown](https://tsdown.dev)
-- **Lint**: `oxlint` + `oxfmt` via `@infra-x/code-quality`
+- **Lint**: `oxlint` + `oxfmt` via `@infra-x/oxlint-presets` and `@infra-x/oxfmt-presets`
 - **Tests**: `bun test`
 
 ## Scripts
