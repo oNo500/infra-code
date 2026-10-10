@@ -14,15 +14,15 @@
     "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm lint:deps && pnpm test"
   },
   "devDependencies": {
-    "@infra-x/code-quality": "^0.6.2",
+    "@infra-x/code-quality": "^0.7.0",
     "bun-types": "^1.4.2",
     "dependency-cruiser": "^17.4.3",
-    "oxfmt": "^0.55.0",
+    "oxfmt": "^0.72.0",
     "oxlint": "^1.83.0",
     "taze": "^19.17.2",
     "turbo": "^2.10.13"
   },
-  "packageManager": "pnpm@11.27.0",
+  "packageManager": "pnpm@11.28.5",
   "pnpm": {
     "overrides": {
       "@hono/node-server": ">=2.1.1",

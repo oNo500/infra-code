@@ -17,7 +17,7 @@
     "@svgr/cli": "^8.1.0",
     "@types/react": "^19.3.0",
     "prettier": "^3.9.6",
-    "tsdown": "^0.22.14",
+    "tsdown": "^0.23.0",
     "typescript": "^6.0.3"
   }
 }
