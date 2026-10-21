@@ -16,7 +16,7 @@
   "devDependencies": {
     "@infra-x/code-quality": "^0.6.2",
     "bun-types": "^1.4.2",
-    "dependency-cruiser": "^17.4.3",
+    "dependency-cruiser": "^18.0.0",
     "oxfmt": "^0.55.0",
     "oxlint": "^1.83.0",
     "taze": "^19.17.2",
