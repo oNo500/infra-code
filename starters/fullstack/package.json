@@ -14,14 +14,14 @@
     "check": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm lint:deps && pnpm test"
   },
   "devDependencies": {
-    "@infra-x/oxfmt-presets": "file:./vendor/infra-x-oxfmt-presets-0.0.0-59890cf9225d.tgz",
-    "@infra-x/oxlint-presets": "file:./vendor/infra-x-oxlint-presets-0.0.0-6c4c7e5d2551.tgz",
-    "bun-types": "^1.4.2",
-    "dependency-cruiser": "^17.4.3",
-    "oxfmt": "^0.55.0",
-    "oxlint": "^1.83.0",
-    "taze": "^19.17.2",
-    "turbo": "^2.10.13"
+    "@infra-x/oxfmt-presets": "0.0.4",
+    "@infra-x/oxlint-presets": "0.0.2",
+    "bun-types": "^1.4.4",
+    "dependency-cruiser": "18.8.0-beta-1",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "taze": "^21.3.0",
+    "turbo": "^2.11.10"
   },
   "packageManager": "pnpm@11.27.0",
   "pnpm": {

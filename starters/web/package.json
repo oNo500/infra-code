@@ -14,22 +14,22 @@
     "test": "bun test"
   },
   "dependencies": {
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "^20.9.0",
-    "@infra-x/oxfmt-presets": "file:./vendor/infra-x-oxfmt-presets-0.0.0-59890cf9225d.tgz",
-    "@infra-x/oxlint-presets": "file:./vendor/infra-x-oxlint-presets-0.0.0-6c4c7e5d2551.tgz",
-    "@tailwindcss/postcss": "^4.2.4",
-    "@testing-library/react": "^16.3.2",
+    "@happy-dom/global-registrator": "^21.0.4",
+    "@infra-x/oxfmt-presets": "0.0.4",
+    "@infra-x/oxlint-presets": "0.0.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/react": "^16.3.3",
     "@types/bun": "latest",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "bun-plugin-tailwind": "^0.1.2",
-    "oxfmt": "^0.55.0",
-    "oxlint": "^1.62.0",
-    "tailwindcss": "^4.2.4",
-    "typescript": "^6.0.3"
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
   }
 }

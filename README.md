@@ -36,7 +36,7 @@ bun run format:check
 
 For `cli`, `server` and `web`, run `bun install --frozen-lockfile` and the relevant checks inside the starter. For `fullstack`, use `pnpm install --frozen-lockfile` and its workspace commands. Root installation does not install starter dependencies.
 
-Oxlint and Oxfmt use separate preset packages. Until those packages are published, each project carries fixed tarball dependencies in `vendor/` so standalone downloads remain installable. Each vendor README describes snapshot updates. TypeScript configurations are committed in each project.
+Oxlint and Oxfmt use separate published preset packages from npm. Historical tarballs remain in `vendor/` but are no longer used for installation. TypeScript configurations are committed in each project.
 
 This repository no longer builds or publishes shared configuration packages. Repository CI checks root tooling; starter CI checks the individual projects.
 

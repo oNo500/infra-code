@@ -20,7 +20,6 @@ export default defineConfig({
   test: {
     projects: [
       {
-        ...sharedConfig,
         test: {
           ...sharedTestConfig,
           name: 'unit',
@@ -28,7 +27,6 @@ export default defineConfig({
         },
       },
       {
-        ...sharedConfig,
         test: {
           ...sharedTestConfig,
           name: 'e2e',

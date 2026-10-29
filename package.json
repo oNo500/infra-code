@@ -9,9 +9,9 @@
     "format:check": "oxfmt --check ."
   },
   "devDependencies": {
-    "@infra-x/oxfmt-presets": "file:./vendor/infra-x-oxfmt-presets-0.0.0-59890cf9225d.tgz",
-    "@infra-x/oxlint-presets": "file:./vendor/infra-x-oxlint-presets-0.0.0-6c4c7e5d2551.tgz",
-    "oxfmt": "^0.55.0",
-    "oxlint": "^1.62.0"
+    "@infra-x/oxfmt-presets": "0.0.4",
+    "@infra-x/oxlint-presets": "0.0.2",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0"
   }
 }
